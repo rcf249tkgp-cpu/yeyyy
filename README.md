@@ -18,13 +18,15 @@ stand-in, so you can add photos one at a time.
 
 | File | Where it shows | Notes |
 |---|---|---|
-| `assets/logo/vyro-logo.svg` | Intro wipe, nav, hero, footer | **Placeholder.** Replace with the original brush-stroke logo, exported white on transparent and cropped tight. |
-| `assets/photos/hero-01.jpg` … `hero-03.jpg` | Hero ambient sequence | Dark and cinematic, landscape, at least 2400px wide. |
-| `assets/products/hoodie-*.jpg`, `jogger-*.jpg`, `detail-*.jpg` | Drop 01, collection, details, categories | **Cropped from the lineup sheet** (`lineup-sheet.webp`, about 1500px wide). Replace with high-res originals at the same names and aspect ratios when you have them. |
-| `assets/photos/cat-{tees,pumpers,hoodies,shorts,stringers}.jpg` | Category rows | 4:5 portrait. |
-| `assets/photos/story.jpg` | Why VYRO backdrop | Full-bleed, moody. |
-| `assets/photos/review-01.jpg` … `review-04.jpg` | Reviews | 4:5 portrait. |
-| `assets/photos/join.jpg` | Drop alert CTA backdrop | Full-bleed. |
+| `assets/logo/vyro-logo.png` | Intro wipe, nav, hero, footer | Extracted from the tank-top sheet and upscaled. Swap in a vector export of the real logo when you have one. |
+| `assets/photos/life-1.jpg` … `life-9.jpg` | Hero sequence, story, reviews, signup backdrop | Gym shots of the hoodie and jogger. On desktop the hero shows three per slide. |
+| `assets/photos/{tee,tank,shorts}-model-*.jpg` | Lookbook, category rows | On-model shots. |
+| `assets/products/*.jpg` | Drop 01, collection, details | Flat product shots and close-ups. |
+| `assets/products/lineup-sheet-*.webp` | Not shown | The original sheets everything above was cropped from. |
+
+All photos were cropped from those sheets, so each one is only a few hundred
+pixels wide. Replace them with high-res originals at the same filenames and the
+page picks them up with no code changes.
 
 Colorway switching swaps photos by filename: each product image has a
 `data-pimg` pattern such as `assets/products/hoodie-{c}-front.jpg`, where `{c}`

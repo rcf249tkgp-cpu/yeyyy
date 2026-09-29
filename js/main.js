@@ -169,12 +169,17 @@
 
   // While a slide is a rendered stand-in, say which photo file belongs there
   const heroNote = $('[data-hero-note]');
-  const heroSrcs = heroSlides.map(function (i) { return i.getAttribute('src'); });
+  // Wide screens get three portrait shots per slide; phones get one
+  let heroSrcs = heroSlides.map(function (i) { return i.getAttribute('src'); });
+  try {
+    const wide = JSON.parse(heroCanvas.dataset.slidesWide || 'null');
+    if (wide && window.matchMedia('(min-width: 900px)').matches) heroSrcs = wide;
+  } catch (e) { /* keep single-photo slides */ }
   const heroHasPhoto = heroSrcs.map(function () { return false; });
   let heroIdx = 0;
   function updateNote() {
     heroNote.hidden = heroHasPhoto[heroIdx];
-    heroNote.textContent = 'Stand-in image. Add your photo at ' + heroSrcs[heroIdx];
+    heroNote.textContent = 'Stand-in image. Add your photo at ' + [].concat(heroSrcs[heroIdx]).join(', ');
   }
 
   let hero = null;
@@ -574,6 +579,44 @@
       .from(media.children, { scale: 1.25, duration: 1.4, ease: 'power3.out' }, 0.1)
       .from([$('.cat__desc', row), $('.cat__count', row)], { opacity: 0, y: 12, duration: 0.8, ease: 'power3.out' }, 0.3);
   });
+
+  /* ------------------------------------------------------------------ *
+   * Lookbook: columns drift at different speeds, frames unmask on entry
+   * ------------------------------------------------------------------ */
+  if (!reduced) {
+    $$('.look__item').forEach(function (item) {
+      const media = $('.look__media', item);
+      gsap.fromTo(media, { clipPath: 'inset(100% 0% 0% 0%)' }, {
+        clipPath: 'inset(0% 0% 0% 0%)', duration: 1.3, ease: 'power4.inOut',
+        scrollTrigger: { trigger: item, start: 'top 92%', once: true }
+      });
+      gsap.fromTo($('img', media), { yPercent: -5 }, {
+        yPercent: 5, ease: 'none',
+        scrollTrigger: { trigger: item, start: 'top bottom', end: 'bottom top', scrub: true }
+      });
+    });
+    mm.add('(min-width: 900px) and (prefers-reduced-motion: no-preference)', function () {
+      $$('[data-look-col]').forEach(function (col) {
+        const speed = [-60, 40, -140][+col.dataset.lookCol];
+        gsap.to(col, {
+          y: speed, ease: 'none',
+          scrollTrigger: { trigger: '.look__grid', start: 'top bottom', end: 'bottom top', scrub: true }
+        });
+      });
+    });
+
+    const portrait = $('.story__portrait-media');
+    if (portrait) {
+      gsap.fromTo(portrait, { clipPath: 'inset(0% 0% 100% 0%)' }, {
+        clipPath: 'inset(0% 0% 0% 0%)', duration: 1.4, ease: 'power4.inOut',
+        scrollTrigger: { trigger: portrait, start: 'top 85%', once: true }
+      });
+      gsap.fromTo($('img', portrait), { scale: 1.2 }, {
+        scale: 1, ease: 'none',
+        scrollTrigger: { trigger: portrait, start: 'top bottom', end: 'bottom top', scrub: true }
+      });
+    }
+  }
 
   /* ------------------------------------------------------------------ *
    * Details: mask reveal, slow drift inside the frame

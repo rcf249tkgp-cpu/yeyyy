@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>VYRO Athletics | Drop 01</title>
-  <meta name="description" content="VYRO Athletics. The Athletics Club hoodie and jogger in black, navy and gray. Heavyweight training gear for lifters who show up every day.">
+  <meta name="description" content="VYRO Athletics. Drop 01: hoodies, joggers, tees, tanks and shorts in black, navy and gray. Heavyweight training gear for lifters who show up every day.">
   <meta name="theme-color" content="#0A0A0A">
-  <link rel="icon" href="assets/logo/vyro-logo.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/logo/vyro-logo.png" type="image/png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,14 +19,14 @@
   <!-- Load intro: brush-wipe reveal of the logo -->
   <div class="intro" aria-hidden="true">
     <div class="intro__logo">
-      <!-- LOGO: replace assets/logo/vyro-logo.svg with the original brush-stroke logo -->
-      <img src="assets/logo/vyro-logo.svg" alt="" width="1000" height="300">
+      <!-- LOGO: assets/logo/vyro-logo.png (swap for a vector export when available) -->
+      <img src="assets/logo/vyro-logo.png" alt="" width="1300" height="662">
     </div>
   </div>
 
   <header class="nav" data-nav>
     <a class="nav__logo" href="#top" aria-label="VYRO Athletics home">
-      <img src="assets/logo/vyro-logo.svg" alt="VYRO" width="1000" height="300">
+      <img src="assets/logo/vyro-logo.png" alt="VYRO" width="1300" height="662">
     </a>
     <nav class="nav__links" aria-label="Primary">
       <a href="#drop">Drop 01</a>
@@ -58,15 +58,16 @@
     <section class="hero" id="top" data-hero>
       <div class="hero__media">
         <!--
-          HERO SEQUENCE: drop your photos into assets/photos/ with these names.
-          Dark, cinematic, landscape (at least 2400px wide). Chalk, sweat, iron.
-          If a file is missing, a rendered stand-in is shown in its place.
+          HERO SEQUENCE
+          Desktop: each slide is three portrait shots side by side (data-slides-wide).
+          Phones: one portrait shot per slide (the <img> tags below).
         -->
-        <canvas class="hero__gl" data-hero-gl aria-hidden="true"></canvas>
+        <canvas class="hero__gl" data-hero-gl aria-hidden="true"
+          data-slides-wide='[["assets/photos/life-1.jpg","assets/photos/life-4.jpg","assets/photos/life-5.jpg"],["assets/photos/life-7.jpg","assets/photos/life-2.jpg","assets/photos/life-8.jpg"],["assets/photos/life-3.jpg","assets/photos/life-9.jpg","assets/photos/life-6.jpg"]]'></canvas>
         <div class="hero__fallback" data-hero-fallback>
-          <img data-photo data-hero-slide src="assets/photos/hero-01.jpg" alt="Lifter locking out a heavy deadlift, chalk hanging in the air" fetchpriority="high">
-          <img data-photo data-hero-slide src="assets/photos/hero-02.jpg" alt="Chalked hands gripping a knurled barbell" loading="lazy">
-          <img data-photo data-hero-slide src="assets/photos/hero-03.jpg" alt="Athlete between sets in the Athletics Club hoodie, lit from above" loading="lazy">
+          <img data-photo data-hero-slide src="assets/photos/life-1.jpg" alt="Lifter in the black Athletics Club hoodie, sitting between sets" fetchpriority="high">
+          <img data-photo data-hero-slide src="assets/photos/life-8.jpg" alt="Lifter in the navy hoodie and jogger set, hood up, in a dark gym" loading="lazy">
+          <img data-photo data-hero-slide src="assets/photos/life-5.jpg" alt="Lifter in the gray set pulling on headphones before a session" loading="lazy">
         </div>
         <div class="hero__shade"></div>
       </div>
@@ -77,7 +78,7 @@
           <span class="line"><span>under load.</span></span>
         </h1>
         <div class="hero__aside" data-hero-aside>
-          <p>Drop 01 is here. The Athletics Club hoodie and jogger in black, navy and gray, cut for lifters who show up every day.</p>
+          <p>Drop 01 is here. Hoodies, joggers, tees, tanks and shorts in black, navy and gray, cut for lifters who show up every day.</p>
           <div class="hero__ctas">
             <a class="btn btn--solid" href="#drop">Shop the drop</a>
             <a class="btn btn--ghost" href="#collection">See the colorways</a>
@@ -95,13 +96,38 @@
 
       <div class="hero__logo" data-hero-logo aria-hidden="true">
         <!-- LOGO: large, cropped by the bottom edge of the hero -->
-        <img src="assets/logo/vyro-logo.svg" alt="" width="1000" height="300">
+        <img src="assets/logo/vyro-logo.png" alt="" width="1300" height="662">
       </div>
     </section>
 
     <!-- ============ STATEMENT ============ -->
     <section class="statement" aria-label="Brand statement">
       <p class="statement__text display" data-scale-words>Gear that looks as serious as your program.</p>
+    </section>
+
+    <!-- ============ LOOKBOOK ============ -->
+    <section class="look" aria-labelledby="look-title">
+      <div class="look__head">
+        <h2 class="display look__title" id="look-title" data-split-rise>On the floor</h2>
+        <p class="look__lede">Drop 01 where it was made to be worn. Every piece, every colorway, under the same bad lighting you train in.</p>
+      </div>
+      <div class="look__grid">
+        <div class="look__col" data-look-col="0">
+          <figure class="look__item"><div class="look__media"><img src="assets/photos/tee-model-navy-back.jpg" alt="Back view of the navy Oversized Tee with the large brush-stroke VYRO print" loading="lazy"></div><figcaption>Oversized Tee, navy</figcaption></figure>
+          <figure class="look__item"><div class="look__media"><img src="assets/photos/shorts-model-black-front.jpg" alt="Training Short in black with the VYRO mark down the leg" loading="lazy"></div><figcaption>Training Short, black</figcaption></figure>
+          <figure class="look__item"><div class="look__media"><img src="assets/photos/tank-model-navy-back.jpg" alt="Back view of the navy Premium Tank" loading="lazy"></div><figcaption>Premium Tank, navy</figcaption></figure>
+        </div>
+        <div class="look__col" data-look-col="1">
+          <figure class="look__item"><div class="look__media"><img src="assets/photos/tank-model-black-front.jpg" alt="Lifter in the black Premium Tank" loading="lazy"></div><figcaption>Premium Tank, black</figcaption></figure>
+          <figure class="look__item"><div class="look__media"><img src="assets/photos/tee-model-gray-back.jpg" alt="Back view of the gray Oversized Tee" loading="lazy"></div><figcaption>Oversized Tee, gray</figcaption></figure>
+          <figure class="look__item"><div class="look__media"><img src="assets/photos/shorts-model-navy-side.jpg" alt="Side view of the navy Training Short" loading="lazy"></div><figcaption>Training Short, navy</figcaption></figure>
+        </div>
+        <div class="look__col" data-look-col="2">
+          <figure class="look__item"><div class="look__media"><img src="assets/photos/tee-model-black-front.jpg" alt="Lifter in the black Oversized Tee, hands in pockets" loading="lazy"></div><figcaption>Oversized Tee, black</figcaption></figure>
+          <figure class="look__item"><div class="look__media"><img src="assets/photos/tank-model-gray-side.jpg" alt="Side view of the gray Premium Tank" loading="lazy"></div><figcaption>Premium Tank, gray</figcaption></figure>
+          <figure class="look__item"><div class="look__media"><img src="assets/photos/shorts-model-gray-front.jpg" alt="Training Short in gray" loading="lazy"></div><figcaption>Training Short, gray</figcaption></figure>
+        </div>
+      </div>
     </section>
 
     <!-- ============ DROP 01: pinned hoodie rotating through colorways ============ -->
@@ -149,16 +175,28 @@
       <h2 class="display details__title" id="details-title" data-split-rise>In the details</h2>
       <div class="details__grid">
         <figure class="detail" data-detail>
-          <div class="detail__media"><img src="assets/products/detail-black-chest.jpg" alt="Close-up of the white brush-stroke VYRO chest print on black fleece" loading="lazy"></div>
-          <figcaption><strong>Brush-stroke chest print</strong><span>Soft-hand white print on heavyweight fleece. Small on the front, loud on the back.</span></figcaption>
+          <div class="detail__media"><img src="assets/products/detail-tee-back.jpg" alt="The large distressed VYRO print across the back of the Oversized Tee" loading="lazy"></div>
+          <figcaption><strong>Back print</strong><span>The full brush-stroke mark across the shoulders of every Oversized Tee.</span></figcaption>
         </figure>
         <figure class="detail" data-detail>
-          <div class="detail__media"><img src="assets/products/detail-navy-aglet.jpg" alt="Navy drawcords finished with black metal aglets engraved with VYRO" loading="lazy"></div>
-          <figcaption><strong>Engraved metal aglets</strong><span>VYRO on every drawcord tip. Small, but you'll notice.</span></figcaption>
+          <div class="detail__media"><img src="assets/products/detail-black-chest.jpg" alt="White brush-stroke VYRO chest print on black fleece" loading="lazy"></div>
+          <figcaption><strong>Chest print</strong><span>Soft-hand white print. Small on the front, loud on the back.</span></figcaption>
+        </figure>
+        <figure class="detail" data-detail>
+          <div class="detail__media"><img src="assets/products/detail-navy-aglet.jpg" alt="Navy drawcords with black metal aglets engraved with VYRO" loading="lazy"></div>
+          <figcaption><strong>Engraved aglets</strong><span>VYRO on every drawcord tip. Small, but you'll notice.</span></figcaption>
+        </figure>
+        <figure class="detail" data-detail>
+          <div class="detail__media"><img src="assets/products/detail-tee-neck.jpg" alt="Woven VYRO neck label inside a black tee" loading="lazy"></div>
+          <figcaption><strong>Woven neck label</strong><span>No scratchy print on the inside. Just a clean woven tag.</span></figcaption>
+        </figure>
+        <figure class="detail" data-detail>
+          <div class="detail__media"><img src="assets/products/detail-shorts-split.jpg" alt="Side split at the hem of the black Training Short" loading="lazy"></div>
+          <figcaption><strong>Side split</strong><span>Cut at the hem so the short moves with you at the bottom of a squat.</span></figcaption>
         </figure>
         <figure class="detail" data-detail>
           <div class="detail__media"><img src="assets/products/detail-gray-leg.jpg" alt="The VYRO mark printed down the leg of the gray jogger" loading="lazy"></div>
-          <figcaption><strong>Full-length leg print</strong><span>The mark runs down the side of every Club Jogger.</span></figcaption>
+          <figcaption><strong>Leg print</strong><span>The mark runs down the side of every Club Jogger.</span></figcaption>
         </figure>
       </div>
     </section>
@@ -167,7 +205,7 @@
     <section class="collection" id="collection" data-collection>
       <div class="collection__head">
         <h2 class="display collection__title" data-split-rise>The first drop</h2>
-        <p class="collection__lede">Two pieces. Three colorways. One limited run, then it's gone.</p>
+        <p class="collection__lede">Five pieces. Three colorways. One limited run, then it's gone.</p>
       </div>
 
       <div class="rail" data-rail>
@@ -191,6 +229,42 @@
             </div>
           </article>
 
+          <article class="pcard" data-pcard data-color="navy" data-name="Oversized Tee">
+            <div class="pcard__media" data-hover-gl>
+              <img class="pimg" data-pimg="assets/products/tee-{c}-front.jpg" src="assets/products/tee-navy-front.jpg" alt="Oversized Tee in navy" width="244" height="285" loading="lazy">
+            </div>
+            <div class="pcard__body">
+              <div class="pcard__row">
+                <h3 class="pcard__name">Oversized Tee</h3>
+                <span class="pcard__price">€40</span>
+              </div>
+              <p class="pcard__meta">Dropped shoulder, big back print</p>
+              <div class="swatches swatches--sm" role="radiogroup" aria-label="Oversized Tee colorway">
+                <button type="button" role="radio" aria-checked="false" class="swatch" data-color="black" aria-label="Black"></button>
+                <button type="button" role="radio" aria-checked="true" class="swatch" data-color="navy" aria-label="Navy"></button>
+                <button type="button" role="radio" aria-checked="false" class="swatch" data-color="gray" aria-label="Gray"></button>
+              </div>
+            </div>
+          </article>
+
+          <article class="pcard" data-pcard data-color="gray" data-name="Premium Tank">
+            <div class="pcard__media" data-hover-gl>
+              <img class="pimg" data-pimg="assets/products/tank-{c}-front.jpg" src="assets/products/tank-gray-front.jpg" alt="Premium Tank in gray" width="160" height="248" loading="lazy">
+            </div>
+            <div class="pcard__body">
+              <div class="pcard__row">
+                <h3 class="pcard__name">Premium Tank</h3>
+                <span class="pcard__price">€32</span>
+              </div>
+              <p class="pcard__meta">Clean silhouette, premium cotton</p>
+              <div class="swatches swatches--sm" role="radiogroup" aria-label="Premium Tank colorway">
+                <button type="button" role="radio" aria-checked="false" class="swatch" data-color="black" aria-label="Black"></button>
+                <button type="button" role="radio" aria-checked="false" class="swatch" data-color="navy" aria-label="Navy"></button>
+                <button type="button" role="radio" aria-checked="true" class="swatch" data-color="gray" aria-label="Gray"></button>
+              </div>
+            </div>
+          </article>
+
           <article class="pcard" data-pcard data-color="navy" data-name="Club Jogger">
             <div class="pcard__media" data-hover-gl>
               <img class="pimg" data-pimg="assets/products/jogger-{c}-front.jpg" src="assets/products/jogger-navy-front.jpg" alt="Club Jogger in navy" width="172" height="345" loading="lazy">
@@ -209,10 +283,28 @@
             </div>
           </article>
 
+          <article class="pcard" data-pcard data-color="black" data-name="Training Short">
+            <div class="pcard__media" data-hover-gl>
+              <img class="pimg" data-pimg="assets/products/shorts-{c}-front.jpg" src="assets/products/shorts-black-front.jpg" alt="Training Short in black" width="245" height="245" loading="lazy">
+            </div>
+            <div class="pcard__body">
+              <div class="pcard__row">
+                <h3 class="pcard__name">Training Short</h3>
+                <span class="pcard__price">€45</span>
+              </div>
+              <p class="pcard__meta">Side splits, leg print</p>
+              <div class="swatches swatches--sm" role="radiogroup" aria-label="Training Short colorway">
+                <button type="button" role="radio" aria-checked="true" class="swatch" data-color="black" aria-label="Black"></button>
+                <button type="button" role="radio" aria-checked="false" class="swatch" data-color="navy" aria-label="Navy"></button>
+                <button type="button" role="radio" aria-checked="false" class="swatch" data-color="gray" aria-label="Gray"></button>
+              </div>
+            </div>
+          </article>
+
           <article class="pcard" data-pcard data-color="gray" data-name="Club Set">
             <div class="pcard__media pcard__media--set" data-hover-gl>
               <img class="pimg pimg--l" data-pimg="assets/products/hoodie-{c}-front.jpg" src="assets/products/hoodie-gray-front.jpg" alt="Athletics Club Hoodie in gray" width="250" height="334" loading="lazy">
-              <img class="pimg pimg--r" data-pimg="assets/products/jogger-{c}-side.jpg" src="assets/products/jogger-gray-side.jpg" alt="Club Jogger in gray, side view" width="122" height="345" loading="lazy">
+              <img class="pimg pimg--r" data-pimg="assets/products/jogger-{c}-side.jpg" src="assets/products/jogger-gray-side.jpg" alt="Club Jogger, side view in gray" width="122" height="345" loading="lazy">
             </div>
             <div class="pcard__body">
               <div class="pcard__row">
@@ -228,27 +320,9 @@
             </div>
           </article>
 
-          <article class="pcard" data-pcard data-color="black" data-name="Club Jogger">
-            <div class="pcard__media" data-hover-gl>
-              <img class="pimg" data-pimg="assets/products/jogger-{c}.jpg" src="assets/products/jogger-black.jpg" alt="Club Jogger in black, front, back and side" width="476" height="345" loading="lazy">
-            </div>
-            <div class="pcard__body">
-              <div class="pcard__row">
-                <h3 class="pcard__name">Club Jogger, all angles</h3>
-                <span class="pcard__price">€70</span>
-              </div>
-              <p class="pcard__meta">Front, back and side print</p>
-              <div class="swatches swatches--sm" role="radiogroup" aria-label="Club Jogger, all angles, colorway">
-                <button type="button" role="radio" aria-checked="true" class="swatch" data-color="black" aria-label="Black"></button>
-                <button type="button" role="radio" aria-checked="false" class="swatch" data-color="navy" aria-label="Navy"></button>
-                <button type="button" role="radio" aria-checked="false" class="swatch" data-color="gray" aria-label="Gray"></button>
-              </div>
-            </div>
-          </article>
-
           <a class="pcard pcard--end" href="#categories">
             <span class="display">Shop all<br>categories</span>
-            <span class="pcard__meta">Hoodies and joggers now. Tees, shorts and stringers next.</span>
+            <span class="pcard__meta">Hoodies, tees, tanks, joggers and shorts. Pumpers and stringers next.</span>
           </a>
         </div>
       </div>
@@ -273,7 +347,27 @@
             <span class="cat__desc">The Athletics Club Hoodie. Heavyweight fleece for cold gyms and the walk in at 5&nbsp;AM.</span>
             <span class="cat__count">3 colorways</span>
             <span class="cat__media" data-reveal-clip>
-              <img class="pimg" src="assets/products/hoodie-navy-front.jpg" alt="" loading="lazy">
+              <img class="cat__photo" src="assets/photos/life-1.jpg" alt="" loading="lazy">
+            </span>
+          </a>
+        </li>
+        <li class="cat" data-cat>
+          <a class="cat__link" href="#collection">
+            <span class="cat__name display">Tees</span>
+            <span class="cat__desc">Oversized and boxy, with the full brush-stroke mark across the back.</span>
+            <span class="cat__count">3 colorways</span>
+            <span class="cat__media" data-reveal-clip>
+              <img class="cat__photo" src="assets/photos/tee-model-navy-front.jpg" alt="" loading="lazy">
+            </span>
+          </a>
+        </li>
+        <li class="cat" data-cat>
+          <a class="cat__link" href="#collection">
+            <span class="cat__name display">Tanks</span>
+            <span class="cat__desc">Clean silhouette, regular side fit, premium cotton. For arm day and everything after.</span>
+            <span class="cat__count">3 colorways</span>
+            <span class="cat__media" data-reveal-clip>
+              <img class="cat__photo" src="assets/photos/tank-model-gray-front.jpg" alt="" loading="lazy">
             </span>
           </a>
         </li>
@@ -283,18 +377,17 @@
             <span class="cat__desc">Tapered fit, ribbed cuffs and the VYRO mark down the leg.</span>
             <span class="cat__count">3 colorways</span>
             <span class="cat__media" data-reveal-clip>
-              <img class="pimg" src="assets/products/jogger-gray-side.jpg" alt="" loading="lazy">
+              <img class="cat__photo" src="assets/photos/life-7.jpg" alt="" loading="lazy">
             </span>
           </a>
         </li>
-        <li class="cat cat--soon" data-cat>
-          <a class="cat__link" href="#join">
-            <span class="cat__name display">Tees</span>
-            <span class="cat__desc">Heavyweight and boxy. Built to take a beating and hold its shape.</span>
-            <span class="cat__count">Coming soon</span>
+        <li class="cat" data-cat>
+          <a class="cat__link" href="#collection">
+            <span class="cat__name display">Shorts</span>
+            <span class="cat__desc">Side splits and the mark down the leg. Built for squats.</span>
+            <span class="cat__count">3 colorways</span>
             <span class="cat__media" data-reveal-clip>
-              <span class="garment" data-garment="tee" data-color="black"></span>
-              <img data-photo src="assets/photos/cat-tees.jpg" alt="" loading="lazy">
+              <img class="cat__photo" src="assets/photos/shorts-model-black-side.jpg" alt="" loading="lazy">
             </span>
           </a>
         </li>
@@ -305,29 +398,16 @@
             <span class="cat__count">Coming soon</span>
             <span class="cat__media" data-reveal-clip>
               <span class="garment" data-garment="pumper" data-color="navy"></span>
-              <img data-photo src="assets/photos/cat-pumpers.jpg" alt="" loading="lazy">
-            </span>
-          </a>
-        </li>
-        <li class="cat cat--soon" data-cat>
-          <a class="cat__link" href="#join">
-            <span class="cat__name display">Shorts</span>
-            <span class="cat__desc">5 and 7 inch inseams with a gusset that survives deep squats.</span>
-            <span class="cat__count">Coming soon</span>
-            <span class="cat__media" data-reveal-clip>
-              <span class="garment" data-garment="shorts" data-color="gray"></span>
-              <img data-photo src="assets/photos/cat-shorts.jpg" alt="" loading="lazy">
             </span>
           </a>
         </li>
         <li class="cat cat--soon" data-cat>
           <a class="cat__link" href="#join">
             <span class="cat__name display">Stringers</span>
-            <span class="cat__desc">Deep cut, clean lines. For arm day and the pump that follows.</span>
+            <span class="cat__desc">Deep cut, clean lines. For the pump that follows.</span>
             <span class="cat__count">Coming soon</span>
             <span class="cat__media" data-reveal-clip>
               <span class="garment" data-garment="stringer" data-color="black"></span>
-              <img data-photo src="assets/photos/cat-stringers.jpg" alt="" loading="lazy">
             </span>
           </a>
         </li>
@@ -337,11 +417,14 @@
     <!-- ============ STORY ============ -->
     <section class="story" id="story" data-story>
       <div class="story__media" data-parallax-wrap>
-        <div class="shot shot--story" data-parallax data-label="assets/photos/story.jpg: lifter alone in an empty gym, early morning">
-          <img data-photo src="assets/photos/story.jpg" alt="A lifter training alone in an empty gym before sunrise" loading="lazy">
+        <div class="ambient" data-parallax aria-hidden="true">
+          <img src="assets/photos/life-5.jpg" alt="" loading="lazy">
         </div>
       </div>
       <div class="story__inner">
+        <figure class="story__portrait">
+          <div class="story__portrait-media"><img src="assets/photos/life-3.jpg" alt="Lifter in the navy hoodie, headphones on, resting between sets" loading="lazy"></div>
+        </figure>
         <h2 class="story__kicker">Why VYRO</h2>
         <p class="story__big display" data-reveal-words>Nobody claps at 5:40&nbsp;AM. You train anyway.</p>
         <div class="story__body">
@@ -374,8 +457,8 @@
 
       <div class="reviews" data-reviews>
         <article class="review" data-review-col>
-          <div class="shot shot--review" data-label="assets/photos/review-01.jpg">
-            <img data-photo src="assets/photos/review-01.jpg" alt="Marcus after a squat session in the black hoodie" loading="lazy">
+          <div class="shot shot--review">
+            <img data-photo src="assets/photos/life-1.jpg" alt="Marcus after a squat session in the black hoodie" loading="lazy">
           </div>
           <blockquote class="review__quote">“Wore it through a 12-week squat block. Still holds its shape, still looks new. The weight of the fleece is the real deal.”</blockquote>
           <div class="review__who">
@@ -390,8 +473,8 @@
         </article>
 
         <article class="review" data-review-col>
-          <div class="shot shot--review" data-label="assets/photos/review-02.jpg">
-            <img data-photo src="assets/photos/review-02.jpg" alt="Jonah between sets wearing the gray Club Jogger" loading="lazy">
+          <div class="shot shot--review">
+            <img data-photo src="assets/photos/life-9.jpg" alt="Jonah resting between sets in the gray hoodie and Club Jogger" loading="lazy">
           </div>
           <blockquote class="review__quote">“The leg print is the first thing people ask about. Room in the quads, tight at the ankle, doesn't sag by the end of the session.”</blockquote>
           <div class="review__who">
@@ -406,8 +489,8 @@
         </article>
 
         <article class="review" data-review-col>
-          <div class="shot shot--review" data-label="assets/photos/review-03.jpg">
-            <img data-photo src="assets/photos/review-03.jpg" alt="Theo walking into the gym in the navy hoodie" loading="lazy">
+          <div class="shot shot--review">
+            <img data-photo src="assets/photos/life-8.jpg" alt="Theo in the navy hoodie and jogger, hood up" loading="lazy">
           </div>
           <blockquote class="review__quote">“Navy is the best-looking piece I own, gym or not. It's cut big, so size down if you want it less oversized.”</blockquote>
           <div class="review__who">
@@ -422,8 +505,8 @@
         </article>
 
         <article class="review" data-review-col>
-          <div class="shot shot--review" data-label="assets/photos/review-04.jpg">
-            <img data-photo src="assets/photos/review-04.jpg" alt="Andre chalking up in the black Club Set" loading="lazy">
+          <div class="shot shot--review">
+            <img data-photo src="assets/photos/life-7.jpg" alt="Andre in the black Club Set" loading="lazy">
           </div>
           <blockquote class="review__quote">“Bought the full black set. Warm enough for a cold gym, doesn't pinch at the bottom of a squat. Ordered the gray a week later.”</blockquote>
           <div class="review__who">
@@ -442,8 +525,8 @@
     <!-- ============ CTA / JOIN ============ -->
     <section class="join" id="join">
       <div class="join__media" data-parallax-wrap>
-        <div class="shot shot--join" data-parallax data-label="assets/photos/join.jpg: barbell loaded and waiting, low light">
-          <img data-photo src="assets/photos/join.jpg" alt="" loading="lazy">
+        <div class="ambient ambient--join" data-parallax aria-hidden="true">
+          <img src="assets/photos/life-6.jpg" alt="" loading="lazy">
         </div>
       </div>
       <div class="join__inner">
@@ -468,7 +551,7 @@
 
   <footer class="footer">
     <div class="footer__logo" aria-hidden="true">
-      <img src="assets/logo/vyro-logo.svg" alt="" width="1000" height="300" loading="lazy">
+      <img src="assets/logo/vyro-logo.png" alt="" width="1300" height="662" loading="lazy">
     </div>
     <div class="footer__cols">
       <div>

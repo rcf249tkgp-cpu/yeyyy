@@ -78,6 +78,27 @@
     return c;
   }
 
+  // Several portrait shots side by side, for wide screens
+  function compose(imgs) {
+    const FW = 640, FH = 1000, GAP = 6;
+    const c = document.createElement('canvas');
+    c.width = FW * imgs.length + GAP * (imgs.length - 1);
+    c.height = FH;
+    const x = c.getContext('2d');
+    x.fillStyle = '#0A0A0A';
+    x.fillRect(0, 0, c.width, c.height);
+    x.imageSmoothingQuality = 'high';
+    imgs.forEach(function (img, i) {
+      const r = Math.max(FW / img.naturalWidth, FH / img.naturalHeight);
+      const w = img.naturalWidth * r, h = img.naturalHeight * r;
+      x.save();
+      x.beginPath(); x.rect(i * (FW + GAP), 0, FW, FH); x.clip();
+      x.drawImage(img, i * (FW + GAP) + (FW - w) / 2, (FH - h) / 2, w, h);
+      x.restore();
+    });
+    return c;
+  }
+
   function loadImage(src) {
     return new Promise(function (resolve) {
       const img = new Image();
@@ -215,12 +236,14 @@
       const tex = new THREE.CanvasTexture(standIn(i % 3));
       tex.minFilter = THREE.LinearFilter;
       const s = { tex: tex, size: new THREE.Vector2(1920, 1080), isPhoto: false };
-      loadImage(src).then(function (img) {
-        if (!img) return;
-        const t = new THREE.Texture(img);
+      const list = Array.isArray(src) ? src : [src];
+      Promise.all(list.map(loadImage)).then(function (imgs) {
+        if (imgs.some(function (im) { return !im; })) return;
+        const img = imgs.length === 1 ? imgs[0] : compose(imgs);
+        const t = img.tagName === 'CANVAS' ? new THREE.CanvasTexture(img) : new THREE.Texture(img);
         t.minFilter = THREE.LinearFilter;
         t.needsUpdate = true;
-        s.tex = t; s.size.set(img.naturalWidth, img.naturalHeight); s.isPhoto = true;
+        s.tex = t; s.size.set(img.naturalWidth || img.width, img.naturalHeight || img.height); s.isPhoto = true;
         if (current === i) { uniforms.uTex0.value = t; uniforms.uSize0.value = s.size; }
         if (opts.onPhoto) opts.onPhoto(i);
       });
