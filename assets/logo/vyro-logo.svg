@@ -1,0 +1,29 @@
+<!--
+  PLACEHOLDER LOGO — replace this file with the original brush-stroke VYRO logo.
+  Keep the filename (assets/logo/vyro-logo.svg), or update the <img> paths in index.html.
+  For best results export the real logo as a single-colour (white) SVG or transparent PNG,
+  cropped tight to the artwork. The site sizes it by width and never recolours it.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" fill="none">
+  <defs>
+    <filter id="brush" x="-5%" y="-10%" width="110%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035 0.9" numOctaves="3" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="14" xChannelSelector="R" yChannelSelector="G" result="d"/>
+      <feTurbulence type="fractalNoise" baseFrequency="0.6 0.025" numOctaves="2" seed="3" result="g"/>
+      <feColorMatrix in="g" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -1.6 1.75" result="streaks"/>
+      <feComposite in="d" in2="streaks" operator="in"/>
+    </filter>
+  </defs>
+  <g filter="url(#brush)" stroke="#F1F1EC" stroke-linecap="round" stroke-linejoin="round">
+    <!-- V -->
+    <path d="M40 48 L132 252 L226 36" stroke-width="58"/>
+    <!-- Y -->
+    <path d="M262 44 L348 150 M442 38 L348 150 L336 262" stroke-width="56"/>
+    <!-- R -->
+    <path d="M498 262 L512 44 C600 30 668 58 656 116 C646 164 584 170 530 158 L660 262" stroke-width="54"/>
+    <!-- O -->
+    <path d="M840 44 C760 40 712 100 716 162 C720 228 778 266 850 258 C924 250 966 196 958 134 C950 72 908 46 840 44 Z" stroke-width="52"/>
+    <!-- brush tail -->
+    <path d="M60 282 C300 272 620 290 940 276" stroke-width="10" opacity="0.55"/>
+  </g>
+</svg>
