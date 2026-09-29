@@ -9,8 +9,7 @@
   const COLORS = {
     black: { fill: '#141517', mark: '#E7E7E1', name: 'Black' },
     navy:  { fill: '#1E2C4B', mark: '#E7E7E1', name: 'Navy' },
-    green: { fill: '#25372B', mark: '#E7E7E1', name: 'Navy green' },
-    white: { fill: '#E7E7E1', mark: '#141517', name: 'White' }
+    gray:  { fill: '#8A8B8D', mark: '#F1F1EC', name: 'Gray' }
   };
 
   // viewBox 0 0 400 440
@@ -82,7 +81,7 @@
     const s = SHAPES[type] || SHAPES.tee;
     const c = COLORS[color] || COLORS.black;
     const id = 'g' + (++uid);
-    const light = color === 'white';
+    const light = false;
     const seam = light ? '#000' : '#000';
     const hi = light ? 0.35 : 0.09;
 

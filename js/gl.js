@@ -60,59 +60,12 @@
     x.fillStyle = f;
     x.fillRect(0, H * 0.62, W, H * 0.38);
 
-    const rim = 'rgba(230,234,238,0.55)';
-    const iron = '#17181B';
-
-    function plate(cx, cy, r, w) {
-      x.fillStyle = iron;
-      x.beginPath(); x.ellipse(cx, cy, w, r, 0, 0, Math.PI * 2); x.fill();
-      x.strokeStyle = rim; x.lineWidth = 3;
-      x.beginPath(); x.ellipse(cx, cy, w, r, 0, Math.PI * 1.05, Math.PI * 1.95); x.stroke();
-      x.fillStyle = 'rgba(120,126,132,0.18)';
-      x.beginPath(); x.ellipse(cx - w * 0.2, cy, w * 0.55, r * 0.92, 0, 0, Math.PI * 2); x.fill();
-    }
-
-    if (kind === 0) {
-      // loaded barbell on the floor
-      const y = H * 0.71;
-      x.fillStyle = '#0D0D0E';
-      x.fillRect(W * 0.08, y - 7, W * 0.84, 14);
-      x.fillStyle = rim; x.fillRect(W * 0.08, y - 7, W * 0.84, 1.5);
-      [[0.2, 210, 34], [0.235, 210, 34], [0.265, 170, 26], [0.8, 210, 34], [0.765, 210, 34], [0.735, 170, 26]]
-        .forEach(function (p) { plate(W * p[0], y, p[1], p[2]); });
-      // chalk haze
-      const h = x.createRadialGradient(W * 0.5, y - 60, 10, W * 0.5, y - 60, 520);
-      h.addColorStop(0, 'rgba(220,222,224,0.10)'); h.addColorStop(1, 'rgba(0,0,0,0)');
-      x.fillStyle = h; x.fillRect(0, 0, W, H);
-    } else if (kind === 1) {
-      // dumbbell rack, receding
-      for (let i = 0; i < 9; i++) {
-        const s = 1 - i * 0.07;
-        const cx = W * (0.14 + i * 0.09);
-        const cy = H * (0.58 - i * 0.012);
-        x.fillStyle = '#0C0C0D';
-        x.fillRect(cx - 44 * s, cy - 6 * s, 88 * s, 12 * s);
-        plate(cx - 48 * s, cy, 52 * s, 20 * s);
-        plate(cx + 48 * s, cy, 52 * s, 20 * s);
-      }
-      x.fillStyle = '#0B0B0C';
-      x.fillRect(W * 0.08, H * 0.64, W * 0.84, 16);
-      x.fillStyle = rim; x.fillRect(W * 0.08, H * 0.64, W * 0.84, 1.5);
-    } else {
-      // stacked plates + chalk bowl
-      for (let i = 0; i < 6; i++) {
-        const y = H * 0.78 - i * 30;
-        x.fillStyle = iron;
-        x.beginPath(); x.ellipse(W * 0.34, y, 250 - i * 8, 58, 0, 0, Math.PI * 2); x.fill();
-        x.strokeStyle = rim; x.lineWidth = 2;
-        x.beginPath(); x.ellipse(W * 0.34, y, 250 - i * 8, 58, 0, Math.PI, Math.PI * 2); x.stroke();
-      }
-      x.fillStyle = '#0B0B0C';
-      x.beginPath(); x.ellipse(W * 0.72, H * 0.74, 150, 40, 0, 0, Math.PI * 2); x.fill();
-      const ch = x.createRadialGradient(W * 0.72, H * 0.72, 5, W * 0.72, H * 0.72, 150);
-      ch.addColorStop(0, 'rgba(236,236,232,0.55)'); ch.addColorStop(1, 'rgba(236,236,232,0)');
-      x.fillStyle = ch;
-      x.beginPath(); x.ellipse(W * 0.72, H * 0.72, 140, 30, 0, 0, Math.PI * 2); x.fill();
+    // chalk haze drifting through the light
+    for (let k = 0; k < 3; k++) {
+      const hx = W * (0.3 + 0.2 * k + 0.1 * kind), hy = H * (0.45 + 0.1 * ((k + kind) % 2));
+      const hz = x.createRadialGradient(hx, hy, 10, hx, hy, 420 + 80 * k);
+      hz.addColorStop(0, 'rgba(220,224,228,0.08)'); hz.addColorStop(1, 'rgba(0,0,0,0)');
+      x.fillStyle = hz; x.fillRect(0, 0, W, H);
     }
 
     // vignette

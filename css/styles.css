@@ -19,11 +19,10 @@
   /* Drop 01 colorways */
   --c-black: #141517;
   --c-navy: #1E2C4B;
-  --c-green: #25372B;
-  --c-white: #E7E7E1;
+  --c-gray: #8A8B8D;
 
   /* Stage used behind every product */
-  --stage: radial-gradient(110% 80% at 50% 30%, #2A2C30 0%, #18191B 55%, #111213 100%);
+  --stage: radial-gradient(120% 90% at 50% 35%, #272728 0%, #1D1D1E 60%, #171718 100%);
 
   /* Type */
   --font: "Archivo", "Arial Narrow", system-ui, sans-serif;
@@ -241,7 +240,20 @@ img[data-photo].is-loaded { opacity: 1; }
 .shot.has-photo::after, .shot.has-photo::before { display: none; }
 .shot img[data-photo] { z-index: 1; }
 
-/* Product garment stand-ins */
+/* Product photography: each photo sits in a slot, is sized to fit it
+   (JS, see fitPimg) and has its own edges feathered into the stage */
+.pslot { position: absolute; inset: 0; }
+.pimg {
+  position: absolute; left: 0; top: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(180deg, transparent, #000 6%, #000 94%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent), linear-gradient(180deg, transparent, #000 6%, #000 94%, transparent);
+  mask-composite: intersect;
+}
+
+/* Product garment stand-ins (categories that haven't launched yet) */
 .garment { position: absolute; inset: 0; display: block; }
 .garment svg {
   position: absolute; left: 11%; top: 11%; width: 78%; height: auto;
@@ -365,12 +377,10 @@ img[data-photo].is-loaded { opacity: 1; }
 }
 .drop__layers {
   position: relative;
-  width: min(86vw, 58svh, 620px);
-  aspect-ratio: 400 / 440;
+  width: min(100%, 72svh, 760px);
+  aspect-ratio: 506 / 334;
 }
 .drop__layer { position: absolute; inset: 0; }
-.drop__layer .garment svg { left: 0; top: 0; width: 100%; filter: drop-shadow(0 50px 60px rgba(0,0,0,0.6)); }
-.drop__layer img[data-photo] { object-fit: contain; }
 .drop__colorname {
   position: absolute; left: 50%; top: 50%; z-index: -1;
   transform: translate(-50%, -50%);
@@ -399,13 +409,13 @@ img[data-photo].is-loaded { opacity: 1; }
 
 @media (min-width: 900px) {
   .drop__pin {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr) minmax(0, 0.7fr);
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr) minmax(0, 0.6fr);
     grid-template-rows: 1fr;
     align-items: center;
     padding-bottom: calc(var(--nav-h) * 0.5);
   }
   .drop__stage { min-height: 80svh; }
-  .drop__layers { width: min(40vw, 72svh, 700px); }
+  .drop__layers { width: min(100%, 110svh, 900px); }
   .drop__meta {
     grid-template-columns: 1fr;
     border-top: 0;
@@ -440,11 +450,32 @@ img[data-photo].is-loaded { opacity: 1; }
 @media (hover: hover) { .swatch:hover::before { transform: scale(0.88); } }
 .swatch[data-color="black"] { --sw: var(--c-black); }
 .swatch[data-color="navy"]  { --sw: var(--c-navy); }
-.swatch[data-color="green"] { --sw: var(--c-green); }
-.swatch[data-color="white"] { --sw: var(--c-white); }
+.swatch[data-color="gray"]  { --sw: var(--c-gray); }
 .swatches--sm { gap: 0.1rem; margin-left: -6px; }
 .swatches--sm .swatch { --size: 18px; width: 36px; height: 36px; }
 .swatches--sm .swatch::after { inset: 5px; }
+
+/* --------------------------------------------------------------------------
+   Details
+   -------------------------------------------------------------------------- */
+.details { padding: var(--section) var(--gutter) 0; }
+.details__title { font-size: var(--fs-h2); margin-bottom: 2.5rem; }
+.details__grid { display: grid; gap: 2rem; }
+.detail { margin: 0; display: grid; gap: 1rem; }
+.detail__media {
+  position: relative; overflow: hidden;
+  aspect-ratio: 4 / 5;
+  background: var(--stage);
+  border-radius: var(--radius);
+}
+.detail__media img { position: absolute; left: 0; top: -9%; width: 100%; height: 118%; object-fit: cover; }
+.detail figcaption { display: grid; gap: 0.3rem; max-width: 36ch; }
+.detail strong { font-weight: 700; font-stretch: 85%; font-size: 1.05rem; }
+.detail span { color: var(--muted); font-size: 0.95rem; }
+@media (min-width: 720px) {
+  .details__grid { grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  .detail:nth-child(2) { margin-top: 5rem; }
+}
 
 /* --------------------------------------------------------------------------
    Collection rail
@@ -488,7 +519,9 @@ img[data-photo].is-loaded { opacity: 1; }
   position: absolute; inset: 0; width: 100% !important; height: 100% !important;
   z-index: 3; opacity: 0; pointer-events: none;
 }
-.pcard__media .garment.is-incoming { clip-path: inset(100% 0 0 0); }
+.pcard__media .pslot { inset: 5% 6%; }
+.pcard__media--set .pslot--l { inset: 6% 36% 6% 3%; }
+.pcard__media--set .pslot--r { inset: 5% 3% 5% 66%; }
 .pcard__body { display: grid; gap: 0.35rem; }
 .pcard__row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
 .pcard__name { font-size: 1.1rem; font-weight: 700; font-stretch: 85%; }
@@ -583,6 +616,10 @@ img[data-photo].is-loaded { opacity: 1; }
   overflow: hidden;
   border-radius: var(--radius);
 }
+.cat__media .pslot { inset: 4%; }
+.cat--soon .cat__name { color: rgba(236, 236, 232, 0.34); }
+.cat--soon .cat__count { color: var(--accent); }
+.cat--soon .cat__media { opacity: 0.55; }
 @media (hover: hover) {
   .cat__link:hover .cat__name { color: var(--accent); transform: translateX(0.4rem); }
 }

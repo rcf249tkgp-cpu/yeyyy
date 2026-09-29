@@ -20,15 +20,16 @@ stand-in, so you can add photos one at a time.
 |---|---|---|
 | `assets/logo/vyro-logo.svg` | Intro wipe, nav, hero, footer | **Placeholder.** Replace with the original brush-stroke logo, exported white on transparent and cropped tight. |
 | `assets/photos/hero-01.jpg` … `hero-03.jpg` | Hero ambient sequence | Dark and cinematic, landscape, at least 2400px wide. |
-| `assets/products/pump-cover-{black,navy,green,white}.png` | Pinned Drop 01 colorway section | Transparent cut-outs, portrait. |
+| `assets/products/hoodie-*.jpg`, `jogger-*.jpg`, `detail-*.jpg` | Drop 01, collection, details, categories | **Cropped from the lineup sheet** (`lineup-sheet.webp`, about 1500px wide). Replace with high-res originals at the same names and aspect ratios when you have them. |
 | `assets/photos/cat-{tees,pumpers,hoodies,shorts,stringers}.jpg` | Category rows | 4:5 portrait. |
 | `assets/photos/story.jpg` | Why VYRO backdrop | Full-bleed, moody. |
 | `assets/photos/review-01.jpg` … `review-04.jpg` | Reviews | 4:5 portrait. |
 | `assets/photos/join.jpg` | Drop alert CTA backdrop | Full-bleed. |
 
-The collection cards show SVG garment stand-ins drawn in the real colorways
-(`js/garments.js`). To use product photos there, add an `<img data-photo>` inside
-each `.pcard__media`, the same way the category rows do.
+Colorway switching swaps photos by filename: each product image has a
+`data-pimg` pattern such as `assets/products/hoodie-{c}-front.jpg`, where `{c}`
+is `black`, `navy` or `gray`. Categories that haven't launched yet (tees,
+pumpers, shorts, stringers) use SVG garment stand-ins from `js/garments.js`.
 
 ## Hooks to wire up
 

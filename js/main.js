@@ -20,6 +20,34 @@
    * ------------------------------------------------------------------ */
   $$('[data-garment]').forEach(G.render);
 
+  // Product photos: wrap each in a slot and size it to the photo's own aspect,
+  // so the CSS edge feather lands on the photo edges, not on letterboxing
+  function fitPimg(img) {
+    const slot = img.parentElement;
+    const W = slot.clientWidth, H = slot.clientHeight;
+    const nw = img.naturalWidth || +img.getAttribute('width');
+    const nh = img.naturalHeight || +img.getAttribute('height');
+    if (!W || !H || !nw || !nh) return;
+    const k = Math.min(W / nw, H / nh);
+    const w = nw * k, h = nh * k;
+    img.style.width = w + 'px';
+    img.style.height = h + 'px';
+    img.style.left = (W - w) / 2 + 'px';
+    img.style.top = (H - h) / 2 + 'px';
+  }
+  const slotObserver = window.ResizeObserver ? new ResizeObserver(function (entries) {
+    entries.forEach(function (e) { $$('.pimg', e.target).forEach(fitPimg); });
+  }) : null;
+  $$('.pimg').forEach(function (img) {
+    const slot = document.createElement('span');
+    slot.className = 'pslot' + (img.classList.contains('pimg--l') ? ' pslot--l' : '') + (img.classList.contains('pimg--r') ? ' pslot--r' : '');
+    img.parentNode.insertBefore(slot, img);
+    slot.appendChild(img);
+    fitPimg(img);
+    img.addEventListener('load', function () { fitPimg(img); });
+    if (slotObserver) slotObserver.observe(slot);
+  });
+
   // Every <img data-photo> is optional. Missing files fall back to the stand-in.
   $$('img[data-photo]').forEach(function (img) {
     if (img.hasAttribute('data-hero-slide')) return; // handled by the hero
@@ -279,12 +307,11 @@
   /* ------------------------------------------------------------------ *
    * Drop 01: pinned product rotating through colorways
    * ------------------------------------------------------------------ */
-  const COLOR_ORDER = ['black', 'navy', 'green', 'white'];
+  const COLOR_ORDER = ['black', 'navy', 'gray'];
   const GLOW = {
     black: 'rgba(197, 208, 216, 0.10)',
-    navy: 'rgba(70, 104, 170, 0.22)',
-    green: 'rgba(76, 112, 86, 0.22)',
-    white: 'rgba(236, 236, 232, 0.14)'
+    navy: 'rgba(60, 90, 170, 0.26)',
+    gray: 'rgba(210, 212, 216, 0.16)'
   };
   const dropPin = $('[data-drop-pin]');
   const layers = $$('[data-drop-layer]');
@@ -406,72 +433,99 @@
    * Product cards: colorway switching + WebGL hover
    * ------------------------------------------------------------------ */
   const cards = $$('[data-pcard]');
-  const svgCache = {};
 
-  function garmentImage(type, color) {
-    const key = type + ':' + color;
-    if (!svgCache[key]) {
-      const src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(G.svg(type, color));
-      svgCache[key] = window.VyroGL ? window.VyroGL.loadImage(src) : Promise.resolve(null);
-    }
-    return svgCache[key];
+  function whenLoaded(img) {
+    if (img.complete && img.naturalWidth) return Promise.resolve(img);
+    return new Promise(function (res) {
+      img.addEventListener('load', function () { res(img); }, { once: true });
+      img.addEventListener('error', function () { res(null); }, { once: true });
+    });
   }
 
-  // Draws exactly what the card shows, for use as a WebGL texture
+  // Same edge feather as the CSS mask on .pimg
+  function feather(x, w, h) {
+    x.globalCompositeOperation = 'destination-in';
+    let g = x.createLinearGradient(0, 0, w, 0);
+    g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(0.07, '#000'); g.addColorStop(0.93, '#000'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = g; x.fillRect(0, 0, w, h);
+    g = x.createLinearGradient(0, 0, 0, h);
+    g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(0.06, '#000'); g.addColorStop(0.94, '#000'); g.addColorStop(1, 'rgba(0,0,0,0)');
+    x.fillStyle = g; x.fillRect(0, 0, w, h);
+    x.globalCompositeOperation = 'source-over';
+  }
+
+  // Redraws exactly what the card shows (stage + contained, feathered photos)
+  // so the WebGL hover layer can take over seamlessly
   function drawCard(card, w, h) {
-    const photo = card.querySelector('.pcard__media img.is-loaded');
-    return (photo ? Promise.resolve(photo) : garmentImage(card.dataset.type, card.dataset.color)).then(function (img) {
-      if (!img) return null;
+    const media = $('.pcard__media', card);
+    const mr = media.getBoundingClientRect();
+    const k = w / mr.width;
+    const imgs = $$('.pimg:not(.is-out)', media);
+    return Promise.all(imgs.map(whenLoaded)).then(function (loaded) {
       const c = document.createElement('canvas');
       c.width = Math.round(w); c.height = Math.round(h);
       const x = c.getContext('2d');
       x.save();
-      x.translate(w * 0.5, h * 0.3);
-      x.scale(w * 1.1, h * 0.8);
+      x.translate(w * 0.5, h * 0.35);
+      x.scale(w * 1.2, h * 0.9);
       const g = x.createRadialGradient(0, 0, 0, 0, 0, 1);
-      g.addColorStop(0, '#2A2C30'); g.addColorStop(0.55, '#18191B'); g.addColorStop(1, '#111213');
+      g.addColorStop(0, '#272728'); g.addColorStop(0.6, '#1D1D1E'); g.addColorStop(1, '#171718');
       x.fillStyle = g;
       x.fillRect(-2, -2, 4, 4);
       x.restore();
-      if (photo) {
-        const r = Math.max(w / img.naturalWidth, h / img.naturalHeight);
-        const iw = img.naturalWidth * r, ih = img.naturalHeight * r;
-        x.drawImage(img, (w - iw) / 2, (h - ih) / 2, iw, ih);
-      } else {
-        const gw = w * 0.78, gh = gw * 1.1;
-        x.shadowColor = 'rgba(0,0,0,0.55)';
-        x.shadowBlur = w * 0.09;
-        x.shadowOffsetY = w * 0.07;
-        x.drawImage(img, w * 0.11, h * 0.11, gw, gh);
-      }
+      loaded.forEach(function (img) {
+        if (!img) return;
+        const r = img.getBoundingClientRect();
+        const bw = Math.round(r.width * k), bh = Math.round(r.height * k);
+        if (!bw || !bh) return;
+        const t = document.createElement('canvas');
+        t.width = bw; t.height = bh;
+        const tx = t.getContext('2d');
+        const sc = Math.min(bw / img.naturalWidth, bh / img.naturalHeight);
+        const dw = img.naturalWidth * sc, dh = img.naturalHeight * sc;
+        tx.drawImage(img, (bw - dw) / 2, (bh - dh) / 2, dw, dh);
+        feather(tx, bw, bh);
+        x.drawImage(t, (r.left - mr.left) * k, (r.top - mr.top) * k);
+      });
       return c;
     });
   }
 
   const hover = (!reduced && window.VyroGL) ? window.VyroGL.initHover(cards, drawCard) : null;
 
+  // Colorway switch: new photo wipes up over the old one
   function switchCard(card, color) {
-    if (card.dataset.color === color) return;
+    const prev = card.dataset.color;
+    if (prev === color) return;
     card.dataset.color = color;
     $$('.swatch', card).forEach(function (s) { s.setAttribute('aria-checked', String(s.dataset.color === color)); });
     const media = $('.pcard__media', card);
-    const olds = $$('.garment', media);
-    const g = document.createElement('div');
-    g.className = 'garment';
-    g.dataset.garment = card.dataset.type;
-    g.dataset.color = color;
-    G.render(g);
-    const canvas = media.querySelector('canvas');
-    media.insertBefore(g, canvas || null);
-    garmentImage(card.dataset.type, color); // warm the hover texture
-
-    function done() { olds.forEach(function (o) { o.remove(); }); if (hover) hover.refresh(card); }
-    if (reduced) { done(); return; }
-    gsap.fromTo(g, { clipPath: 'inset(100% 0% 0% 0%)' }, {
-      clipPath: 'inset(0% 0% 0% 0%)', duration: 0.75, ease: 'power3.inOut',
-      onComplete: function () { g.style.clipPath = ''; done(); }
+    const from = G.COLORS[prev].name.toLowerCase();
+    const to = G.COLORS[color].name.toLowerCase();
+    const olds = $$('.pimg:not(.is-out)', media);
+    const incoming = olds.map(function (old) {
+      old.classList.add('is-out');
+      const n = old.cloneNode();
+      n.classList.remove('is-out');
+      n.removeAttribute('loading');
+      n.alt = old.alt.replace(from, to);
+      if (!reduced) n.style.clipPath = 'inset(100% 0% 0% 0%)';
+      n.src = old.dataset.pimg.replace('{c}', color);
+      old.after(n);
+      fitPimg(n);
+      n.addEventListener('load', function () { fitPimg(n); });
+      return n;
     });
-    gsap.fromTo(g.firstElementChild, { yPercent: 6 }, { yPercent: 0, duration: 0.9, ease: 'power3.out' });
+    Promise.all(incoming.map(whenLoaded)).then(function () {
+      function done() {
+        incoming.forEach(function (n) { n.style.clipPath = ''; });
+        olds.forEach(function (o) { o.remove(); });
+        if (hover) hover.refresh(card);
+      }
+      if (reduced) { done(); return; }
+      gsap.to(incoming, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.75, ease: 'power3.inOut', onComplete: done });
+      gsap.fromTo(incoming, { yPercent: 4 }, { yPercent: 0, duration: 0.9, ease: 'power3.out' });
+    });
   }
 
   cards.forEach(function (card) {
@@ -520,6 +574,24 @@
       .from(media.children, { scale: 1.25, duration: 1.4, ease: 'power3.out' }, 0.1)
       .from([$('.cat__desc', row), $('.cat__count', row)], { opacity: 0, y: 12, duration: 0.8, ease: 'power3.out' }, 0.3);
   });
+
+  /* ------------------------------------------------------------------ *
+   * Details: mask reveal, slow drift inside the frame
+   * ------------------------------------------------------------------ */
+  if (!reduced) {
+    $$('[data-detail]').forEach(function (d) {
+      const media = $('.detail__media', d);
+      const img = $('img', media);
+      gsap.fromTo(media, { clipPath: 'inset(100% 0% 0% 0%)' }, {
+        clipPath: 'inset(0% 0% 0% 0%)', duration: 1.2, ease: 'power4.inOut',
+        scrollTrigger: { trigger: d, start: 'top 88%', once: true }
+      });
+      gsap.fromTo(img, { yPercent: -6, scale: 1.12 }, {
+        yPercent: 6, scale: 1, ease: 'none',
+        scrollTrigger: { trigger: d, start: 'top bottom', end: 'bottom top', scrub: true }
+      });
+    });
+  }
 
   /* ------------------------------------------------------------------ *
    * Story: parallax backdrop, words light up as you read

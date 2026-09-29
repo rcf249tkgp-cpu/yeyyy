@@ -14,7 +14,7 @@
       <feComposite in="d" in2="streaks" operator="in"/>
     </filter>
   </defs>
-  <g filter="url(#brush)" stroke="#F1F1EC" stroke-linecap="round" stroke-linejoin="round">
+  <g transform="translate(30 0) skewX(-12)" ><g filter="url(#brush)" stroke="#F1F1EC" stroke-linecap="round" stroke-linejoin="round">
     <!-- V -->
     <path d="M40 48 L132 252 L226 36" stroke-width="58"/>
     <!-- Y -->
@@ -25,5 +25,5 @@
     <path d="M840 44 C760 40 712 100 716 162 C720 228 778 266 850 258 C924 250 966 196 958 134 C950 72 908 46 840 44 Z" stroke-width="52"/>
     <!-- brush tail -->
     <path d="M60 282 C300 272 620 290 940 276" stroke-width="10" opacity="0.55"/>
-  </g>
+  </g></g>
 </svg>
