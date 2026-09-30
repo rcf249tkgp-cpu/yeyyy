@@ -14,38 +14,27 @@
   const gsap = window.gsap;
   const ScrollTrigger = window.ScrollTrigger;
   const G = window.VyroGarments;
+  const Shop = window.VyroShop;
 
   /* ------------------------------------------------------------------ *
    * Content: garments + photo slots
    * ------------------------------------------------------------------ */
   $$('[data-garment]').forEach(G.render);
 
-  // Product photos: wrap each in a slot and size it to the photo's own aspect,
-  // so the CSS edge feather lands on the photo edges, not on letterboxing
-  function fitPimg(img) {
-    const slot = img.parentElement;
-    const W = slot.clientWidth, H = slot.clientHeight;
-    const nw = img.naturalWidth || +img.getAttribute('width');
-    const nh = img.naturalHeight || +img.getAttribute('height');
-    if (!W || !H || !nw || !nh) return;
-    const k = Math.min(W / nw, H / nh);
-    const w = nw * k, h = nh * k;
-    img.style.width = w + 'px';
-    img.style.height = h + 'px';
-    img.style.left = (W - w) / 2 + 'px';
-    img.style.top = (H - h) / 2 + 'px';
-  }
-  const slotObserver = window.ResizeObserver ? new ResizeObserver(function (entries) {
-    entries.forEach(function (e) { $$('.pimg', e.target).forEach(fitPimg); });
-  }) : null;
-  $$('.pimg').forEach(function (img) {
-    const slot = document.createElement('span');
-    slot.className = 'pslot' + (img.classList.contains('pimg--l') ? ' pslot--l' : '') + (img.classList.contains('pimg--r') ? ' pslot--r' : '');
-    img.parentNode.insertBefore(slot, img);
-    slot.appendChild(img);
-    fitPimg(img);
-    img.addEventListener('load', function () { fitPimg(img); });
-    if (slotObserver) slotObserver.observe(slot);
+  // Shop rail: product cards come from the shared catalogue (js/shop.js)
+  let hover = null;
+  const railEnd = $('[data-rail-track] .pcard--end');
+  const cards = Shop.mountCards($('[data-rail-track]'), Shop.PRODUCTS, {
+    before: railEnd,
+    reduced: reduced,
+    onDone: function (card) { if (hover) hover.refresh(card); }
+  });
+  Shop.wrapPimgs(document);
+  // Remember the scroll position when leaving for a product page
+  $$('a[href^="product.html"]').forEach(function (a) {
+    a.addEventListener('click', function () {
+      try { sessionStorage.setItem('vyro-return', JSON.stringify({ path: location.pathname, y: window.scrollY })); } catch (e) { /* storage off */ }
+    });
   });
 
   // Every <img data-photo> is optional. Missing files fall back to the stand-in.
@@ -264,8 +253,37 @@
       .call(function () { nav.classList.remove('is-pre'); }, null, at + 0.2);
   }
 
-  if (reduced) {
+  // The intro plays once per visit. Coming back from a product page (or
+  // landing on a #section link) goes straight to the content.
+  let seen = false, returnTo = null;
+  try {
+    seen = sessionStorage.getItem('vyro-intro') === '1';
+    sessionStorage.setItem('vyro-intro', '1');
+    const nav0 = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    const ret = JSON.parse(sessionStorage.getItem('vyro-return') || 'null');
+    if (ret && ret.path === location.pathname && nav0 && nav0.type === 'back_forward' && !location.hash) returnTo = ret.y;
+    sessionStorage.removeItem('vyro-return');
+  } catch (e) { /* storage off: always play */ }
+  const jumpTo = location.hash && location.hash.length > 1 ? $(location.hash) : null;
+
+  function settle() {
+    ScrollTrigger.refresh();
+    if (jumpTo) {
+      const y = jumpTo.getBoundingClientRect().top + window.scrollY;
+      if (lenis) lenis.scrollTo(y, { immediate: true, force: true }); else window.scrollTo(0, y);
+    } else if (returnTo !== null) {
+      if (lenis) lenis.scrollTo(returnTo, { immediate: true, force: true }); else window.scrollTo(0, returnTo);
+    }
+  }
+
+  if (reduced || seen || jumpTo || returnTo !== null) {
     document.body.classList.remove('is-loading');
+    if (window.history.scrollRestoration) window.history.scrollRestoration = 'manual';
+    window.addEventListener('load', function () { requestAnimationFrame(settle); });
+    if (!reduced && !jumpTo && returnTo === null) {
+      const tl = gsap.timeline();
+      heroIn(tl, 0.1);
+    }
   } else {
     nav.classList.add('is-pre');
     if (lenis) lenis.stop();
@@ -324,7 +342,7 @@
   const dropIndex = $('[data-drop-index]');
   const dropGlow = $('[data-drop-glow]');
   const dropSwatches = $$('[data-drop-swatches] .swatch');
-  const dropAdd = $('[data-add-to-bag]');
+  const dropAdd = $('[data-drop-link]');
   let dropCurrent = 0;
   let dropST = null;
 
@@ -334,12 +352,12 @@
     dropCurrent = i;
     dropSwatches.forEach(function (s, k) { s.setAttribute('aria-checked', String(k === i)); });
     dropIndex.textContent = String(i + 1);
-    dropAdd.dataset.color = color;
+    dropAdd.href = Shop.url('athletics-club-hoodie', color);
     dropGlow.style.background = 'radial-gradient(45% 50% at 50% 50%, ' + GLOW[color] + ', transparent 72%)';
     if (changed && !reduced) {
       gsap.fromTo(dropName, { yPercent: 40, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.6, ease: 'power3.out' });
     }
-    dropName.textContent = G.COLORS[color].name;
+    dropName.textContent = Shop.colorName(color);
   }
 
   function showDropStatic(i) {
@@ -398,7 +416,7 @@
       }
     });
   });
-  radioKeys($('[data-drop-swatches]'));
+  Shop.radioKeys($('[data-drop-swatches]'));
 
   /* ------------------------------------------------------------------ *
    * Collection: horizontal pinned rail on desktop, native swipe on phones
@@ -437,16 +455,6 @@
   /* ------------------------------------------------------------------ *
    * Product cards: colorway switching + WebGL hover
    * ------------------------------------------------------------------ */
-  const cards = $$('[data-pcard]');
-
-  function whenLoaded(img) {
-    if (img.complete && img.naturalWidth) return Promise.resolve(img);
-    return new Promise(function (res) {
-      img.addEventListener('load', function () { res(img); }, { once: true });
-      img.addEventListener('error', function () { res(null); }, { once: true });
-    });
-  }
-
   // Same edge feather as the CSS mask on .pimg
   function feather(x, w, h) {
     x.globalCompositeOperation = 'destination-in';
@@ -466,7 +474,7 @@
     const mr = media.getBoundingClientRect();
     const k = w / mr.width;
     const imgs = $$('.pimg:not(.is-out)', media);
-    return Promise.all(imgs.map(whenLoaded)).then(function (loaded) {
+    return Promise.all(imgs.map(Shop.whenLoaded)).then(function (loaded) {
       const c = document.createElement('canvas');
       c.width = Math.round(w); c.height = Math.round(h);
       const x = c.getContext('2d');
@@ -496,74 +504,7 @@
     });
   }
 
-  const hover = (!reduced && window.VyroGL) ? window.VyroGL.initHover(cards, drawCard) : null;
-
-  // Colorway switch: new photo wipes up over the old one
-  function switchCard(card, color) {
-    const prev = card.dataset.color;
-    if (prev === color) return;
-    card.dataset.color = color;
-    $$('.swatch', card).forEach(function (s) { s.setAttribute('aria-checked', String(s.dataset.color === color)); });
-    const media = $('.pcard__media', card);
-    const from = G.COLORS[prev].name.toLowerCase();
-    const to = G.COLORS[color].name.toLowerCase();
-    const olds = $$('.pimg:not(.is-out)', media);
-    const incoming = olds.map(function (old) {
-      old.classList.add('is-out');
-      const n = old.cloneNode();
-      n.classList.remove('is-out');
-      n.removeAttribute('loading');
-      n.alt = old.alt.replace(from, to);
-      if (!reduced) n.style.clipPath = 'inset(100% 0% 0% 0%)';
-      n.src = old.dataset.pimg.replace('{c}', color);
-      old.after(n);
-      fitPimg(n);
-      n.addEventListener('load', function () { fitPimg(n); });
-      return n;
-    });
-    Promise.all(incoming.map(whenLoaded)).then(function () {
-      function done() {
-        incoming.forEach(function (n) { n.style.clipPath = ''; });
-        olds.forEach(function (o) { o.remove(); });
-        if (hover) hover.refresh(card);
-      }
-      if (reduced) { done(); return; }
-      gsap.to(incoming, { clipPath: 'inset(0% 0% 0% 0%)', duration: 0.75, ease: 'power3.inOut', onComplete: done });
-      gsap.fromTo(incoming, { yPercent: 4 }, { yPercent: 0, duration: 0.9, ease: 'power3.out' });
-    });
-  }
-
-  cards.forEach(function (card) {
-    const group = $('.swatches', card);
-    $$('.swatch', card).forEach(function (s) {
-      s.addEventListener('click', function () { switchCard(card, s.dataset.color); });
-    });
-    radioKeys(group);
-  });
-
-  // Arrow-key support for swatch radiogroups
-  function radioKeys(group) {
-    if (!group) return;
-    const items = $$('[role="radio"]', group);
-    items.forEach(function (it, i) {
-      it.tabIndex = it.getAttribute('aria-checked') === 'true' ? 0 : -1;
-      it.addEventListener('keydown', function (e) {
-        let n = null;
-        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') n = (i + 1) % items.length;
-        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = (i - 1 + items.length) % items.length;
-        if (n === null) return;
-        e.preventDefault();
-        items.forEach(function (o) { o.tabIndex = -1; });
-        items[n].tabIndex = 0;
-        items[n].focus();
-        items[n].click();
-      });
-      it.addEventListener('click', function () {
-        items.forEach(function (o) { o.tabIndex = -1; });
-        it.tabIndex = 0;
-      });
-    });
-  }
+  hover = (!reduced && window.VyroGL) ? window.VyroGL.initHover(cards, drawCard) : null;
 
   /* ------------------------------------------------------------------ *
    * Categories: names split on entry, image mask reveal
@@ -689,32 +630,6 @@
       });
     });
   }
-
-  /* ------------------------------------------------------------------ *
-   * Bag + toast
-   * ------------------------------------------------------------------ */
-  const bagBtn = $('[data-bag]');
-  const bagCount = $('[data-bag-count]');
-  const toast = $('[data-toast]');
-  let bag = 0, toastT = null;
-
-  function showToast(msg) {
-    toast.textContent = msg;
-    toast.classList.add('is-on');
-    clearTimeout(toastT);
-    toastT = setTimeout(function () { toast.classList.remove('is-on'); }, 2600);
-  }
-
-  $$('[data-add-to-bag]').forEach(function (b) {
-    b.addEventListener('click', function () {
-      bag += 1;
-      bagCount.textContent = String(bag);
-      bagBtn.classList.add('bump');
-      setTimeout(function () { bagBtn.classList.remove('bump'); }, 600);
-      const color = G.COLORS[b.dataset.color || 'black'].name.toLowerCase();
-      showToast(b.dataset.product + ' in ' + color + ' added to your bag');
-    });
-  });
 
   /* ------------------------------------------------------------------ *
    * Drop alert signup

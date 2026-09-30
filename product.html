@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>VYRO Athletics | Shop</title>
+  <meta name="description" content="VYRO Athletics Drop 01. Heavyweight training gear in black, navy and gray.">
+  <meta name="theme-color" content="#0A0A0A">
+  <link rel="icon" href="assets/logo/vyro-logo.png" type="image/png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="page-product">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="nav" data-nav>
+    <a class="nav__logo" href="index.html" aria-label="VYRO Athletics home">
+      <img src="assets/logo/vyro-logo.png" alt="VYRO" width="1300" height="662">
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="index.html#drop">Drop 01</a>
+      <a href="index.html#collection">Shop</a>
+      <a href="index.html#story">Why VYRO</a>
+      <a href="index.html#community">Community</a>
+    </nav>
+    <div class="nav__actions">
+      <button class="nav__bag" type="button" data-bag aria-live="polite">Bag <span data-bag-count>0</span></button>
+      <button class="nav__menu" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+        <span class="sr-only">Menu</span><span class="nav__menu-bar"></span><span class="nav__menu-bar"></span>
+      </button>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" hidden data-menu>
+    <nav aria-label="Mobile">
+      <a href="index.html#drop">Drop 01</a>
+      <a href="index.html#collection">Shop</a>
+      <a href="index.html#story">Why VYRO</a>
+      <a href="index.html#community">Community</a>
+      <a href="index.html#join">Get drop alerts</a>
+    </nav>
+  </div>
+
+  <!-- Product detail page: one template for every product.
+       Route: product.html?id=<slug>&color=<black|navy|gray>
+       Content comes from the catalogue in js/shop.js and is rendered by js/product.js. -->
+  <main id="main" class="pdp" data-pdp aria-live="polite"></main>
+
+  <footer class="footer">
+    <div class="footer__logo" aria-hidden="true">
+      <img src="assets/logo/vyro-logo.png" alt="" width="1300" height="662" loading="lazy">
+    </div>
+    <div class="footer__cols">
+      <div>
+        <h3>Shop</h3>
+        <ul><li><a href="index.html#drop">Drop 01</a></li><li><a href="index.html#categories">All categories</a></li><li><a href="index.html#join">Next drop</a></li></ul>
+      </div>
+      <div>
+        <h3>Help</h3>
+        <ul><li><a href="index.html#">Size guide</a></li><li><a href="index.html#">Shipping and returns</a></li><li><a href="index.html#">Contact</a></li></ul>
+      </div>
+      <div>
+        <h3>Follow</h3>
+        <ul><li><a href="https://instagram.com/" rel="noopener" target="_blank">Instagram</a></li><li><a href="https://tiktok.com/" rel="noopener" target="_blank">TikTok</a></li></ul>
+      </div>
+    </div>
+    <p class="footer__legal">© 2026 VYRO Athletics. Earned, not given.</p>
+  </footer>
+
+  <div class="toast" role="status" aria-live="polite" data-toast></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js" defer></script>
+  <script src="js/shop.js" defer></script>
+  <script src="js/product.js" defer></script>
+</body>
+</html>

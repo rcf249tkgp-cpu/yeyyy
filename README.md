@@ -33,10 +33,32 @@ Colorway switching swaps photos by filename: each product image has a
 is `black`, `navy` or `gray`. Categories that haven't launched yet (tees,
 pumpers, shorts, stringers) use SVG garment stand-ins from `js/garments.js`.
 
+## Products and product pages
+
+Every product lives in one catalogue: the `PRODUCTS` array in `js/shop.js`.
+Each entry holds the slug, name, category, price, copy (lede, description,
+features, fit, care), sizes, default colorway, the card image(s) and a
+`gallery(color)` function that returns the photos for that colorway.
+
+- **Product page route:** `product.html?id=<slug>&color=<black|navy|gray>`,
+  for example `product.html?id=club-jogger&color=gray`. One template,
+  `product.html` + `js/product.js`, renders every product from the catalogue.
+  The colour is optional and defaults to the product's `defaultColor`.
+- **Cards:** the shop rail on the home page and "You might also like" on
+  product pages both use the same `cardHTML()` component, so a product added
+  to the catalogue appears in both automatically.
+- **Adding a product:** add an entry to `PRODUCTS` and drop its photos into
+  `assets/`. No new HTML page is needed.
+- **Bag:** stored in the browser (`localStorage`) so the count follows you
+  between pages. Replace `addToBag()` in `js/shop.js` with your store's cart
+  API when you connect checkout.
+
+Unknown product IDs show a "Product not found" page with a link back to the shop.
+
 ## Hooks to wire up
 
 - **Email signup:** `js/main.js`, search for `Hook your email provider here`.
-- **Add to bag:** currently updates the counter and shows a toast. Connect it to your cart (Shopify and so on).
+- **Add to bag:** saves to the browser and updates the bag count. Connect `addToBag()` in `js/shop.js` to your cart (Shopify and so on).
 - **Women's line:** enable the second tab in the categories section and add a second `.cats` list.
 
 ## Stack
