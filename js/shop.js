@@ -9,6 +9,8 @@
   - Bag: persisted in localStorage so the count follows you between pages
 */
 (function () {
+  const I18n = window.VyroI18n;
+  const t = I18n.t;
   const $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
   /* ------------------------------------------------------------------ *
@@ -217,8 +219,11 @@
     if (color && p && color !== p.defaultColor) u += '&color=' + encodeURIComponent(color);
     return u;
   }
-  function colorName(c) { return (COLORS[c] || COLORS.black).name; }
-  function price(n) { return '€' + n; }
+  // Colour and category labels in the visitor's language (product names and
+  // copy stay as they are; they will come translated from Shopify later)
+  function colorName(c) { return COLORS[c] ? t('colors.' + c) : t('colors.black'); }
+  function categoryName(c) { return I18n.has('categories.' + c) ? t('categories.' + c) : c; }
+  function price(n) { return I18n.money(n); }
   function esc(s) {
     return String(s).replace(/[&<>"']/g, function (ch) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch];
@@ -271,7 +276,7 @@
    * Components
    * ------------------------------------------------------------------ */
   function swatchesHTML(label, checked, small) {
-    return '<div class="swatches' + (small ? ' swatches--sm' : '') + '" role="radiogroup" aria-label="' + esc(label) + ' colorway">' +
+    return '<div class="swatches' + (small ? ' swatches--sm' : '') + '" role="radiogroup" aria-label="' + esc(t('card.colorway', { name: label })) + '">' +
       COLOR_ORDER.map(function (c) {
         return '<button type="button" role="radio" aria-checked="' + (c === checked) + '" class="swatch" data-color="' + c + '" aria-label="' + colorName(c) + '"></button>';
       }).join('') + '</div>';
@@ -279,7 +284,7 @@
 
   // Wishlist heart. State and clicks are handled by js/chrome.js
   function wishHTML(slug, color, cls) {
-    return '<button type="button" class="wish ' + (cls || '') + '" data-wish data-slug="' + slug + '" data-color="' + color + '" aria-pressed="false" aria-label="Save ' + esc(get(slug).name) + ' to wishlist">' +
+    return '<button type="button" class="wish ' + (cls || '') + '" data-wish data-slug="' + slug + '" data-color="' + color + '" aria-pressed="false" aria-label="' + esc(t('wish.save', { name: get(slug).name })) + '">' +
       '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9a4.6 4.6 0 0 1 6.5 6.5z"/></svg>' +
     '</button>';
   }
@@ -289,7 +294,7 @@
     const href = url(p.slug, color);
     const imgs = p.card.map(function (c) {
       return '<img class="pimg' + (c.cls ? ' ' + c.cls : '') + '" data-pimg="' + c.src + '" src="' + c.src.replace('{c}', color) +
-        '" alt="' + esc(p.name) + ' in ' + colorName(color).toLowerCase() + '" width="' + c.w + '" height="' + c.h + '" loading="lazy">';
+        '" alt="' + esc(t('card.alt', { name: p.name, color: colorName(color).toLowerCase() })) + '" width="' + c.w + '" height="' + c.h + '" loading="lazy">';
     }).join('');
     return '' +
       '<article class="pcard" data-pcard data-slug="' + p.slug + '" data-color="' + color + '">' +
@@ -352,7 +357,7 @@
       const n = old.cloneNode();
       n.classList.remove('is-out');
       n.removeAttribute('loading');
-      n.alt = p.name + ' in ' + colorName(color).toLowerCase();
+      n.alt = t('card.alt', { name: p.name, color: colorName(color).toLowerCase() });
       if (animate) n.style.clipPath = 'inset(100% 0% 0% 0%)';
       n.src = old.dataset.pimg.replace('{c}', color);
       old.after(n);
@@ -409,7 +414,7 @@
         '<span class="mini__img"><img src="' + thumb(p, color) + '" alt="" loading="lazy"></span>' +
         '<span class="mini__text">' +
           '<span class="mini__name">' + esc(p.name) + '</span>' +
-          '<span class="mini__meta">' + (opts.meta ? esc(opts.meta) : esc(p.category) + ', ' + colorName(color)) + '</span>' +
+          '<span class="mini__meta">' + esc(opts.meta ? opts.meta : t('card.meta', { category: categoryName(p.category), color: colorName(color) })) + '</span>' +
         '</span>' +
         '<span class="mini__price">' + price(p.price) + '</span>' +
       '</a>';
@@ -420,6 +425,7 @@
    * ------------------------------------------------------------------ */
   function norm(s) { return String(s).toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
   function search(q) {
+    q = I18n.searchAlias(q); // "huppari" -> "hoodie", "grå" -> "gray"
     const terms = norm(q).split(' ').filter(Boolean);
     if (!terms.length) return [];
     const color = COLOR_ORDER.filter(function (c) { return terms.indexOf(c) > -1 || (c === 'gray' && terms.indexOf('grey') > -1); })[0] || null;
@@ -473,7 +479,7 @@
     const shipping = subtotal === 0 || subtotal >= FREE_SHIPPING ? 0 : SHIPPING_FEE;
     return { subtotal: subtotal, shipping: shipping, total: subtotal + shipping, toFree: Math.max(0, FREE_SHIPPING - subtotal) };
   }
-  function money(n) { return '€' + (Math.round(n * 100) / 100).toFixed(n % 1 ? 2 : 0); }
+  function money(n) { return I18n.money(n); }
   function renderBagCount(bump) {
     $$('[data-bag-count]').forEach(function (el) { el.textContent = String(bagCount()); });
     if (bump) $$('[data-bag]').forEach(function (b) {
@@ -516,7 +522,7 @@
 
   window.VyroShop = {
     COLORS: COLORS, COLOR_ORDER: COLOR_ORDER, PRODUCTS: PRODUCTS,
-    get: get, url: url, colorName: colorName, price: price, esc: esc,
+    get: get, url: url, colorName: colorName, categoryName: categoryName, price: price, esc: esc,
     fitPimg: fitPimg, wrapPimgs: wrapPimgs, whenLoaded: whenLoaded,
     cardHTML: cardHTML, wishHTML: wishHTML, swatchesHTML: swatchesHTML, mountCards: mountCards, switchCard: switchCard, radioKeys: radioKeys,
     miniHTML: miniHTML, thumb: thumb, search: search,

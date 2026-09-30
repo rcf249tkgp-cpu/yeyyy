@@ -43,6 +43,8 @@
 }
 
 [hidden] { display: none !important; }
+/* Until translations are applied (English or Swedish visitors), keep the Finnish source text out of view */
+.i18n-pending main { visibility: hidden; }
 
 *,
 *::before,
@@ -192,6 +194,22 @@ body:not(.is-loading) .intro { display: none; }
 .nav__menu-bar { display: block; width: 22px; height: 1.5px; background: var(--text); transition: transform 0.4s var(--ease-out); }
 .nav__menu[aria-expanded="true"] .nav__menu-bar:first-of-type { transform: translateY(3.75px) rotate(45deg); }
 .nav__menu[aria-expanded="true"] .nav__menu-bar:last-of-type { transform: translateY(-3.75px) rotate(-45deg); }
+
+/* Language selector (FI / EN / SV): in the header from 600px, in the mobile menu on phones */
+.lang { display: inline-flex; align-items: center; }
+.lang__btn {
+  min-width: 30px; min-height: 44px; padding: 0 0.25rem;
+  font-size: 0.75rem; font-weight: 600; letter-spacing: 0.06em; color: var(--muted);
+  transition: color 0.3s;
+}
+.lang__btn[aria-pressed="true"] { color: var(--text); }
+@media (hover: hover) { .lang__btn:hover { color: var(--text); } }
+.lang--nav { display: none; }
+.lang--menu { margin-top: 2rem; gap: 0.5rem; }
+.lang--menu .lang__btn { font-size: 0.9rem; min-width: 44px; }
+@media (min-width: 600px) {
+  .lang--nav { display: inline-flex; }
+}
 
 .mobile-menu {
   position: fixed; inset: 0; z-index: 45;

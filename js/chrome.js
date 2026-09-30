@@ -8,6 +8,10 @@
   and set <body data-page="home|product|shop|cart|account">.
 */
 (function () {
+  const I18n = window.VyroI18n;
+  const t = I18n.t;
+  // Static page text (data-i18n) first, before any page script reads it
+  I18n.apply(document);
   const Shop = window.VyroShop;
   const Account = window.VyroAccount;
   const esc = Shop.esc;
@@ -48,10 +52,10 @@
    * Header, menu, footer
    * ------------------------------------------------------------------ */
   const links = [
-    ['shop.html', 'Shop'],
-    [home + '#drop', 'Drop 01'],
-    [home + '#story', 'Why VYRO'],
-    [home + '#community', 'Community']
+    ['shop.html', t('nav.shop')],
+    [home + '#drop', t('nav.drop')],
+    [home + '#story', t('nav.why')],
+    [home + '#community', t('nav.community')]
   ];
   function navLinks() {
     return links.map(function (l) {
@@ -62,33 +66,35 @@
 
   const headerHTML =
     '<header class="nav" data-nav>' +
-      '<a class="nav__logo" href="' + (home || '#top') + '" aria-label="VYRO Athletics home"><img src="assets/logo/vyro-logo.png" alt="VYRO" width="1300" height="662"></a>' +
-      '<nav class="nav__links" aria-label="Primary">' + navLinks() + '</nav>' +
+      '<a class="nav__logo" href="' + (home || '#top') + '" aria-label="' + t('nav.homeLink') + '"><img src="assets/logo/vyro-logo.png" alt="VYRO" width="1300" height="662"></a>' +
+      '<nav class="nav__links" aria-label="' + t('nav.primary') + '">' + navLinks() + '</nav>' +
       '<div class="nav__actions">' +
-        '<button class="nav__icon" type="button" data-search-open aria-label="Search products">' + icon.search + '</button>' +
-        '<a class="nav__icon nav__account" href="account.html" data-account-link aria-label="Your account">' + icon.user + '<span data-account-label></span></a>' +
-        '<button class="nav__bag" type="button" data-bag aria-haspopup="dialog" aria-label="Open your bag">Bag <span data-bag-count>0</span></button>' +
+        I18n.switcherHTML('lang--nav') +
+        '<button class="nav__icon" type="button" data-search-open aria-label="' + t('nav.search') + '">' + icon.search + '</button>' +
+        '<a class="nav__icon nav__account" href="account.html" data-account-link aria-label="' + t('nav.accountSignedOut') + '">' + icon.user + '<span data-account-label></span></a>' +
+        '<button class="nav__bag" type="button" data-bag aria-haspopup="dialog" aria-label="' + t('nav.bagOpen') + '">' + t('nav.bag') + ' <span data-bag-count>0</span></button>' +
         '<button class="nav__menu" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>' +
-          '<span class="sr-only">Menu</span><span class="nav__menu-bar"></span><span class="nav__menu-bar"></span>' +
+          '<span class="sr-only">' + t('nav.menu') + '</span><span class="nav__menu-bar"></span><span class="nav__menu-bar"></span>' +
         '</button>' +
       '</div>' +
     '</header>' +
     '<div class="mobile-menu" id="mobile-menu" hidden data-menu>' +
-      '<nav aria-label="Mobile">' + navLinks() +
-        '<a href="account.html">Account</a>' +
-        '<a href="' + home + '#join">Get drop alerts</a>' +
+      '<nav aria-label="' + t('nav.mobile') + '">' + navLinks() +
+        '<a href="account.html">' + t('nav.account') + '</a>' +
+        '<a href="' + home + '#join">' + t('nav.dropAlerts') + '</a>' +
       '</nav>' +
+      I18n.switcherHTML('lang--menu') +
     '</div>';
 
   const footerHTML =
     '<footer class="footer">' +
       '<div class="footer__logo" aria-hidden="true"><img src="assets/logo/vyro-logo.png" alt="" width="1300" height="662" loading="lazy"></div>' +
       '<div class="footer__cols">' +
-        '<div><h3>Shop</h3><ul><li><a href="shop.html">All products</a></li><li><a href="shop.html?new=1">New arrivals</a></li><li><a href="' + home + '#drop">Drop 01</a></li><li><a href="cart.html">Bag</a></li></ul></div>' +
-        '<div><h3>Account</h3><ul><li><a href="account.html">My account</a></li><li><a href="account.html#orders">Orders</a></li><li><a href="account.html#wishlist">Wishlist</a></li></ul></div>' +
-        '<div><h3>Follow</h3><ul><li><a href="https://instagram.com/" rel="noopener" target="_blank">Instagram</a></li><li><a href="https://tiktok.com/" rel="noopener" target="_blank">TikTok</a></li></ul></div>' +
+        '<div><h3>' + t('footer.shop') + '</h3><ul><li><a href="shop.html">' + t('footer.allProducts') + '</a></li><li><a href="shop.html?new=1">' + t('footer.newArrivals') + '</a></li><li><a href="' + home + '#drop">' + t('footer.drop') + '</a></li><li><a href="cart.html">' + t('footer.bag') + '</a></li></ul></div>' +
+        '<div><h3>' + t('footer.account') + '</h3><ul><li><a href="account.html">' + t('footer.myAccount') + '</a></li><li><a href="account.html#orders">' + t('footer.orders') + '</a></li><li><a href="account.html#wishlist">' + t('footer.wishlist') + '</a></li></ul></div>' +
+        '<div><h3>' + t('footer.follow') + '</h3><ul><li><a href="https://instagram.com/" rel="noopener" target="_blank">Instagram</a></li><li><a href="https://tiktok.com/" rel="noopener" target="_blank">TikTok</a></li></ul></div>' +
       '</div>' +
-      '<p class="footer__legal">© 2026 VYRO Athletics. Earned, not given.</p>' +
+      '<p class="footer__legal">' + t('footer.legal') + '</p>' +
     '</footer>';
 
   function mount(sel, html) {
@@ -106,17 +112,17 @@
       '<div class="drawer__scrim" data-drawer-close></div>' +
       '<section class="drawer__panel" role="dialog" aria-modal="true" aria-labelledby="drawer-title" tabindex="-1" data-lenis-prevent>' +
         '<header class="drawer__head">' +
-          '<h2 class="drawer__title display" id="drawer-title">Your bag <span data-drawer-count></span></h2>' +
-          '<button class="icon-btn" type="button" data-drawer-close aria-label="Close bag">' + icon.close + '</button>' +
+          '<h2 class="drawer__title display" id="drawer-title">' + t('drawer.title') + ' <span data-drawer-count></span></h2>' +
+          '<button class="icon-btn" type="button" data-drawer-close aria-label="' + t('drawer.close') + '">' + icon.close + '</button>' +
         '</header>' +
         '<div class="ship-meter" data-ship></div>' +
         '<div class="drawer__body" data-drawer-items></div>' +
         '<footer class="drawer__foot" data-drawer-foot>' +
-          '<div class="drawer__row"><span>Subtotal</span><strong data-drawer-subtotal></strong></div>' +
-          '<p class="drawer__note">Shipping is calculated at checkout.</p>' +
+          '<div class="drawer__row"><span>' + t('common.subtotal') + '</span><strong data-drawer-subtotal></strong></div>' +
+          '<p class="drawer__note">' + t('drawer.note') + '</p>' +
           '<div class="drawer__ctas">' +
-            '<a class="btn btn--ghost" href="cart.html">View cart</a>' +
-            '<a class="btn btn--solid" href="cart.html?checkout=1">Checkout</a>' +
+            '<a class="btn btn--ghost" href="cart.html">' + t('drawer.viewCart') + '</a>' +
+            '<a class="btn btn--solid" href="cart.html?checkout=1">' + t('common.checkout') + '</a>' +
           '</div>' +
         '</footer>' +
       '</section>' +
@@ -125,23 +131,23 @@
     // Search
     '<div class="search" data-search hidden>' +
       '<div class="search__scrim" data-search-close></div>' +
-      '<section class="search__panel" role="dialog" aria-modal="true" aria-label="Search products" data-lenis-prevent>' +
+      '<section class="search__panel" role="dialog" aria-modal="true" aria-label="' + t('search.label') + '" data-lenis-prevent>' +
         '<form class="search__bar" role="search" action="shop.html" data-search-form>' +
           icon.search +
-          '<label class="sr-only" for="site-search">Search products</label>' +
-          '<input id="site-search" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="Search hoodies, tees, navy…" data-search-input aria-controls="search-results" aria-describedby="search-status">' +
-          '<button class="icon-btn" type="button" data-search-close aria-label="Close search">' + icon.close + '</button>' +
+          '<label class="sr-only" for="site-search">' + t('search.label') + '</label>' +
+          '<input id="site-search" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="' + esc(t('search.placeholder')) + '" data-search-input aria-controls="search-results" aria-describedby="search-status">' +
+          '<button class="icon-btn" type="button" data-search-close aria-label="' + t('search.close') + '">' + icon.close + '</button>' +
         '</form>' +
         '<div class="search__body">' +
           '<div class="search__suggest" data-search-suggest>' +
-            '<p class="search__label">Popular searches</p>' +
-            '<div class="chips">' + ['Hoodie', 'Joggers', 'Oversized tee', 'Shorts', 'Navy', 'Tank'].map(function (t) {
-              return '<button type="button" class="chip" data-search-term="' + t + '">' + t + '</button>';
+            '<p class="search__label">' + t('search.popular') + '</p>' +
+            '<div class="chips">' + I18n.raw('search.chips').map(function (term) {
+              return '<button type="button" class="chip" data-search-term="' + esc(term) + '">' + esc(term) + '</button>';
             }).join('') + '</div>' +
           '</div>' +
           '<p class="search__status" id="search-status" role="status" aria-live="polite" data-search-status></p>' +
           '<div class="search__results" id="search-results" data-search-results></div>' +
-          '<a class="btn btn--ghost search__all" href="shop.html" data-search-all hidden>View all results</a>' +
+          '<a class="btn btn--ghost search__all" href="shop.html" data-search-all hidden>' + t('search.viewAll') + '</a>' +
         '</div>' +
       '</section>' +
     '</div>' +
@@ -150,8 +156,8 @@
     '<div class="modal" data-auth hidden>' +
       '<div class="modal__scrim" data-auth-close></div>' +
       '<section class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="auth-title" data-lenis-prevent>' +
-        '<button class="icon-btn modal__close" type="button" data-auth-close aria-label="Close">' + icon.close + '</button>' +
-        '<h2 class="modal__title display" id="auth-title" data-auth-title>Your account</h2>' +
+        '<button class="icon-btn modal__close" type="button" data-auth-close aria-label="' + t('common.close') + '">' + icon.close + '</button>' +
+        '<h2 class="modal__title display" id="auth-title" data-auth-title>' + t('auth.title') + '</h2>' +
         '<p class="modal__lede" data-auth-lede></p>' +
         '<div data-auth-forms></div>' +
       '</section>' +
@@ -179,7 +185,7 @@
     const label = $('[data-account-label]');
     const link = $('[data-account-link]');
     label.textContent = u ? u.name.split(' ')[0] : '';
-    link.setAttribute('aria-label', u ? 'Your account, signed in as ' + u.name : 'Log in or create an account');
+    link.setAttribute('aria-label', u ? t('nav.accountSignedIn', { name: u.name }) : t('nav.accountSignedOut'));
     link.classList.toggle('is-in', !!u);
   }
   window.addEventListener('vyro:auth', renderAccountLabel);
@@ -225,15 +231,15 @@
         '<a class="line__img" href="' + href + '" tabindex="-1" aria-hidden="true"><img src="' + Shop.thumb(p, item.color) + '" alt=""></a>' +
         '<div class="line__info">' +
           '<a class="line__name" href="' + href + '">' + esc(p.name) + '</a>' +
-          '<p class="line__meta">' + Shop.colorName(item.color) + ' / ' + esc(item.size) + '</p>' +
+          '<p class="line__meta">' + esc(Shop.colorName(item.color) + ' / ' + item.size) + '</p>' +
           '<p class="line__unit">' + Shop.money(item.unit) + '</p>' +
           '<div class="line__controls">' +
-            '<div class="qty qty--sm" role="group" aria-label="Quantity for ' + esc(p.name) + '">' +
-              '<button type="button" class="qty__btn" data-line-qty="-1" aria-label="Decrease quantity"' + (item.qty <= 1 ? ' disabled' : '') + '>−</button>' +
+            '<div class="qty qty--sm" role="group" aria-label="' + esc(t('common.quantityFor', { name: p.name })) + '">' +
+              '<button type="button" class="qty__btn" data-line-qty="-1" aria-label="' + t('common.decrease') + '"' + (item.qty <= 1 ? ' disabled' : '') + '>−</button>' +
               '<span class="qty__value" aria-live="polite">' + item.qty + '</span>' +
-              '<button type="button" class="qty__btn" data-line-qty="1" aria-label="Increase quantity"' + (item.qty >= 10 ? ' disabled' : '') + '>+</button>' +
+              '<button type="button" class="qty__btn" data-line-qty="1" aria-label="' + t('common.increase') + '"' + (item.qty >= 10 ? ' disabled' : '') + '>+</button>' +
             '</div>' +
-            '<button type="button" class="line__remove" data-line-remove>Remove</button>' +
+            '<button type="button" class="line__remove" data-line-remove>' + t('common.remove') + '</button>' +
           '</div>' +
         '</div>' +
         '<p class="line__total">' + Shop.money(item.line) + '</p>' +
@@ -249,14 +255,14 @@
     const item = Shop.bagItems()[index];
     if (!item) return;
     if (q) Shop.setQty(index, item.qty + (+q.dataset.lineQty));
-    if (r) { Shop.removeItem(index); Shop.toast(item.product.name + ' removed from your bag'); }
+    if (r) { Shop.removeItem(index); Shop.toast(t('drawer.removed', { name: item.product.name })); }
   });
 
   function shipHTML() {
-    const t = Shop.totals();
+    const tot = Shop.totals();
     if (!Shop.bagCount()) return '';
-    const pct = Math.min(100, (t.subtotal / Shop.FREE_SHIPPING) * 100);
-    return '<p>' + (t.toFree > 0 ? 'Add <strong>' + Shop.money(t.toFree) + '</strong> more for free shipping.' : 'You\'ve unlocked <strong>free shipping</strong>.') + '</p>' +
+    const pct = Math.min(100, (tot.subtotal / Shop.FREE_SHIPPING) * 100);
+    return '<p>' + (tot.toFree > 0 ? t('ship.remaining_html', { amount: Shop.money(tot.toFree) }) : t('ship.unlocked_html')) + '</p>' +
       '<div class="ship-meter__bar"><i style="width:' + pct + '%"></i></div>';
   }
 
@@ -274,7 +280,7 @@
     $('[data-ship]').innerHTML = shipHTML();
     $('[data-drawer-items]').innerHTML = items.length
       ? items.map(lineHTML).join('')
-      : '<div class="empty"><p class="empty__title display">Your bag is empty</p><p>Drop 01 is live. Find something that looks as serious as your program.</p><a class="btn btn--solid" href="shop.html">Shop all products</a></div>';
+      : '<div class="empty"><p class="empty__title display">' + t('drawer.emptyTitle') + '</p><p>' + t('drawer.emptyText') + '</p><a class="btn btn--solid" href="shop.html">' + t('drawer.emptyCta') + '</a></div>';
     $('[data-drawer-foot]').hidden = !items.length;
     $('[data-drawer-subtotal]').textContent = Shop.money(Shop.totals().subtotal);
     // Keep focus inside the drawer when the control that had it was re-rendered
@@ -311,7 +317,7 @@
     all.href = 'shop.html?q=' + encodeURIComponent(q);
     if (!q) { results.innerHTML = ''; status.textContent = ''; return; }
     const hits = Shop.search(q);
-    status.textContent = hits.length ? hits.length + (hits.length === 1 ? ' product' : ' products') + ' found' : 'No products match "' + q + '". Try "hoodie", "shorts" or a colour like "navy".';
+    status.textContent = hits.length ? t('search.found', { count: hits.length }) : t('search.none', { q: q });
     results.innerHTML = hits.map(function (h) { return Shop.miniHTML(h.product, h.color); }).join('');
   }
   input.addEventListener('input', runSearch);
@@ -355,40 +361,40 @@
   }
   function modeNote() {
     return Account.mode === 'local'
-      ? '<p class="mode-note">Preview mode: accounts are saved in this browser only. Run the VYRO server to store them in the database.</p>'
+      ? '<p class="mode-note">' + t('auth.modeNote') + '</p>'
       : '';
   }
   function authHTML(prefix, view) {
     view = view || 'login';
     return '' +
       '<div class="auth" data-auth-root data-view="' + view + '">' +
-        '<div class="auth__tabs" role="tablist" aria-label="Account">' +
-          '<button type="button" role="tab" class="auth__tab" data-auth-view="login">Log in</button>' +
-          '<button type="button" role="tab" class="auth__tab" data-auth-view="register">Create account</button>' +
+        '<div class="auth__tabs" role="tablist" aria-label="' + t('auth.tabs') + '">' +
+          '<button type="button" role="tab" class="auth__tab" data-auth-view="login">' + t('auth.login') + '</button>' +
+          '<button type="button" role="tab" class="auth__tab" data-auth-view="register">' + t('auth.register') + '</button>' +
         '</div>' +
         '<form class="auth__form" data-form="login" novalidate>' +
-          field(prefix + '-login-email', 'Email', 'email', 'autocomplete="email" required') +
-          field(prefix + '-login-password', 'Password', 'password', 'autocomplete="current-password" required') +
+          field(prefix + '-login-email', t('auth.email'), 'email', 'autocomplete="email" required') +
+          field(prefix + '-login-password', t('auth.password'), 'password', 'autocomplete="current-password" required') +
           '<p class="form__error" data-form-error role="alert"></p>' +
-          '<button class="btn btn--solid auth__submit" type="submit">Log in</button>' +
-          '<button class="link-btn" type="button" data-auth-view="forgot">Forgot your password?</button>' +
+          '<button class="btn btn--solid auth__submit" type="submit">' + t('auth.login') + '</button>' +
+          '<button class="link-btn" type="button" data-auth-view="forgot">' + t('auth.forgot') + '</button>' +
         '</form>' +
         '<form class="auth__form" data-form="register" novalidate>' +
-          field(prefix + '-reg-name', 'Full name', 'text', 'autocomplete="name" required') +
-          field(prefix + '-reg-email', 'Email', 'email', 'autocomplete="email" required') +
-          field(prefix + '-reg-password', 'Password', 'password', 'autocomplete="new-password" minlength="8" required aria-describedby="' + prefix + '-pw-hint"') +
-          '<p class="field__hint" id="' + prefix + '-pw-hint">At least 8 characters.</p>' +
-          '<label class="check"><input type="checkbox" name="marketing"> <span>Email me about new drops and early access</span></label>' +
+          field(prefix + '-reg-name', t('auth.fullName'), 'text', 'autocomplete="name" required') +
+          field(prefix + '-reg-email', t('auth.email'), 'email', 'autocomplete="email" required') +
+          field(prefix + '-reg-password', t('auth.password'), 'password', 'autocomplete="new-password" minlength="8" required aria-describedby="' + prefix + '-pw-hint"') +
+          '<p class="field__hint" id="' + prefix + '-pw-hint">' + t('auth.pwHint') + '</p>' +
+          '<label class="check"><input type="checkbox" name="marketing"> <span>' + t('auth.marketing') + '</span></label>' +
           '<p class="form__error" data-form-error role="alert"></p>' +
-          '<button class="btn btn--solid auth__submit" type="submit">Create account</button>' +
+          '<button class="btn btn--solid auth__submit" type="submit">' + t('auth.register') + '</button>' +
         '</form>' +
         '<form class="auth__form" data-form="forgot" novalidate>' +
-          '<p class="auth__text">Enter the email you signed up with and we\'ll send you a link to reset your password.</p>' +
-          field(prefix + '-forgot-email', 'Email', 'email', 'autocomplete="email" required') +
+          '<p class="auth__text">' + t('auth.forgotText') + '</p>' +
+          field(prefix + '-forgot-email', t('auth.email'), 'email', 'autocomplete="email" required') +
           '<p class="form__error" data-form-error role="alert"></p>' +
           '<p class="form__ok" data-form-ok role="status"></p>' +
-          '<button class="btn btn--solid auth__submit" type="submit">Send reset link</button>' +
-          '<button class="link-btn" type="button" data-auth-view="login">Back to log in</button>' +
+          '<button class="btn btn--solid auth__submit" type="submit">' + t('auth.sendLink') + '</button>' +
+          '<button class="link-btn" type="button" data-auth-view="login">' + t('auth.backToLogin') + '</button>' +
         '</form>' +
         modeNote() +
       '</div>';
@@ -431,14 +437,14 @@
     $('[data-form="login"]', auth).addEventListener('submit', function (e) {
       e.preventDefault();
       const f = e.currentTarget;
-      showErrors(f); busy(f, true, 'Logging in…');
+      showErrors(f); busy(f, true, t('auth.busyLogin'));
       Account.login({ email: val(f, 'email'), password: val(f, 'password') })
         .then(function (u) { busy(f, false); if (opts.onSuccess) opts.onSuccess(u, 'login'); }, function (err) { busy(f, false); showErrors(f, err); });
     });
     $('[data-form="register"]', auth).addEventListener('submit', function (e) {
       e.preventDefault();
       const f = e.currentTarget;
-      showErrors(f); busy(f, true, 'Creating account…');
+      showErrors(f); busy(f, true, t('auth.busyRegister'));
       Account.register({ name: val(f, 'name'), email: val(f, 'email'), password: val(f, 'password'), marketing: val(f, 'marketing') })
         .then(function (u) { busy(f, false); if (opts.onSuccess) opts.onSuccess(u, 'register'); }, function (err) { busy(f, false); showErrors(f, err); });
     });
@@ -446,11 +452,11 @@
       e.preventDefault();
       const f = e.currentTarget;
       const ok = $('[data-form-ok]', f);
-      showErrors(f); ok.innerHTML = ''; busy(f, true, 'Sending…');
+      showErrors(f); ok.innerHTML = ''; busy(f, true, t('auth.busySending'));
       Account.forgot(val(f, 'email')).then(function (r) {
         busy(f, false);
-        ok.innerHTML = 'If an account exists for that email, a reset link is on its way. Check your inbox.' +
-          (r.devResetLink ? '<br><span class="dev-link">No email service is connected yet, so here is the link: <a href="' + esc(r.devResetLink) + '">reset your password</a></span>' : '');
+        ok.innerHTML = esc(t('auth.resetSent')) +
+          (r.devResetLink ? '<br><span class="dev-link">' + t('auth.devLink_html', { url: esc(r.devResetLink) }) + '</span>' : '');
       }, function (err) { busy(f, false); showErrors(f, err); });
     });
     return { view: view };
@@ -468,13 +474,13 @@
   function openAuth(o) {
     o = o || {};
     pending = o.then || null;
-    $('[data-auth-title]').textContent = o.title || 'Your account';
-    $('[data-auth-lede]').textContent = o.lede || 'Log in or create an account to track orders and save your wishlist.';
+    $('[data-auth-title]').textContent = o.title || t('auth.title');
+    $('[data-auth-lede]').textContent = o.lede || t('auth.lede');
     $('[data-auth-forms]').innerHTML = authHTML('m', o.view || 'register');
     bindAuth(authRoot, {
       onSuccess: function (u, how) {
         authDlg.close();
-        Shop.toast(how === 'register' ? 'Welcome to VYRO, ' + u.name.split(' ')[0] + '.' : 'Welcome back, ' + u.name.split(' ')[0] + '.');
+        Shop.toast(t(how === 'register' ? 'auth.welcomeNew' : 'auth.welcomeBack', { name: u.name.split(' ')[0] }));
         const next = pending; pending = null;
         if (next) next(u);
       }
@@ -490,14 +496,14 @@
       const on = Account.isWished(b.dataset.slug);
       b.setAttribute('aria-pressed', String(on));
       const name = Shop.get(b.dataset.slug).name;
-      b.setAttribute('aria-label', (on ? 'Remove ' : 'Save ') + name + (on ? ' from wishlist' : ' to wishlist'));
+      b.setAttribute('aria-label', t(on ? 'wish.remove' : 'wish.save', { name: name }));
     });
   }
   window.addEventListener('vyro:wishlist', function () { syncWish(); });
 
   function toggleWish(slug, color) {
     return Account.toggleWish(slug, color).then(function (on) {
-      Shop.toast(on ? Shop.get(slug).name + ' saved to your wishlist' : Shop.get(slug).name + ' removed from your wishlist');
+      Shop.toast(t(on ? 'wish.saved' : 'wish.removed', { name: Shop.get(slug).name }));
     }, function (err) { Shop.toast(err.message); });
   }
   document.addEventListener('click', function (e) {
@@ -508,8 +514,8 @@
     if (Account.user()) { toggleWish(slug, color); return; }
     openAuth({
       view: 'register',
-      title: 'Save it for later',
-      lede: 'Create an account or log in to save ' + Shop.get(slug).name + ' to your wishlist. It follows you to any device you log in on.',
+      title: t('wish.modalTitle'),
+      lede: t('wish.modalLede', { name: Shop.get(slug).name }),
       then: function () { if (!Account.isWished(slug)) toggleWish(slug, color); }
     });
   });

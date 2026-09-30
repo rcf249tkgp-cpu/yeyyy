@@ -15,6 +15,7 @@
   const ScrollTrigger = window.ScrollTrigger;
   const G = window.VyroGarments;
   const Shop = window.VyroShop;
+  const t = window.VyroI18n.t;
 
   /* ------------------------------------------------------------------ *
    * Content: garments + photo slots
@@ -150,7 +151,7 @@
   let heroIdx = 0;
   function updateNote() {
     heroNote.hidden = heroHasPhoto[heroIdx];
-    heroNote.textContent = 'Stand-in image. Add your photo at ' + [].concat(heroSrcs[heroIdx]).join(', ');
+    heroNote.textContent = t('home.heroNote', { files: [].concat(heroSrcs[heroIdx]).join(', ') });
   }
 
   let hero = null;
@@ -626,7 +627,7 @@
     msg.classList.remove('is-error', 'is-ok');
     if (!valid) {
       input.setAttribute('aria-invalid', 'true');
-      msg.textContent = v ? 'That email address looks incomplete. Check it and try again.' : 'Enter your email address to get drop alerts.';
+      msg.textContent = v ? t('home.signupInvalid') : t('home.signupEmpty');
       msg.classList.add('is-error');
       input.focus();
       return;
@@ -634,7 +635,7 @@
     input.removeAttribute('aria-invalid');
     // Hook your email provider here (Klaviyo, Shopify Email, Mailchimp...).
     form.classList.add('is-done');
-    msg.textContent = "You're on the list. We'll email " + v + ' before Drop 02 goes live.';
+    msg.textContent = t('home.signupDone', { email: v });
     msg.classList.add('is-ok');
   });
 

@@ -134,6 +134,32 @@ Unknown product IDs show a "Product not found" page with a link back to the shop
 - **Women's line:** add products with `gender: 'women'` in `js/shop.js`. The
   shop's Men/Women filter picks them up automatically.
 
+## Languages (FI / EN / SV)
+
+The site is in Finnish (default), English and Swedish. The FI / EN / SV
+selector is in the header (in the menu on phones). The choice is remembered
+in the browser and in a `vyro_lang` cookie, and `?lang=sv` in any link
+switches language.
+
+| File | What it holds |
+|---|---|
+| `js/i18n.js` | The engine: current language, `VyroI18n.t(key, vars)`, euro formatting, the selector |
+| `js/i18n/fi.js`, `en.js`, `sv.js` | One dictionary per language, same keys in all three |
+
+- **Static text** in the HTML carries `data-i18n="key"` (or `data-i18n-html`,
+  `data-i18n-attr="alt:key"`). The text written in the HTML is the Finnish
+  default.
+- **Text built in JavaScript** calls `VyroI18n.t('cart.title')`.
+  Placeholders use `{name}`, and counts use `{ one, other }` forms.
+- **Adding a phrase:** add the key to all three dictionaries.
+  A missing key logs `[i18n] missing key` in the console and falls back to English.
+- **Product content** (names, descriptions, features, fit, care) is not
+  translated here. It will come translated from Shopify. For the Storefront API,
+  `VyroI18n.storefront` gives `{ language: 'FI' | 'EN' | 'SV', country: 'FI' }`
+  for `@inContext`.
+- **Prices** use each language's format (`85 €` in Finnish and Swedish,
+  `€85` in English).
+
 ## Stack
 
 GSAP 3 + ScrollTrigger, Lenis and Three.js, loaded from cdnjs and jsdelivr.

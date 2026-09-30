@@ -12,6 +12,7 @@
 */
 (function () {
   const Shop = window.VyroShop;
+  const t = window.VyroI18n.t;
 
   function ApiError(message, field, status) {
     const e = new Error(message);
@@ -31,11 +32,11 @@
       body: method === 'GET' ? undefined : JSON.stringify(body || {})
     }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (data) {
-        if (!r.ok) throw ApiError(data.error || 'Something went wrong. Try again.', data.field, r.status);
+        if (!r.ok) throw ApiError(data.error || t('errors.generic'), data.field, r.status);
         return data;
       });
     }, function () {
-      throw ApiError('Couldn\'t reach VYRO. Check your connection and try again.');
+      throw ApiError(t('errors.network'));
     });
   }
 
@@ -89,25 +90,26 @@
   }
   function pub(u) { return { id: u.id, email: u.email, name: u.name, marketing: !!u.marketing, units: u.units || 'metric', createdAt: u.createdAt }; }
   function me() { const id = sessionId(); return mem.users.filter(function (u) { return u.id === id; })[0] || null; }
-  function need() { const u = me(); if (!u) throw ApiError('Log in to continue.', null, 401); return u; }
+  function need() { const u = me(); if (!u) throw ApiError(t('errors.loginRequired'), null, 401); return u; }
   function checkEmail(e) {
     e = String(e || '').trim().toLowerCase();
-    if (!EMAIL_RE.test(e)) throw ApiError('Enter a valid email address, like name@example.com.', 'email');
+    if (!EMAIL_RE.test(e)) throw ApiError(t('errors.email'), 'email');
     return e;
   }
   function checkPw(pw, field) {
-    if (typeof pw !== 'string' || pw.length < 8) throw ApiError('Use at least 8 characters for your password.', field || 'password');
+    if (typeof pw !== 'string' || pw.length < 8) throw ApiError(t('errors.passwordLength'), field || 'password');
     return pw;
   }
-  function required(v, label, field) {
+  // what: key under errors.enter (name, fullName, address, city, postcode, country)
+  function required(v, what, field) {
     const s = String(v || '').trim();
-    if (!s) throw ApiError('Enter your ' + label + '.', field);
+    if (!s) throw ApiError(t('errors.enter.' + what), field);
     return s;
   }
   function addrFrom(b) {
     return {
-      name: required(b.name, 'full name', 'name'), line1: required(b.line1, 'address', 'line1'), line2: String(b.line2 || '').trim(),
-      city: required(b.city, 'town or city', 'city'), postcode: required(b.postcode, 'postcode', 'postcode'),
+      name: required(b.name, 'fullName', 'name'), line1: required(b.line1, 'address', 'line1'), line2: String(b.line2 || '').trim(),
+      city: required(b.city, 'city', 'city'), postcode: required(b.postcode, 'postcode', 'postcode'),
       country: required(b.country, 'country', 'country'), phone: String(b.phone || '').trim()
     };
   }
@@ -119,7 +121,7 @@
     register: function (b) {
       return tryP(function () {
         const name = required(b.name, 'name', 'name'), email = checkEmail(b.email), pw = checkPw(b.password);
-        if (mem.users.some(function (u) { return u.email === email; })) throw ApiError('An account with this email already exists. Log in instead.', 'email');
+        if (mem.users.some(function (u) { return u.email === email; })) throw ApiError(t('errors.emailExists'), 'email');
         const salt = rand();
         return hash(pw, salt).then(function (h) {
           const u = { id: mem.nextId++, email: email, name: name, passHash: h, marketing: !!b.marketing, units: 'metric', createdAt: new Date().toISOString() };
@@ -132,7 +134,7 @@
       return tryP(function () {
         const email = checkEmail(b.email);
         const u = mem.users.filter(function (x) { return x.email === email; })[0];
-        const fail = ApiError('That email and password don\'t match. Try again or reset your password.', null, 401);
+        const fail = ApiError(t('errors.badLogin'), null, 401);
         if (!u) throw fail;
         return passOk(u, b.password).then(function (ok) { if (!ok) throw fail; setSession(u.id); return pub(u); });
       });
@@ -155,7 +157,7 @@
       return tryP(function () {
         checkPw(pw);
         const r = mem.resets[token];
-        if (!r || r.exp < Date.now()) throw ApiError('This reset link has expired or was already used. Request a new one.');
+        if (!r || r.exp < Date.now()) throw ApiError(t('errors.resetExpired'));
         const u = mem.users.filter(function (x) { return x.id === r.id; })[0];
         delete mem.resets[token];
         const salt = rand();
@@ -165,7 +167,7 @@
     updateProfile: function (b) {
       return tryP(function () {
         const u = need(), name = required(b.name, 'name', 'name'), email = checkEmail(b.email);
-        if (mem.users.some(function (x) { return x.email === email && x.id !== u.id; })) throw ApiError('Another account already uses this email.', 'email');
+        if (mem.users.some(function (x) { return x.email === email && x.id !== u.id; })) throw ApiError(t('errors.emailTaken'), 'email');
         u.name = name; u.email = email; save(); return pub(u);
       });
     },
@@ -176,7 +178,7 @@
       return tryP(function () {
         const u = need(); checkPw(b.password);
         return passOk(u, b.current).then(function (ok) {
-          if (!ok) throw ApiError('Your current password isn\'t right.', 'current');
+          if (!ok) throw ApiError(t('errors.currentPassword'), 'current');
           const salt = rand();
           return hash(b.password, salt).then(function (h) { u.passHash = h; save(); return { ok: true }; });
         });
@@ -186,7 +188,7 @@
       return tryP(function () {
         const u = need();
         return passOk(u, b.password).then(function (ok) {
-          if (!ok) throw ApiError('Your password isn\'t right.', 'password');
+          if (!ok) throw ApiError(t('errors.passwordWrong'), 'password');
           mem.users = mem.users.filter(function (x) { return x.id !== u.id; });
           delete mem.wishlist[u.id]; delete mem.addresses[u.id]; delete mem.orders[u.id];
           save(); setSession(null); return { ok: true };
@@ -213,7 +215,7 @@
     addAddress: function (b) {
       return tryP(function () {
         const u = need(), a = addrFrom(b), list = mem.addresses[u.id] || [];
-        if (list.length >= 10) throw ApiError('You can save up to 10 addresses.');
+        if (list.length >= 10) throw ApiError(t('errors.maxAddresses'));
         a.id = Date.now(); a.isDefault = !!b.isDefault || !list.length;
         if (a.isDefault) list.forEach(function (x) { x.isDefault = false; });
         list.push(a); mem.addresses[u.id] = list; save();
@@ -224,7 +226,7 @@
       return tryP(function () {
         const u = need(), list = mem.addresses[u.id] || [];
         const cur = list.filter(function (x) { return x.id === Number(b.id); })[0];
-        if (!cur) throw ApiError('Address not found.', null, 404);
+        if (!cur) throw ApiError(t('errors.addressNotFound'), null, 404);
         const a = addrFrom(b);
         if (b.isDefault) list.forEach(function (x) { x.isDefault = false; });
         Object.assign(cur, a, { isDefault: b.isDefault ? true : cur.isDefault });
@@ -247,7 +249,7 @@
         const u = me();
         const email = u ? u.email : checkEmail(b.email);
         const address = addrFrom(b.address || {});
-        if (!b.items || !b.items.length) throw ApiError('Your bag is empty.');
+        if (!b.items || !b.items.length) throw ApiError(t('errors.bagEmpty'));
         const items = b.items.map(function (i) {
           const p = Shop.get(i.slug);
           return { slug: i.slug, name: p.name, color: i.color, size: i.size, qty: i.qty, unit: p.price, line: p.price * i.qty };
