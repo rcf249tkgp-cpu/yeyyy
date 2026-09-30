@@ -63,23 +63,8 @@
   /* ------------------------------------------------------------------ *
    * Render
    * ------------------------------------------------------------------ */
-  // On desktop the first shot, and the last one when the count is even, fill
-  // the full gallery width. Give those big slots to flat product shots (the
-  // most detailed images) and keep close-ups and on-model photos in the
-  // half-width tiles, where their resolution holds up.
-  function galleryOrder(list) {
-    const g = list.slice();
-    const last = g[g.length - 1];
-    if (g.length % 2 === 0 && last && last.fit !== 'contain') {
-      for (let i = 1; i < g.length - 1; i++) {
-        if (g[i].fit === 'contain') { g.push(g.splice(i, 1)[0]); break; }
-      }
-    }
-    return g;
-  }
-
   function galleryHTML(c) {
-    return galleryOrder(product.gallery(c)).map(function (g, i) {
+    return product.gallery(c).map(function (g, i) {
       const alt = esc(t('product.imageAlt', { name: product.name, color: Shop.colorName(c).toLowerCase(), detail: g.alt }));
       const load = i < 2 ? '' : ' loading="lazy"';
       return g.fit === 'contain'
