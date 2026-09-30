@@ -69,10 +69,12 @@ stand-in, so you can add photos one at a time.
 
 All product photos are cropped from the five `lineup-sheet-*.webp` sheets
 (1536 × 1024 each), so the originals are only 140–520 px wide. They are
-served as WebP, rebuilt from those sheets with a 2× AI upscale (Real-ESRGAN)
-and sized to what each image needs on a retina screen, at most 4× the
-original and 2000 px on the long edge (about 2.7 MB for all 78). Colours,
-prints and proportions match the originals.
+served as WebP, rebuilt from those sheets with a 4× AI upscale
+(Real-ESRGAN general model at a moderate strength that keeps logos and prints exact)
+and sized to what each image needs on a retina screen, at most 2000 px on the
+long edge (about 3.1 MB for all 78). Colours, prints and proportions match the
+originals. On product pages the full-width gallery tiles show flat product
+shots; close-ups and on-model photos sit in the half-width tiles.
 
 The on-model shots (tee, tank, shorts), the detail close-ups and the gym
 photos are still smaller than the largest spots they fill, such as the product
