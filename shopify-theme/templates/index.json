@@ -1,0 +1,413 @@
+{
+  "sections": {
+    "hero": {
+      "type": "hero",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "fallback_1": "life-1.jpg",
+            "fallback_2": "life-4.jpg",
+            "fallback_3": "life-5.jpg"
+          }
+        },
+        "slide_2": {
+          "type": "slide",
+          "settings": {
+            "fallback_1": "life-7.jpg",
+            "fallback_2": "life-2.jpg",
+            "fallback_3": "life-8.jpg"
+          }
+        },
+        "slide_3": {
+          "type": "slide",
+          "settings": {
+            "fallback_1": "life-3.jpg",
+            "fallback_2": "life-9.jpg",
+            "fallback_3": "life-6.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "slide_1",
+        "slide_2",
+        "slide_3"
+      ]
+    },
+    "statement": {
+      "type": "statement"
+    },
+    "lookbook": {
+      "type": "lookbook",
+      "blocks": {
+        "look_1": {
+          "type": "look",
+          "settings": {
+            "fallback": "tee-model-navy-back.jpg",
+            "caption": "Oversized Tee, navy",
+            "color": "Navy"
+          }
+        },
+        "look_2": {
+          "type": "look",
+          "settings": {
+            "fallback": "tank-model-black-front.jpg",
+            "caption": "Premium Tank, black",
+            "color": "Black"
+          }
+        },
+        "look_3": {
+          "type": "look",
+          "settings": {
+            "fallback": "tee-model-black-front.jpg",
+            "caption": "Oversized Tee, black",
+            "color": "Black"
+          }
+        },
+        "look_4": {
+          "type": "look",
+          "settings": {
+            "fallback": "shorts-model-black-front.jpg",
+            "caption": "Training Short, black",
+            "color": "Black"
+          }
+        },
+        "look_5": {
+          "type": "look",
+          "settings": {
+            "fallback": "tee-model-gray-back.jpg",
+            "caption": "Oversized Tee, gray",
+            "color": "Gray"
+          }
+        },
+        "look_6": {
+          "type": "look",
+          "settings": {
+            "fallback": "tank-model-gray-side.jpg",
+            "caption": "Premium Tank, gray",
+            "color": "Gray"
+          }
+        },
+        "look_7": {
+          "type": "look",
+          "settings": {
+            "fallback": "tank-model-navy-back.jpg",
+            "caption": "Premium Tank, navy",
+            "color": "Navy"
+          }
+        },
+        "look_8": {
+          "type": "look",
+          "settings": {
+            "fallback": "shorts-model-navy-side.jpg",
+            "caption": "Training Short, navy",
+            "color": "Navy"
+          }
+        },
+        "look_9": {
+          "type": "look",
+          "settings": {
+            "fallback": "shorts-model-gray-front.jpg",
+            "caption": "Training Short, gray",
+            "color": "Gray"
+          }
+        }
+      },
+      "block_order": [
+        "look_1",
+        "look_2",
+        "look_3",
+        "look_4",
+        "look_5",
+        "look_6",
+        "look_7",
+        "look_8",
+        "look_9"
+      ]
+    },
+    "drop": {
+      "type": "drop-colorway",
+      "blocks": {
+        "colorway_1": {
+          "type": "colorway",
+          "settings": {
+            "color": "Black",
+            "swatch": "#141517",
+            "glow": "#C5D0D8",
+            "fallback": "hoodie-black.jpg"
+          }
+        },
+        "colorway_2": {
+          "type": "colorway",
+          "settings": {
+            "color": "Navy",
+            "swatch": "#1E2C4B",
+            "glow": "#3C5AAA",
+            "fallback": "hoodie-navy.jpg"
+          }
+        },
+        "colorway_3": {
+          "type": "colorway",
+          "settings": {
+            "color": "Gray",
+            "swatch": "#8A8B8D",
+            "glow": "#D2D4D8",
+            "fallback": "hoodie-gray.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "colorway_1",
+        "colorway_2",
+        "colorway_3"
+      ]
+    },
+    "details": {
+      "type": "details",
+      "blocks": {
+        "detail_1": {
+          "type": "detail",
+          "settings": {
+            "fallback": "detail-tee-back.jpg",
+            "title": "Back print",
+            "text": "The full brush-stroke mark across the shoulders of every Oversized Tee."
+          }
+        },
+        "detail_2": {
+          "type": "detail",
+          "settings": {
+            "fallback": "detail-black-chest.jpg",
+            "title": "Chest print",
+            "text": "Soft-hand white print. Small on the front, loud on the back."
+          }
+        },
+        "detail_3": {
+          "type": "detail",
+          "settings": {
+            "fallback": "detail-navy-aglet.jpg",
+            "title": "Engraved aglets",
+            "text": "VYRO on every drawcord tip. Small, but you'll notice."
+          }
+        },
+        "detail_4": {
+          "type": "detail",
+          "settings": {
+            "fallback": "detail-tee-neck.jpg",
+            "title": "Woven neck label",
+            "text": "No scratchy print on the inside. Just a clean woven tag."
+          }
+        },
+        "detail_5": {
+          "type": "detail",
+          "settings": {
+            "fallback": "detail-shorts-split.jpg",
+            "title": "Side split",
+            "text": "Cut at the hem so the short moves with you at the bottom of a squat."
+          }
+        },
+        "detail_6": {
+          "type": "detail",
+          "settings": {
+            "fallback": "detail-gray-leg.jpg",
+            "title": "Leg print",
+            "text": "The mark runs down the side of every Club Jogger."
+          }
+        }
+      },
+      "block_order": [
+        "detail_1",
+        "detail_2",
+        "detail_3",
+        "detail_4",
+        "detail_5",
+        "detail_6"
+      ]
+    },
+    "rail": {
+      "type": "product-rail"
+    },
+    "categories": {
+      "type": "categories",
+      "blocks": {
+        "category_1": {
+          "type": "category",
+          "settings": {
+            "title": "Hoodies",
+            "text": "The Athletics Club Hoodie. Heavyweight fleece for cold gyms and the walk in at 5 AM.",
+            "fallback": "life-1.jpg"
+          }
+        },
+        "category_2": {
+          "type": "category",
+          "settings": {
+            "title": "Tees",
+            "text": "Oversized and boxy, with the full brush-stroke mark across the back.",
+            "fallback": "tee-model-navy-front.jpg"
+          }
+        },
+        "category_3": {
+          "type": "category",
+          "settings": {
+            "title": "Tanks",
+            "text": "Clean silhouette, regular side fit, premium cotton. For arm day and everything after.",
+            "fallback": "tank-model-gray-front.jpg"
+          }
+        },
+        "category_4": {
+          "type": "category",
+          "settings": {
+            "title": "Joggers",
+            "text": "Tapered fit, ribbed cuffs and the VYRO mark down the leg.",
+            "fallback": "life-7.jpg"
+          }
+        },
+        "category_5": {
+          "type": "category",
+          "settings": {
+            "title": "Shorts",
+            "text": "Side splits and the mark down the leg. Built for squats.",
+            "fallback": "shorts-model-black-side.jpg"
+          }
+        },
+        "category_6": {
+          "type": "category",
+          "settings": {
+            "title": "Oversized pumpers",
+            "text": "Cover up for the warm-up. Take it off for the top set.",
+            "coming_soon": true,
+            "garment": "pumper",
+            "garment_color": "navy"
+          }
+        },
+        "category_7": {
+          "type": "category",
+          "settings": {
+            "title": "Stringers",
+            "text": "Deep cut, clean lines. For the pump that follows.",
+            "coming_soon": true,
+            "garment": "stringer",
+            "garment_color": "black"
+          }
+        }
+      },
+      "block_order": [
+        "category_1",
+        "category_2",
+        "category_3",
+        "category_4",
+        "category_5",
+        "category_6",
+        "category_7"
+      ]
+    },
+    "story": {
+      "type": "story",
+      "blocks": {
+        "pillar_1": {
+          "type": "pillar",
+          "settings": {
+            "title": "Discipline",
+            "text": "Show up when it's cold, dark and nobody's checking."
+          }
+        },
+        "pillar_2": {
+          "type": "pillar",
+          "settings": {
+            "title": "Consistency",
+            "text": "Progress is a thousand ordinary sessions stacked on top of each other."
+          }
+        },
+        "pillar_3": {
+          "type": "pillar",
+          "settings": {
+            "title": "Earned",
+            "text": "Nothing in here is given. Not the PRs, not the physique, not the logo."
+          }
+        }
+      },
+      "block_order": [
+        "pillar_1",
+        "pillar_2",
+        "pillar_3"
+      ]
+    },
+    "reviews": {
+      "type": "reviews",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "fallback": "life-1.jpg",
+            "quote": "Wore it through a 12-week squat block. Still holds its shape, still looks new. The weight of the fleece is the real deal.",
+            "name": "Marcus D.",
+            "lift": "Squat 230 kg",
+            "wears": "Club Hoodie, black, L",
+            "build": "183 cm, 96 kg",
+            "fit": 50,
+            "fit_label": "true to size"
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "fallback": "life-9.jpg",
+            "quote": "The leg print is the first thing people ask about. Room in the quads, tight at the ankle, doesn't sag by the end of the session.",
+            "name": "Jonah R.",
+            "lift": "Bench 160 kg",
+            "wears": "Club Jogger, gray, M",
+            "build": "178 cm, 88 kg",
+            "fit": 40,
+            "fit_label": "slightly snug"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "fallback": "life-8.jpg",
+            "quote": "Navy is the best-looking piece I own, gym or not. It's cut big, so size down if you want it less oversized.",
+            "name": "Theo K.",
+            "lift": "Deadlift 280 kg",
+            "wears": "Club Hoodie, navy, XL",
+            "build": "190 cm, 108 kg",
+            "fit": 68,
+            "fit_label": "runs slightly large"
+          }
+        },
+        "review_4": {
+          "type": "review",
+          "settings": {
+            "fallback": "life-7.jpg",
+            "quote": "Bought the full black set. Warm enough for a cold gym, doesn't pinch at the bottom of a squat. Ordered the gray a week later.",
+            "name": "Andre M.",
+            "lift": "Front squat 170 kg",
+            "wears": "Club Set, black, L",
+            "build": "180 cm, 94 kg",
+            "fit": 50,
+            "fit_label": "true to size"
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_4"
+      ]
+    },
+    "newsletter": {
+      "type": "newsletter"
+    }
+  },
+  "order": [
+    "hero",
+    "statement",
+    "lookbook",
+    "drop",
+    "details",
+    "rail",
+    "categories",
+    "story",
+    "reviews",
+    "newsletter"
+  ]
+}

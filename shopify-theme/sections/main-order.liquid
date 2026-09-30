@@ -1,0 +1,34 @@
+<div class="acct">
+  <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}"><ol><li><a href="{{ routes.account_url }}#orders">{{ 'customer.account.orders' | t }}</a></li><li aria-current="page">{{ order.name }}</li></ol></nav>
+  <section class="confirm">
+    <p class="confirm__kicker">{%- assign placed_on = order.created_at | date: format: 'date' -%}{{ 'customer.order.placed' | t: date: placed_on }}</p>
+    <h1 class="confirm__title display">{{ 'customer.order.title' | t: name: order.name }}</h1>
+    <p>{{ 'customer.order.status' | t }}: <strong>{{ order.fulfillment_status_label }}</strong>. {{ 'customer.order.payment' | t }}: <strong>{{ order.financial_status_label }}</strong>.</p>
+    {%- if order.cancelled -%}<p class="form__error">{%- assign cancelled_on = order.cancelled_at | date: format: 'date' -%}{{ 'customer.order.cancelled' | t: date: cancelled_on }}</p>{%- endif -%}
+    <div class="confirm__items">
+      {%- for item in order.line_items -%}
+        <a class="mini" href="{{ item.product.url | default: '#' }}">
+          <span class="mini__img">{%- if item.image -%}{{ item.image | image_url: width: 160 | image_tag: alt: '', loading: 'lazy' }}{%- endif -%}</span>
+          <span class="mini__text"><span class="mini__name">{{ item.title | escape }}</span><span class="mini__meta">{{ item.sku }} × {{ item.quantity }}{% if item.fulfillment %} · {{ item.fulfillment.tracking_company }} {{ item.fulfillment.tracking_number }}{% endif %}</span></span>
+          <span class="mini__price">{{ item.final_line_price | money_without_trailing_zeros }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+    <div class="summary__rows">
+      <div class="summary__row"><span>{{ 'cart.subtotal' | t }}</span><span>{{ order.line_items_subtotal_price | money_without_trailing_zeros }}</span></div>
+      {%- for discount in order.cart_level_discount_applications -%}<div class="summary__row"><span>{{ discount.title | escape }}</span><span>−{{ discount.total_allocated_amount | money_without_trailing_zeros }}</span></div>{%- endfor -%}
+      {%- for line in order.shipping_methods -%}<div class="summary__row"><span>{{ line.title | escape }}</span><span>{{ line.price | money_without_trailing_zeros }}</span></div>{%- endfor -%}
+      {%- for line in order.tax_lines -%}<div class="summary__row"><span>{{ line.title }} ({{ line.rate_percentage }}%)</span><span>{{ line.price | money_without_trailing_zeros }}</span></div>{%- endfor -%}
+      <div class="summary__row summary__row--total"><span>{{ 'cart.total' | t }}</span><strong>{{ order.total_price | money_without_trailing_zeros }}</strong></div>
+    </div>
+    <div class="addr-grid">
+      {%- if order.shipping_address -%}<article class="addr"><strong>{{ 'customer.order.shipping' | t }}</strong><p>{{ order.shipping_address | format_address }}</p></article>{%- endif -%}
+      {%- if order.billing_address -%}<article class="addr"><strong>{{ 'customer.order.billing' | t }}</strong><p>{{ order.billing_address | format_address }}</p></article>{%- endif -%}
+    </div>
+    <div class="confirm__ctas"><a class="btn btn--ghost" href="{{ routes.account_url }}#orders">{{ 'customer.order.back' | t }}</a></div>
+  </section>
+</div>
+
+{% schema %}
+{ "name": "Order", "tag": "section", "settings": [] }
+{% endschema %}

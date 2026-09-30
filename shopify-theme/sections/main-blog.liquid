@@ -1,0 +1,18 @@
+{%- paginate blog.articles by 12 -%}
+<div class="page-main">
+  <h1 class="page-main__title display">{{ blog.title | escape }}</h1>
+  <div class="details__grid">
+    {%- for article in blog.articles -%}
+      <a class="detail" href="{{ article.url }}">
+        <div class="detail__media">{%- if article.image -%}{{ article.image | image_url: width: 900 | image_tag: loading: 'lazy', alt: article.title }}{%- endif -%}</div>
+        <span><strong>{{ article.title | escape }}</strong><span>{{ article.published_at | date: format: 'date' }}</span></span>
+      </a>
+    {%- endfor -%}
+  </div>
+  {%- render 'pagination', paginate: paginate -%}
+</div>
+{%- endpaginate -%}
+
+{% schema %}
+{ "name": "Blog", "tag": "section", "settings": [] }
+{% endschema %}

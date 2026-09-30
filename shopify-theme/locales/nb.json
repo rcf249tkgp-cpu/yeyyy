@@ -1,0 +1,290 @@
+{
+  "general": {
+    "page": "Side {{ page }}",
+    "close": "Lukk",
+    "cancel": "Avbryt",
+    "coming_soon": "Kommer snart",
+    "breadcrumb": "Brødsmulesti",
+    "home": "Hjem",
+    "pagination": "Sidenavigasjon",
+    "previous": "Forrige",
+    "next": "Neste",
+    "page_of": "Side {{ current }} av {{ total }}",
+    "shop_all": "Se alt",
+    "404_title": "Fant ikke siden",
+    "404_text": "Siden finnes ikke eller er flyttet. Utstyret er fortsatt her."
+  },
+  "accessibility": {
+    "skip_to_content": "Hopp til innhold"
+  },
+  "header": {
+    "primary": "Hovedmeny",
+    "shop": "Butikk",
+    "why": "Hvorfor VYRO",
+    "community": "Fellesskap",
+    "account": "Konto",
+    "account_signed_in": "Konto, logget inn som {{ name }}",
+    "menu": "Meny",
+    "mobile": "Mobilmeny",
+    "drop_alerts": "Drop-varsler"
+  },
+  "footer": {
+    "all_products": "Alle produkter",
+    "new_arrivals": "Nyheter",
+    "my_account": "Min konto"
+  },
+  "cart": {
+    "bag": "Handlekurv",
+    "open": "Åpne handlekurv",
+    "close": "Lukk handlekurv",
+    "your_bag": "Handlekurven din",
+    "empty_title": "Handlekurven er tom",
+    "empty_text": "Dropene blir fort utsolgt. Finn din størrelse før den er borte.",
+    "shop_all": "Se alt",
+    "login_prompt_html": "Har du konto? <a href=\"{{ url }}\">Logg inn</a> for raskere kasse.",
+    "items": "Varer",
+    "continue": "Fortsett å handle",
+    "summary": "Sammendrag",
+    "subtotal": "Delsum",
+    "shipping": "Frakt",
+    "shipping_at_checkout": "Beregnes i kassen",
+    "shipping_note": "Avgifter og frakt beregnes i kassen.",
+    "total": "Totalt",
+    "note": "Ordrekommentar",
+    "checkout": "Til kassen",
+    "view_cart": "Se handlekurv",
+    "remove": "Fjern",
+    "increase": "Øk antall",
+    "decrease": "Reduser antall",
+    "quantity_for": "Antall for {{ title }}",
+    "error": "Kunne ikke oppdatere handlekurven. Prøv igjen.",
+    "removed": "fjernet fra handlekurven",
+    "free_shipping_remaining_html": "Du er <strong>{{ amount }}</strong> unna gratis frakt",
+    "free_shipping_unlocked_html": "Du har fått <strong>gratis frakt</strong>"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Legg i handlekurv",
+      "added": "Lagt i handlekurv",
+      "sold_out": "Utsolgt",
+      "unavailable": "Ikke tilgjengelig",
+      "select_size": "Velg en størrelse",
+      "select_size_error": "Velg en størrelse for å legge denne i handlekurven.",
+      "size_and_fit": "Størrelse og passform",
+      "quantity": "Antall",
+      "description": "Beskrivelse",
+      "features": "Detaljer",
+      "care": "Vask og vedlikehold",
+      "shipping": "Frakt og retur",
+      "images": "Produktbilder",
+      "back_to_shop": "Tilbake til butikken",
+      "new": "Ny",
+      "from": "Fra",
+      "no_image": "Ingen bilde",
+      "colorway": "Farge",
+      "colorway_for": "Farge for {{ title }}"
+    },
+    "look": {
+      "lede": "Plagg laget for å matche {{ title }} i {{ color }}.",
+      "total_html": {
+        "one": "Hele looken, {{ count }} plagg: <strong>{{ price }}</strong>",
+        "other": "Hele looken, {{ count }} plagg: <strong>{{ price }}</strong>"
+      }
+    }
+  },
+  "collections": {
+    "count": {
+      "one": "{{ count }} produkt",
+      "other": "{{ count }} produkter"
+    },
+    "filters": "Filtre",
+    "remove": "Fjern filter",
+    "sort_by": "Sorter etter",
+    "sort": {
+      "featured": "Utvalgte",
+      "newest": "Nyeste",
+      "price_asc": "Pris: lav til høy",
+      "price_desc": "Pris: høy til lav"
+    },
+    "clear_all": "Fjern alle",
+    "price_from": "Fra",
+    "price_to": "Til",
+    "apply": "Bruk",
+    "show_count": {
+      "one": "Vis {{ count }} produkt",
+      "other": "Vis {{ count }} produkter"
+    },
+    "products": "Produkter",
+    "empty_title": "Ingenting passer til filtrene",
+    "empty_text": "Prøv å fjerne et filter eller to.",
+    "all_title": "Alle produkter"
+  },
+  "search": {
+    "title": "Søk",
+    "placeholder": "Søk etter hettegensere, joggebukser, farger…",
+    "close": "Lukk søk",
+    "popular": "Populært",
+    "view_all": "Se alle resultater",
+    "chip": "Søk etter {{ terms }}",
+    "results_for": "Resultater for «{{ terms }}»",
+    "count": "[count] funnet",
+    "none": "Ingen produkter passer «[terms]». Prøv «hoodie», «shorts» eller en farge som «navy»."
+  },
+  "wishlist": {
+    "save": "Lagre {{ title }} i ønskelisten",
+    "saved": "lagret i ønskelisten",
+    "removed": "fjernet fra ønskelisten",
+    "title": "Ønskeliste",
+    "modal_title": "Lagre til senere",
+    "modal_lede": "Logg inn eller opprett en konto for å lagre plagg i ønskelisten.",
+    "empty_title": "Ingenting lagret ennå",
+    "empty_text": "Trykk på hjertet på et produkt for å lagre det her.",
+    "browse": "Se dropet"
+  },
+  "customer": {
+    "fields": {
+      "name": "Navn",
+      "email": "E-post",
+      "phone": "Telefon",
+      "password": "Passord",
+      "new_password": "Nytt passord",
+      "confirm_password": "Bekreft passord",
+      "first_name": "Fornavn",
+      "last_name": "Etternavn",
+      "company": "Firma",
+      "address1": "Adresse",
+      "address2": "Leilighet, etasje o.l.",
+      "city": "Sted",
+      "zip": "Postnummer",
+      "country": "Land",
+      "province": "Region"
+    },
+    "account": {
+      "title": "Kontoen din",
+      "hi": "Hei, {{ name }}",
+      "signed_in_as": "Logget inn som {{ email }}",
+      "sections": "Kontosider",
+      "profile": "Profil",
+      "profile_note": "Kontakt oss hvis du vil endre navn eller e-post.",
+      "orders": "Ordre",
+      "addresses": "Adresser",
+      "settings": "Innstillinger",
+      "logout": "Logg ut"
+    },
+    "login": {
+      "title": "Logg inn",
+      "lede": "Følg ordre, lagre ønskelisten og kom raskere gjennom kassen.",
+      "submit": "Logg inn",
+      "forgot": "Glemt passordet?",
+      "guest": "Fortsett som gjest"
+    },
+    "recover": {
+      "text": "Skriv inn e-posten din, så sender vi en lenke for å tilbakestille passordet.",
+      "submit": "Send lenke",
+      "success": "Hvis det finnes en konto for denne e-posten, er en lenke på vei. Sjekk innboksen.",
+      "back": "Tilbake til innlogging"
+    },
+    "register": {
+      "title": "Opprett konto",
+      "lede": "Følg ordre, lagre ønskelisten og kom raskere gjennom kassen.",
+      "password_hint": "Minst 5 tegn.",
+      "marketing": "Send meg e-post om nye drops og tidlig tilgang",
+      "submit": "Opprett konto"
+    },
+    "orders": {
+      "none_title": "Ingen ordre ennå",
+      "none_text": "Når du legger inn en ordre, vises den her.",
+      "view": "Se ordredetaljer"
+    },
+    "order": {
+      "title": "Ordre {{ name }}",
+      "placed": "Lagt inn {{ date }}",
+      "status": "Status",
+      "payment": "Betaling",
+      "cancelled": "Kansellert {{ date }}",
+      "shipping": "Leveringsadresse",
+      "billing": "Fakturaadresse",
+      "back": "Tilbake til ordre"
+    },
+    "addresses": {
+      "default": "Standard",
+      "none": "Ingen lagrede adresser ennå.",
+      "manage": {
+        "one": "Administrer adresse",
+        "other": "Administrer adresser ({{ count }})"
+      },
+      "add": "Legg til adresse",
+      "edit": "Rediger",
+      "delete": "Slett",
+      "delete_confirm": "Slette denne adressen?",
+      "save": "Lagre adresse",
+      "set_default": "Bruk som standardadresse"
+    },
+    "settings": {
+      "marketing": "Drop-varsler",
+      "subscribed": "Du abonnerer på drop-varsler.",
+      "not_subscribed": "Du abonnerer ikke på drop-varsler. Meld deg på på forsiden eller i kassen.",
+      "password": "Passord",
+      "password_text": "For å endre passord: logg ut og velg «Glemt passordet?» på innloggingssiden."
+    },
+    "reset": {
+      "title": "Tilbakestill passord",
+      "text": "Velg et nytt passord for kontoen din.",
+      "submit": "Tilbakestill passord"
+    },
+    "activate": {
+      "title": "Aktiver konto",
+      "text": "Lag et passord for å aktivere kontoen din.",
+      "submit": "Aktiver konto",
+      "decline": "Avslå invitasjonen"
+    }
+  },
+  "contact": {
+    "message": "Melding",
+    "send": "Send",
+    "success": "Takk. Vi svarer innen én virkedag."
+  },
+  "newsletter": {
+    "success": "Du står på listen. Vi sender e-post når neste drop er ute.",
+    "label": "E-postadresse",
+    "placeholder": "Din e-postadresse",
+    "notify": "Varsle meg"
+  },
+  "password": {
+    "enter": "Gå inn med passord",
+    "submit": "Gå inn"
+  },
+  "blog": {
+    "back": "Tilbake til journalen"
+  },
+  "gift_card": {
+    "title": "Gavekort",
+    "balance": "Gavekort på {{ amount }}",
+    "code": "Bruk denne koden i kassen",
+    "disabled": "Dette gavekortet er ikke lenger aktivt.",
+    "expires": "Utløper {{ date }}",
+    "shop": "Begynn å handle",
+    "print": "Skriv ut"
+  },
+  "sections": {
+    "drop": {
+      "count_html": {
+        "one": "<span data-drop-index>1</span> av {{ count }} farge",
+        "other": "<span data-drop-index>1</span> av {{ count }} farger"
+      }
+    },
+    "rail": {
+      "empty": "Legg produkter i denne kolleksjonen for å fylle raden."
+    },
+    "categories": {
+      "line": "Linje"
+    },
+    "reviews": {
+      "wears": "Bruker",
+      "build": "Kropp",
+      "fit": "Passform",
+      "small": "Liten",
+      "large": "Stor"
+    }
+  }
+}

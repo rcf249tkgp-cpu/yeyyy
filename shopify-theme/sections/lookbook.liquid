@@ -1,0 +1,80 @@
+{%- comment -%} Lookbook: photos flow into three columns that drift at different speeds {%- endcomment -%}
+<section class="look" aria-labelledby="look-title-{{ section.id }}">
+  <div class="look__head">
+    <h2 class="display look__title" id="look-title-{{ section.id }}" data-split-rise>{{ section.settings.title | escape }}</h2>
+    {%- if section.settings.lede != blank -%}<p class="look__lede">{{ section.settings.lede | escape }}</p>{%- endif -%}
+  </div>
+  <div class="look__grid">
+    {%- for col in (0..2) -%}
+      <div class="look__col" data-look-col="{{ col }}">
+        {%- for block in section.blocks -%}
+          {%- assign m = forloop.index0 | modulo: 3 -%}
+          {%- if m == col -%}
+            {%- liquid
+              assign href = block.settings.link
+              if block.settings.product != blank
+                assign href = block.settings.product.url
+                for v in block.settings.product.variants
+                  if block.settings.color != blank and v.options contains block.settings.color
+                    assign href = v.url
+                    break
+                  endif
+                endfor
+              endif
+            -%}
+            <figure class="look__item" {{ block.shopify_attributes }}>
+              {%- if href != blank -%}<a class="look__link" href="{{ href }}">{%- else -%}<div class="look__link">{%- endif -%}
+                <div class="look__media">
+                  {%- render 'vyro-image', image: block.settings.image, fallback: block.settings.fallback, alt: block.settings.caption, sizes: '(min-width: 900px) 30vw, 50vw' -%}
+                </div>
+                {%- if block.settings.caption != blank -%}<figcaption>{{ block.settings.caption | escape }}</figcaption>{%- endif -%}
+              {%- if href != blank -%}</a>{%- else -%}</div>{%- endif -%}
+            </figure>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Lookbook",
+  "tag": "div",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "On the floor" },
+    { "type": "textarea", "id": "lede", "label": "Intro", "default": "Drop 01 where it was made to be worn. Every piece, every colorway, under the same bad lighting you train in." }
+  ],
+  "blocks": [
+    {
+      "type": "look",
+      "name": "Photo",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "fallback", "label": "Bundled photo", "info": "Used when no photo is chosen." },
+        { "type": "text", "id": "caption", "label": "Caption", "default": "Oversized Tee, navy" },
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "text", "id": "color", "label": "Colour to open", "info": "Matches the product's colour option, e.g. Navy." },
+        { "type": "url", "id": "link", "label": "Link (if no product)" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Lookbook",
+      "blocks": [
+        { "type": "look", "settings": { "fallback": "tee-model-navy-back.jpg", "caption": "Oversized Tee, navy", "color": "Navy" } },
+        { "type": "look", "settings": { "fallback": "tank-model-black-front.jpg", "caption": "Premium Tank, black", "color": "Black" } },
+        { "type": "look", "settings": { "fallback": "tee-model-black-front.jpg", "caption": "Oversized Tee, black", "color": "Black" } },
+        { "type": "look", "settings": { "fallback": "shorts-model-black-front.jpg", "caption": "Training Short, black", "color": "Black" } },
+        { "type": "look", "settings": { "fallback": "tee-model-gray-back.jpg", "caption": "Oversized Tee, gray", "color": "Gray" } },
+        { "type": "look", "settings": { "fallback": "tank-model-gray-side.jpg", "caption": "Premium Tank, gray", "color": "Gray" } },
+        { "type": "look", "settings": { "fallback": "tank-model-navy-back.jpg", "caption": "Premium Tank, navy", "color": "Navy" } },
+        { "type": "look", "settings": { "fallback": "shorts-model-navy-side.jpg", "caption": "Training Short, navy", "color": "Navy" } },
+        { "type": "look", "settings": { "fallback": "shorts-model-gray-front.jpg", "caption": "Training Short, gray", "color": "Gray" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

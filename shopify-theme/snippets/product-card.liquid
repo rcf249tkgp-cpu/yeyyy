@@ -1,0 +1,80 @@
+{%- comment -%}
+  VYRO product card (shop rail, collection grid, related, wishlist).
+  Params: product, color (optional colour name to show first), sizes (img sizes attr)
+{%- endcomment -%}
+{%- liquid
+  assign color_pos = ''
+  capture color_pos
+    render 'color-option', product: product
+  endcapture
+  assign color_pos = color_pos | strip
+  assign color_values = nil
+  if color_pos != ''
+    assign pos_index = color_pos | plus: 0 | minus: 1
+    assign color_values = product.options_with_values[pos_index].values
+  endif
+  assign current = color | default: ''
+  if current == '' and color_values
+    assign current = product.selected_or_first_available_variant.options[pos_index]
+  endif
+  assign img_data = ''
+  capture img_data
+    render 'color-media', product: product, value: current, width: 900
+  endcapture
+  assign img_parts = img_data | strip | split: '|'
+  assign card_url = product.url
+  if color_values
+    for v in product.variants
+      if v.options contains current
+        assign card_url = v.url
+        break
+      endif
+    endfor
+  endif
+  assign card_meta = product.metafields.custom.subtitle | default: product.type
+  assign is_new = false
+  if product.tags contains 'new' or product.tags contains 'New'
+    assign is_new = true
+  endif
+-%}
+<article class="pcard" data-pcard data-handle="{{ product.handle }}" data-color="{{ current | escape }}">
+  {%- render 'wish-button', product: product, color: current, class: 'pcard__wish' -%}
+  {%- if is_new -%}<span class="tag pcard__tag">{{ 'products.product.new' | t }}</span>{%- endif -%}
+  <a class="pcard__link" href="{{ card_url }}" data-card-link tabindex="-1" aria-hidden="true">
+    <div class="pcard__media" data-hover-gl>
+      {%- if img_parts[0] != blank -%}
+        <img class="pimg" src="{{ img_parts[0] }}" alt="{{ product.title | escape }}{% if current != '' %} {{ current | downcase | escape }}{% endif %}" width="{{ img_parts[1] }}" height="{{ img_parts[2] }}" loading="lazy">
+      {%- else -%}
+        <span class="pcard__placeholder">{{ 'products.product.no_image' | t }}</span>
+      {%- endif -%}
+    </div>
+  </a>
+  <div class="pcard__body">
+    <div class="pcard__row">
+      <h3 class="pcard__name"><a href="{{ card_url }}" data-card-link>{{ product.title | escape }}</a></h3>
+      {%- render 'price', product: product, class: 'pcard__price' -%}
+    </div>
+    {%- if card_meta != blank -%}<p class="pcard__meta">{{ card_meta | escape }}</p>{%- endif -%}
+    {%- if color_values and color_values.size > 1 -%}
+      <div class="swatches swatches--sm" role="radiogroup" aria-label="{{ 'products.product.colorway_for' | t: title: product.title | escape }}">
+        {%- for value in color_values -%}
+          {%- liquid
+            assign v_data = ''
+            capture v_data
+              render 'color-media', product: product, value: value, width: 900
+            endcapture
+            assign v_parts = v_data | strip | split: '|'
+            assign v_url = product.url
+            for v in product.variants
+              if v.options contains value.name
+                assign v_url = v.url
+                break
+              endif
+            endfor
+          -%}
+          <button type="button" role="radio" aria-checked="{% if value.name == current %}true{% else %}false{% endif %}" class="swatch" data-color="{{ value.name | escape }}" data-image="{{ v_parts[0] }}" data-width="{{ v_parts[1] }}" data-height="{{ v_parts[2] }}" data-url="{{ v_url }}" aria-label="{{ value.name | escape }}" style="--sw: {% render 'swatch-style', value: value %}"></button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</article>

@@ -1,0 +1,28 @@
+<div class="acct">
+  <section class="acct__gate">
+    <h1 class="acct__title display">{{ 'customer.account.title' | t }}</h1>
+    <p class="acct__lede">{{ 'customer.register.lede' | t }}</p>
+    <div class="auth" data-view="register">
+      <div class="auth__tabs" role="tablist" aria-label="{{ 'customer.account.title' | t }}">
+        <a role="tab" class="auth__tab" aria-selected="false" href="{{ routes.account_login_url }}">{{ 'customer.login.title' | t }}</a>
+        <a role="tab" class="auth__tab" aria-selected="true" href="{{ routes.account_register_url }}">{{ 'customer.register.title' | t }}</a>
+      </div>
+      {%- form 'create_customer', class: 'auth__form', data-form: 'register', novalidate: 'novalidate' -%}
+        {%- if form.errors -%}<p class="form__error" role="alert">{{ form.errors | default_errors }}</p>{%- endif -%}
+        <div class="field-row">
+          <div class="field"><label for="reg-first">{{ 'customer.fields.first_name' | t }}</label><input id="reg-first" type="text" name="customer[first_name]" autocomplete="given-name" required></div>
+          <div class="field"><label for="reg-last">{{ 'customer.fields.last_name' | t }}</label><input id="reg-last" type="text" name="customer[last_name]" autocomplete="family-name"></div>
+        </div>
+        <div class="field"><label for="reg-email">{{ 'customer.fields.email' | t }}</label><input id="reg-email" type="email" name="customer[email]" autocomplete="email" required{% if form.errors contains 'email' %} aria-invalid="true"{% endif %}></div>
+        <div class="field"><label for="reg-password">{{ 'customer.fields.password' | t }}</label><input id="reg-password" type="password" name="customer[password]" autocomplete="new-password" minlength="5" required aria-describedby="reg-pw-hint"></div>
+        <p class="field__hint" id="reg-pw-hint">{{ 'customer.register.password_hint' | t }}</p>
+        <label class="check"><input type="checkbox" name="customer[accepts_marketing]" value="true"> <span>{{ 'customer.register.marketing' | t }}</span></label>
+        <button class="btn btn--solid auth__submit" type="submit">{{ 'customer.register.submit' | t }}</button>
+      {%- endform -%}
+    </div>
+  </section>
+</div>
+
+{% schema %}
+{ "name": "Create account", "tag": "section", "settings": [] }
+{% endschema %}

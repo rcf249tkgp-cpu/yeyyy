@@ -1,0 +1,110 @@
+/*
+  VYRO Athletics: Shopify additions.
+  vyro.css is the original site stylesheet, unchanged. This file only adds
+  styles for markup that exists in the Shopify theme and not in the static
+  site (Shopify pages, filters, pagination, customer pages and so on),
+  written with the same tokens.
+*/
+
+/* Sections are wrapped in .shopify-section: keep the original flow */
+.shopify-section { display: block; }
+.section-cart-drawer { display: contents; }
+
+/* Content pages (page, blog, article, 404, contact) */
+.page-main { padding: calc(var(--nav-h) + 2rem) var(--gutter) var(--section); max-width: 1100px; margin: 0 auto; display: grid; gap: 1.5rem; align-content: start; }
+.page-main__title { font-size: clamp(3rem, 1.8rem + 5vw, 6rem); }
+.page-main__image { border-radius: var(--radius); overflow: hidden; }
+.page-main__image img { width: 100%; height: auto; display: block; }
+.shopify-section + .shopify-section > .page-main { padding-top: 0; }
+.empty.page-main { text-align: left; min-height: 55vh; align-content: center; }
+
+/* Rich text from the Shopify editor */
+.rte { color: rgba(236, 236, 232, 0.82); line-height: 1.65; display: grid; gap: 0.9rem; max-width: 68ch; }
+.rte > * { margin: 0; }
+.rte h1, .rte h2, .rte h3, .rte h4 { color: var(--text); font-weight: 800; line-height: 1.15; }
+.rte h2 { font-size: 1.6rem; } .rte h3 { font-size: 1.3rem; }
+.rte a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+.rte ul, .rte ol { padding-left: 1.2rem; display: grid; gap: 0.35rem; }
+.rte img { max-width: 100%; height: auto; border-radius: var(--radius); }
+.rte table { border-collapse: collapse; width: 100%; }
+.rte th, .rte td { border: 1px solid var(--line); padding: 0.5rem 0.7rem; text-align: left; }
+.pdp__acc-body.rte { max-width: 60ch; }
+.shop__desc { margin-top: 2rem; }
+
+/* Prices */
+.price__compare { color: var(--muted); font-weight: 400; margin-left: 0.35rem; }
+.is-sale { color: var(--text); }
+
+/* Product card without an image */
+.pcard__placeholder {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  color: var(--muted); font-size: var(--fs-small); letter-spacing: 0.08em; text-transform: uppercase;
+}
+.pdp__shot .pcard__placeholder { position: absolute; }
+
+/* Product page: gallery shots filtered by colour, sold-out sizes */
+.pdp__shot[hidden] { display: none !important; }
+.size.is-soldout { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.size.is-soldout[aria-checked="true"] { color: var(--accent-ink); }
+.pdp__add:disabled { opacity: 0.5; cursor: not-allowed; }
+.pdp__add.is-busy, .line.is-busy, .shop.is-busy .shop__grid { opacity: 0.55; pointer-events: none; transition: opacity 0.2s; }
+.pdp__shot video, .pdp__shot iframe { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; border: 0; }
+.form__error:empty { display: none; }
+
+/* Filters: price range + colour dots with any swatch colour */
+.fprice { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; padding-bottom: 0.4rem; }
+.fprice .field span { font-size: 0.85rem; color: var(--muted); }
+.fopt__dot { background: var(--sw, var(--graphite)); }
+.fopt.is-empty { opacity: 0.4; }
+.shop__layout--nofilters { grid-template-columns: 1fr !important; }
+.shop__results { min-width: 0; }
+
+/* Pagination */
+.pager { display: flex; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 3rem; flex-wrap: wrap; }
+.pager a, .pager span { min-width: 44px; min-height: 44px; display: inline-grid; place-items: center; padding: 0 0.9rem; border: 1px solid var(--line); border-radius: var(--radius); color: var(--muted); }
+.pager a:hover { color: var(--text); border-color: var(--text); }
+.pager [aria-current="page"] { color: var(--accent-ink); background: var(--text); border-color: var(--text); }
+.pager__info { border: 0 !important; }
+
+/* Cart */
+textarea.cart-note {
+  width: 100%; background: var(--surface); border: 1px solid var(--line-strong); color: var(--text);
+  border-radius: var(--radius); padding: 0.75rem 0.9rem; font: inherit; font-size: 1rem; resize: vertical;
+}
+textarea.cart-note:focus { outline: none; border-color: var(--accent); }
+.cart__express { margin-top: 0.75rem; }
+.cart__express .shopify-cheq, .cart__express [data-shopify-buttoncontainer] { justify-content: stretch; }
+
+/* Wishlist log in prompt */
+.auth--links { display: grid; gap: 0.6rem; }
+.auth--links .btn { text-align: center; }
+
+/* Customer pages */
+.acct__dl { display: grid; gap: 0.9rem; margin: 0; }
+.acct__dl div { display: grid; gap: 0.2rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line); }
+.acct__dl dt { color: var(--muted); font-size: 0.85rem; }
+.acct__dl dd { margin: 0; }
+.acct__panel[hidden] { display: none !important; }
+a.auth__tab { display: grid; place-items: center; text-align: center; }
+.field textarea { font: inherit; }
+.field-row { display: grid; gap: 1rem; }
+@media (min-width: 600px) { .field-row { grid-template-columns: 1fr 1fr; } }
+.order summary { cursor: pointer; }
+
+/* Password page */
+.template-password .acct { min-height: 100svh; display: grid; align-content: center; padding-top: 2rem; }
+.password__logo { position: static; width: min(320px, 70vw); margin-bottom: 1rem; }
+.password__logo img { width: 100%; height: auto; }
+
+/* Gift card */
+.giftcard { text-align: center; justify-items: center; }
+.giftcard__logo { width: min(260px, 60vw); height: auto; }
+.giftcard__code { font-size: clamp(2rem, 1rem + 4vw, 3.5rem); letter-spacing: 0.08em; }
+.giftcard__qr { background: #fff; padding: 10px; border-radius: var(--radius); }
+.giftcard__qr img, .giftcard__qr canvas { display: block; }
+@media print {
+  .giftcard .btn { display: none; }
+}
+
+/* Header bag is a link to /cart (opens the drawer with JS): centre it like the original button */
+a.nav__bag { display: inline-flex; align-items: center; }

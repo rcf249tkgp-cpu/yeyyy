@@ -1,0 +1,16 @@
+<div class="page-main">
+  {%- form 'contact', class: 'acct__form contact-form' -%}
+    {%- if form.posted_successfully? -%}
+      <p class="form__ok" role="status">{{ 'contact.success' | t }}</p>
+    {%- endif -%}
+    {%- if form.errors -%}<p class="form__error" role="alert">{{ form.errors | default_errors }}</p>{%- endif -%}
+    <div class="field"><label for="c-name">{{ 'customer.fields.name' | t }}</label><input id="c-name" name="contact[name]" autocomplete="name" value="{{ form.name }}"></div>
+    <div class="field"><label for="c-email">{{ 'customer.fields.email' | t }}</label><input id="c-email" type="email" name="contact[email]" autocomplete="email" required value="{{ form.email }}"></div>
+    <div class="field"><label for="c-body">{{ 'contact.message' | t }}</label><textarea id="c-body" name="contact[body]" rows="6" class="cart-note">{{ form.body }}</textarea></div>
+    <button class="btn btn--solid" type="submit">{{ 'contact.send' | t }}</button>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{ "name": "Contact form", "tag": "section", "settings": [], "presets": [ { "name": "Contact form" } ] }
+{% endschema %}

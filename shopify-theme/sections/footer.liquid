@@ -1,0 +1,66 @@
+<footer class="footer">
+  <div class="footer__logo" aria-hidden="true">
+    {%- if settings.logo != blank -%}
+      {{ settings.logo | image_url: width: 1400 | image_tag: alt: '', loading: 'lazy' }}
+    {%- else -%}
+      <img src="{{ 'vyro-logo.png' | asset_url }}" alt="" width="1300" height="662" loading="lazy">
+    {%- endif -%}
+  </div>
+  <div class="footer__cols">
+    {%- for block in section.blocks -%}
+      {%- assign menu = linklists[block.settings.menu] -%}
+      <div {{ block.shopify_attributes }}>
+        <h3>{{ block.settings.heading | escape }}</h3>
+        <ul>
+          {%- if menu.links.size > 0 -%}
+            {%- for link in menu.links -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}
+          {%- elsif block.settings.fallback == 'shop' -%}
+            <li><a href="{{ routes.all_products_collection_url }}">{{ 'footer.all_products' | t }}</a></li>
+            <li><a href="{{ routes.all_products_collection_url }}?sort_by=created-descending">{{ 'footer.new_arrivals' | t }}</a></li>
+            <li><a href="{{ routes.root_url }}#drop">Drop 01</a></li>
+            <li><a href="{{ routes.cart_url }}">{{ 'cart.bag' | t }}</a></li>
+          {%- elsif block.settings.fallback == 'account' -%}
+            <li><a href="{{ routes.account_url }}">{{ 'footer.my_account' | t }}</a></li>
+            <li><a href="{{ routes.account_url }}#orders">{{ 'customer.account.orders' | t }}</a></li>
+            <li><a href="{{ routes.account_url }}#wishlist">{{ 'wishlist.title' | t }}</a></li>
+          {%- elsif block.settings.fallback == 'social' -%}
+            {%- if settings.social_instagram != blank -%}<li><a href="{{ settings.social_instagram }}" rel="noopener" target="_blank">Instagram</a></li>{%- endif -%}
+            {%- if settings.social_tiktok != blank -%}<li><a href="{{ settings.social_tiktok }}" rel="noopener" target="_blank">TikTok</a></li>{%- endif -%}
+          {%- endif -%}
+        </ul>
+      </div>
+    {%- endfor -%}
+  </div>
+  <p class="footer__legal">{{ section.settings.legal | escape }}{% if section.settings.legal == blank %}&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}.{% endif %}</p>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "section-footer",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "legal", "label": "Legal line", "default": "© 2026 VYRO Athletics. Earned, not given." }
+  ],
+  "blocks": [
+    {
+      "type": "menu",
+      "name": "Link column",
+      "settings": [
+        { "type": "text", "id": "heading", "label": "Heading", "default": "Shop" },
+        { "type": "link_list", "id": "menu", "label": "Menu" },
+        {
+          "type": "select", "id": "fallback", "label": "Links when no menu is chosen",
+          "options": [
+            { "value": "shop", "label": "Shop links" },
+            { "value": "account", "label": "Account links" },
+            { "value": "social", "label": "Social links (theme settings)" }
+          ],
+          "default": "shop"
+        }
+      ]
+    }
+  ],
+  "presets": [ { "name": "Footer" } ]
+}
+{% endschema %}

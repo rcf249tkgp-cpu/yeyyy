@@ -1,0 +1,31 @@
+{%- comment -%}
+  "You might also like": Shopify product recommendations, loaded after the page
+  (see vyro-product.js). Until they arrive, other products are shown.
+{%- endcomment -%}
+<section class="pdp__related" aria-labelledby="related-title-{{ section.id }}" data-related-section data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}&product_id={{ product.id }}&limit={{ section.settings.limit }}">
+  <div class="pdp__related-head">
+    <h2 class="display" id="related-title-{{ section.id }}">{{ section.settings.title | escape }}</h2>
+    <a class="btn btn--ghost" href="{{ routes.all_products_collection_url }}">{{ 'general.shop_all' | t }}</a>
+  </div>
+  <div class="rail"><div class="rail__track" data-related>
+    {%- if recommendations.performed? and recommendations.products_count > 0 -%}
+      {%- for p in recommendations.products -%}{%- render 'product-card', product: p -%}{%- endfor -%}
+    {%- else -%}
+      {%- for p in collections.all.products limit: 6 -%}
+        {%- unless p.id == product.id -%}{%- render 'product-card', product: p -%}{%- endunless -%}
+      {%- endfor -%}
+    {%- endif -%}
+  </div></div>
+</section>
+
+{% schema %}
+{
+  "name": "Related products",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "You might also like" },
+    { "type": "range", "id": "limit", "label": "Products", "min": 2, "max": 10, "step": 1, "default": 5 }
+  ],
+  "presets": [ { "name": "Related products" } ]
+}
+{% endschema %}

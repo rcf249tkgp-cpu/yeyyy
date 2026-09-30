@@ -1,0 +1,13 @@
+{%- comment -%} Shown when a signed-out shopper taps a wishlist heart {%- endcomment -%}
+<div class="modal" data-auth hidden>
+  <div class="modal__scrim" data-auth-close></div>
+  <section class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="auth-title" data-lenis-prevent>
+    <button class="icon-btn modal__close" type="button" data-auth-close aria-label="{{ 'general.close' | t }}">{%- render 'icon', icon: 'close' -%}</button>
+    <h2 class="modal__title display" id="auth-title">{{ 'wishlist.modal_title' | t }}</h2>
+    <p class="modal__lede" data-auth-lede>{{ 'wishlist.modal_lede' | t }}</p>
+    <div class="auth auth--links">
+      <a class="btn btn--solid auth__submit" href="{{ routes.account_register_url }}" data-auth-register>{{ 'customer.register.title' | t }}</a>
+      <a class="btn btn--ghost auth__submit" href="{{ routes.account_login_url }}" data-auth-login>{{ 'customer.login.title' | t }}</a>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,47 @@
+<section class="details" aria-labelledby="details-title-{{ section.id }}">
+  <h2 class="display details__title" id="details-title-{{ section.id }}" data-split-rise>{{ section.settings.title | escape }}</h2>
+  <div class="details__grid">
+    {%- for block in section.blocks -%}
+      <figure class="detail" data-detail {{ block.shopify_attributes }}>
+        <div class="detail__media">{%- render 'vyro-image', image: block.settings.image, fallback: block.settings.fallback, alt: block.settings.title, sizes: '(min-width: 720px) 33vw, 50vw' -%}</div>
+        <figcaption><strong>{{ block.settings.title | escape }}</strong><span>{{ block.settings.text | escape }}</span></figcaption>
+      </figure>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Details",
+  "tag": "div",
+  "max_blocks": 9,
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "In the details" }
+  ],
+  "blocks": [
+    {
+      "type": "detail",
+      "name": "Detail",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Close-up" },
+        { "type": "text", "id": "fallback", "label": "Bundled image" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Back print" },
+        { "type": "textarea", "id": "text", "label": "Text" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Details",
+      "blocks": [
+        { "type": "detail", "settings": { "fallback": "detail-tee-back.jpg", "title": "Back print", "text": "The full brush-stroke mark across the shoulders of every Oversized Tee." } },
+        { "type": "detail", "settings": { "fallback": "detail-black-chest.jpg", "title": "Chest print", "text": "Soft-hand white print. Small on the front, loud on the back." } },
+        { "type": "detail", "settings": { "fallback": "detail-navy-aglet.jpg", "title": "Engraved aglets", "text": "VYRO on every drawcord tip. Small, but you'll notice." } },
+        { "type": "detail", "settings": { "fallback": "detail-tee-neck.jpg", "title": "Woven neck label", "text": "No scratchy print on the inside. Just a clean woven tag." } },
+        { "type": "detail", "settings": { "fallback": "detail-shorts-split.jpg", "title": "Side split", "text": "Cut at the hem so the short moves with you at the bottom of a squat." } },
+        { "type": "detail", "settings": { "fallback": "detail-gray-leg.jpg", "title": "Leg print", "text": "The mark runs down the side of every Club Jogger." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

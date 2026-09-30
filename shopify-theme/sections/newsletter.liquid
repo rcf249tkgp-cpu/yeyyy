@@ -1,0 +1,47 @@
+<section class="join" id="join">
+  <div class="join__media" data-parallax-wrap>
+    <div class="ambient ambient--join" data-parallax aria-hidden="true">
+      {%- render 'vyro-image', image: section.settings.image, fallback: 'life-6.jpg', alt: '', sizes: '50vw', widths: '360, 720' -%}
+    </div>
+  </div>
+  <div class="join__inner">
+    <h2 class="join__title display" data-scale-words>{{ section.settings.title | escape }}</h2>
+    {%- if section.settings.lede != blank -%}<p class="join__lede">{{ section.settings.lede | escape }}</p>{%- endif -%}
+
+    {%- form 'customer', class: 'signup', id: 'newsletter-form', novalidate: 'novalidate' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter, drop-alerts">
+      {%- if form.posted_successfully? -%}
+        <p class="signup__msg is-ok" id="signup-msg" role="status" tabindex="-1" autofocus>{{ 'newsletter.success' | t }}</p>
+      {%- else -%}
+        <label class="sr-only" for="signup-email">{{ 'newsletter.label' | t }}</label>
+        <input class="signup__input" id="signup-email" name="contact[email]" type="email" inputmode="email" autocomplete="email" placeholder="{{ 'newsletter.placeholder' | t }}" required aria-describedby="signup-msg"{% if form.errors %} aria-invalid="true"{% endif %}>
+        <button class="btn btn--solid signup__btn" type="submit">{{ section.settings.button_label | escape }}</button>
+        <p class="signup__msg{% if form.errors %} is-error{% endif %}" id="signup-msg" role="status" aria-live="polite">
+          {%- if form.errors -%}{{ form.errors.translated_fields.email | capitalize }} {{ form.errors.messages.email }}{%- endif -%}
+        </p>
+      {%- endif -%}
+    {%- endform -%}
+
+    <div class="join__links">
+      {%- if section.settings.button_link != blank and section.settings.link_label != blank -%}<a class="btn btn--ghost" href="{{ section.settings.button_link }}">{{ section.settings.link_label | escape }}</a>{%- endif -%}
+      {%- if settings.social_instagram != blank -%}<a class="join__social" href="{{ settings.social_instagram }}" rel="noopener" target="_blank">Instagram <span>{{ settings.social_handle | escape }}</span></a>{%- endif -%}
+      {%- if settings.social_tiktok != blank -%}<a class="join__social" href="{{ settings.social_tiktok }}" rel="noopener" target="_blank">TikTok <span>{{ settings.social_handle | escape }}</span></a>{%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Drop 02 is coming. Be first in line." },
+    { "type": "textarea", "id": "lede", "label": "Text", "default": "Drops sell out. Get an email the moment the next one goes live, plus early access 24 hours before everyone else." },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Get drop alerts" },
+    { "type": "text", "id": "link_label", "label": "Link label", "default": "Shop Drop 01" },
+    { "type": "url", "id": "button_link", "label": "Link", "default": "/collections/all" },
+    { "type": "image_picker", "id": "image", "label": "Blurred background photo" }
+  ],
+  "presets": [ { "name": "Newsletter" } ]
+}
+{% endschema %}

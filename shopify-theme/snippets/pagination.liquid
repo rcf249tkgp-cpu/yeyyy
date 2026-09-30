@@ -1,0 +1,7 @@
+{%- if paginate.pages > 1 -%}
+  <nav class="pager" aria-label="{{ 'general.pagination' | t }}">
+    {%- if paginate.previous -%}<a class="btn btn--ghost" href="{{ paginate.previous.url }}" rel="prev">{{ 'general.previous' | t }}</a>{%- endif -%}
+    <span class="pager__info">{{ 'general.page_of' | t: current: paginate.current_page, total: paginate.pages }}</span>
+    {%- if paginate.next -%}<a class="btn btn--ghost" href="{{ paginate.next.url }}" rel="next">{{ 'general.next' | t }}</a>{%- endif -%}
+  </nav>
+{%- endif -%}

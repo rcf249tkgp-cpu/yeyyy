@@ -1,0 +1,4 @@
+{%- comment -%} Params: product, color (option value), class {%- endcomment -%}
+<button type="button" class="wish {{ class }}" data-wish data-handle="{{ product.handle }}" data-color="{{ color | escape }}" data-title="{{ product.title | escape }}" aria-pressed="false" aria-label="{{ 'wishlist.save' | t: title: product.title | escape }}">
+  {%- render 'icon', icon: 'heart' -%}
+</button>

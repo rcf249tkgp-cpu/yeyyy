@@ -1,0 +1,8 @@
+{%- comment -%} Rendered by /search/suggest for the header search overlay {%- endcomment -%}
+{%- if predictive_search.performed -%}
+  {%- assign products = predictive_search.resources.products -%}
+  <p data-predictive-count hidden>{{ products.size }}</p>
+  {%- for product in products -%}
+    {%- render 'product-mini', product: product -%}
+  {%- endfor -%}
+{%- endif -%}

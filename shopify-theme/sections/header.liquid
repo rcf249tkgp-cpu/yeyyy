@@ -1,0 +1,67 @@
+{%- liquid
+  assign menu = linklists[section.settings.menu]
+  assign home_prefix = routes.root_url
+  if request.page_type == 'index'
+    assign home_prefix = ''
+  endif
+-%}
+<header class="nav" data-nav>
+  <a class="nav__logo" href="{% if request.page_type == 'index' %}#top{% else %}{{ routes.root_url }}{% endif %}" aria-label="{{ shop.name | escape }}">
+    {%- if settings.logo != blank -%}
+      {{ settings.logo | image_url: width: 400 | image_tag: alt: shop.name, width: 1300, height: 662 }}
+    {%- else -%}
+      <img src="{{ 'vyro-logo.png' | asset_url }}" alt="{{ shop.name | escape }}" width="1300" height="662">
+    {%- endif -%}
+  </a>
+
+  <nav class="nav__links" aria-label="{{ 'header.primary' | t }}">
+    {%- if menu.links.size > 0 -%}
+      {%- for link in menu.links -%}
+        <a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>
+      {%- endfor -%}
+    {%- else -%}
+      <a href="{{ routes.all_products_collection_url }}"{% if request.page_type == 'collection' %} aria-current="page"{% endif %}>{{ 'header.shop' | t }}</a>
+      <a href="{{ home_prefix }}#drop">Drop 01</a>
+      <a href="{{ home_prefix }}#story">{{ 'header.why' | t }}</a>
+      <a href="{{ home_prefix }}#community">{{ 'header.community' | t }}</a>
+    {%- endif -%}
+  </nav>
+
+  <div class="nav__actions">
+    <button class="nav__icon" type="button" data-search-open aria-label="{{ 'search.title' | t }}">{%- render 'icon', icon: 'search' -%}</button>
+    {%- if shop.customer_accounts_enabled -%}
+      <a class="nav__icon nav__account{% if customer %} is-in{% endif %}" href="{% if customer %}{{ routes.account_url }}{% else %}{{ routes.account_login_url }}{% endif %}" data-account-link aria-label="{% if customer %}{{ 'header.account_signed_in' | t: name: customer.first_name | escape }}{% else %}{{ 'header.account' | t }}{% endif %}">
+        {%- render 'icon', icon: 'user' -%}<span data-account-label>{% if customer %}{{ customer.first_name | escape }}{% endif %}</span>
+      </a>
+    {%- endif -%}
+    <a class="nav__bag" href="{{ routes.cart_url }}" data-bag aria-haspopup="dialog" aria-label="{{ 'cart.open' | t }}">{{ 'cart.bag' | t }} <span data-bag-count>{{ cart.item_count }}</span></a>
+    <button class="nav__menu" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+      <span class="sr-only">{{ 'header.menu' | t }}</span><span class="nav__menu-bar"></span><span class="nav__menu-bar"></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobile-menu" hidden data-menu>
+  <nav aria-label="{{ 'header.mobile' | t }}">
+    {%- if menu.links.size > 0 -%}
+      {%- for link in menu.links -%}<a href="{{ link.url }}">{{ link.title | escape }}</a>{%- endfor -%}
+    {%- else -%}
+      <a href="{{ routes.all_products_collection_url }}">{{ 'header.shop' | t }}</a>
+      <a href="{{ home_prefix }}#drop">Drop 01</a>
+      <a href="{{ home_prefix }}#story">{{ 'header.why' | t }}</a>
+      <a href="{{ home_prefix }}#community">{{ 'header.community' | t }}</a>
+    {%- endif -%}
+    {%- if shop.customer_accounts_enabled -%}<a href="{{ routes.account_url }}">{{ 'header.account' | t }}</a>{%- endif -%}
+    <a href="{{ home_prefix }}#join">{{ 'header.drop_alerts' | t }}</a>
+  </nav>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "info": "Leave the menu empty to use the default VYRO links." }
+  ]
+}
+{% endschema %}

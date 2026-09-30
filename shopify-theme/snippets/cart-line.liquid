@@ -1,0 +1,27 @@
+{%- comment -%} One bag line (drawer + cart page). Params: item, index {%- endcomment -%}
+<article class="line" data-line="{{ index }}" data-line-key="{{ item.key }}">
+  <a class="line__img" href="{{ item.url }}" tabindex="-1" aria-hidden="true">
+    {%- if item.image -%}
+      {{ item.image | image_url: width: 240 | image_tag: alt: '', loading: 'lazy' }}
+    {%- endif -%}
+  </a>
+  <div class="line__info">
+    <a class="line__name" href="{{ item.url }}">{{ item.product.title | escape }}</a>
+    {%- unless item.product.has_only_default_variant -%}
+      <p class="line__meta">{{ item.variant.options | join: ' / ' | escape }}</p>
+    {%- endunless -%}
+    {%- for p in item.properties -%}
+      {%- unless p.last == blank or p.first contains '_' -%}<p class="line__meta">{{ p.first }}: {{ p.last }}</p>{%- endunless -%}
+    {%- endfor -%}
+    <p class="line__unit">{{ item.final_price | money_without_trailing_zeros }}</p>
+    <div class="line__controls">
+      <div class="qty qty--sm" role="group" aria-label="{{ 'cart.quantity_for' | t: title: item.product.title | escape }}">
+        <button type="button" class="qty__btn" data-line-qty="-1" aria-label="{{ 'cart.decrease' | t }}"{% if item.quantity <= 1 %} disabled{% endif %}>−</button>
+        <span class="qty__value" aria-live="polite">{{ item.quantity }}</span>
+        <button type="button" class="qty__btn" data-line-qty="1" aria-label="{{ 'cart.increase' | t }}">+</button>
+      </div>
+      <button type="button" class="line__remove" data-line-remove>{{ 'cart.remove' | t }}</button>
+    </div>
+  </div>
+  <p class="line__total">{{ item.final_line_price | money_without_trailing_zeros }}</p>
+</article>

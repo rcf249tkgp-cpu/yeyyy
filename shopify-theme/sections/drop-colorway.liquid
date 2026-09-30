@@ -1,0 +1,111 @@
+{%- comment -%}
+  Drop 01: pinned product that wipes through its colorways on scroll.
+  Each block is one colorway layer. The product (optional) supplies the
+  name, price and the "Choose your size" link for each colour.
+{%- endcomment -%}
+{%- liquid
+  assign p = section.settings.product
+  assign product_name = section.settings.product_name
+  if p != blank
+    assign product_name = p.title
+  endif
+-%}
+<section class="drop" id="drop" data-drop>
+  <div class="drop__pin" data-drop-pin>
+    <div class="drop__head">
+      <h2 class="display drop__title">{{ section.settings.title | escape }}</h2>
+      {%- if section.settings.lede != blank -%}<p class="drop__lede">{{ section.settings.lede | escape }}</p>{%- endif -%}
+    </div>
+
+    <div class="drop__stage" data-drop-stage>
+      <div class="drop__glow" data-drop-glow></div>
+      <div class="drop__layers">
+        {%- for block in section.blocks -%}
+          {%- liquid
+            assign href = section.settings.link | default: routes.all_products_collection_url
+            if p != blank
+              assign href = p.url
+              for v in p.variants
+                if v.options contains block.settings.color
+                  assign href = v.url
+                  break
+                endif
+              endfor
+            endif
+            assign alt = product_name | append: ' ' | append: block.settings.color
+          -%}
+          <div class="drop__layer" data-drop-layer data-color="{{ block.settings.color | escape }}" data-name="{{ block.settings.color | escape }}" data-glow="{{ block.settings.glow }}" data-href="{{ href }}" {{ block.shopify_attributes }}>
+            {%- if block.settings.image != blank -%}
+              <img class="pimg" src="{{ block.settings.image | image_url: width: 1400 }}" alt="{{ alt | escape }}" width="{{ block.settings.image.width }}" height="{{ block.settings.image.height }}"{% unless forloop.first %} loading="lazy"{% endunless %}>
+            {%- else -%}
+              {%- capture fb_size -%}{%- render 'asset-size', file: block.settings.fallback -%}{%- endcapture -%}
+              {%- assign fb_size = fb_size | strip | split: ' ' -%}
+              <img class="pimg" src="{{ block.settings.fallback | asset_url }}" alt="{{ alt | escape }}" width="{{ fb_size[0] }}" height="{{ fb_size[1] }}"{% unless forloop.first %} loading="lazy"{% endunless %}>
+            {%- endif -%}
+          </div>
+        {%- endfor -%}
+      </div>
+      <p class="drop__colorname display" aria-hidden="true"><span data-drop-name>{{ section.blocks.first.settings.color | escape }}</span></p>
+    </div>
+
+    <div class="drop__meta">
+      <div class="drop__price">
+        <span class="drop__product">{{ product_name | escape }}</span>
+        <span class="drop__amount">{% if p != blank %}{{ p.price | money_without_trailing_zeros }}{% else %}{{ section.settings.price_text | escape }}{% endif %}</span>
+      </div>
+      <div class="swatches" role="radiogroup" aria-label="{{ 'products.product.colorway' | t }}" data-drop-swatches>
+        {%- for block in section.blocks -%}
+          <button type="button" role="radio" aria-checked="{% if forloop.first %}true{% else %}false{% endif %}" class="swatch" data-color="{{ block.settings.color | escape }}" aria-label="{{ block.settings.color | escape }}" style="--sw: {{ block.settings.swatch }}"></button>
+        {%- endfor -%}
+      </div>
+      <p class="drop__count">{{ 'sections.drop.count_html' | t: count: section.blocks.size }}</p>
+      {%- liquid
+        assign first_href = section.settings.link | default: routes.all_products_collection_url
+        if p != blank
+          assign first_href = p.url
+        endif
+      -%}
+      <a class="btn btn--solid drop__add" href="{{ first_href }}" data-drop-link>{{ section.settings.button_label | escape }}</a>
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Drop colorway",
+  "tag": "div",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Drop 01" },
+    { "type": "textarea", "id": "lede", "label": "Text", "default": "The Athletics Club Hoodie. Heavyweight brushed fleece, dropped shoulder, boxy fit. A small brush-stroke VYRO on the chest and the full club mark across the back." },
+    { "type": "product", "id": "product", "label": "Product", "info": "Supplies the name, price and the link for each colour." },
+    { "type": "text", "id": "product_name", "label": "Name (if no product)", "default": "Athletics Club Hoodie" },
+    { "type": "text", "id": "price_text", "label": "Price (if no product)", "default": "€85" },
+    { "type": "url", "id": "link", "label": "Link (if no product)" },
+    { "type": "text", "id": "button_label", "label": "Button label", "default": "Choose your size" }
+  ],
+  "blocks": [
+    {
+      "type": "colorway",
+      "name": "Colorway",
+      "settings": [
+        { "type": "text", "id": "color", "label": "Colour name", "default": "Black", "info": "Should match the product's colour option." },
+        { "type": "color", "id": "swatch", "label": "Swatch", "default": "#141517" },
+        { "type": "color", "id": "glow", "label": "Glow behind the product", "default": "#C5D0D8" },
+        { "type": "image_picker", "id": "image", "label": "Product image (front and back)" },
+        { "type": "text", "id": "fallback", "label": "Bundled image", "default": "hoodie-black.jpg" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Drop colorway",
+      "blocks": [
+        { "type": "colorway", "settings": { "color": "Black", "swatch": "#141517", "glow": "#C5D0D8", "fallback": "hoodie-black.jpg" } },
+        { "type": "colorway", "settings": { "color": "Navy", "swatch": "#1E2C4B", "glow": "#3C5AAA", "fallback": "hoodie-navy.jpg" } },
+        { "type": "colorway", "settings": { "color": "Gray", "swatch": "#8A8B8D", "glow": "#D2D4D8", "fallback": "hoodie-gray.jpg" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

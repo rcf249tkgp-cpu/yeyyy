@@ -1,0 +1,191 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign color_pos = ''
+  capture color_pos
+    render 'color-option', product: product
+  endcapture
+  assign color_pos = color_pos | strip
+  assign color_pos_num = color_pos | plus: 0
+  assign current_color = ''
+  if color_pos != ''
+    assign ci = color_pos | plus: 0 | minus: 1
+    assign current_color = current_variant.options[ci]
+  endif
+  assign crumb_collection = product.collections.first
+  assign is_new = false
+  if product.tags contains 'new' or product.tags contains 'New'
+    assign is_new = true
+  endif
+  assign lede = product.metafields.custom.lede.value | default: product.metafields.custom.lede
+  assign features = product.metafields.custom.features.value
+  assign fit_text = product.metafields.custom.fit.value | default: product.metafields.custom.fit | default: section.settings.fit_default
+  assign care_text = product.metafields.custom.care.value | default: product.metafields.custom.care | default: section.settings.care_default
+-%}
+<div class="pdp" data-pdp data-section="{{ section.id }}" data-color-index="{{ color_pos }}">
+  <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}">
+    <ol>
+      <li><a href="{{ routes.all_products_collection_url }}" data-back>{{ 'header.shop' | t }}</a></li>
+      {%- if crumb_collection and crumb_collection.handle != 'all' and crumb_collection.handle != 'frontpage' -%}
+        <li><a href="{{ crumb_collection.url }}">{{ crumb_collection.title | escape }}</a></li>
+      {%- elsif product.type != blank -%}
+        <li><a href="{{ routes.all_products_collection_url }}?filter.p.product_type={{ product.type | url_encode }}">{{ product.type | escape }}</a></li>
+      {%- endif -%}
+      <li aria-current="page">{{ product.title | escape }}</li>
+    </ol>
+  </nav>
+
+  <div class="pdp__grid">
+    <section class="pdp__gallery" aria-label="{{ 'products.product.images' | t }}">
+      <div class="pdp__track" data-gallery tabindex="0">
+        {%- for media in product.media -%}
+          {%- liquid
+            assign malt = media.alt | downcase
+            assign fit = section.settings.gallery_fit
+            if fit == 'alt'
+              if malt contains 'flat'
+                assign fit = 'contain'
+              else
+                assign fit = 'cover'
+              endif
+            endif
+          -%}
+          <figure class="pdp__shot pdp__shot--{% if fit == 'contain' %}flat{% else %}photo{% endif %}" data-media-alt="{{ malt | escape }}" data-media-id="{{ media.id }}">
+            {%- case media.media_type -%}
+              {%- when 'image' -%}
+                {%- if fit == 'contain' -%}
+                  <img class="pimg" src="{{ media | image_url: width: 1600 }}" alt="{{ media.alt | escape }}" width="{{ media.width }}" height="{{ media.height }}"{% if forloop.index > 2 %} loading="lazy"{% endif %}>
+                {%- else -%}
+                  {{ media | image_url: width: 1600 | image_tag: widths: '540, 720, 960, 1200, 1600', sizes: '(min-width: 900px) 33vw, 86vw', alt: media.alt, loading: 'lazy' }}
+                {%- endif -%}
+              {%- when 'video' -%}
+                {{ media | video_tag: autoplay: true, loop: true, muted: true, controls: false, playsinline: true }}
+              {%- when 'external_video' -%}
+                {{ media | external_video_tag }}
+              {%- else -%}
+                {{ media | media_tag }}
+            {%- endcase -%}
+          </figure>
+        {%- else -%}
+          <figure class="pdp__shot pdp__shot--photo"><span class="pcard__placeholder">{{ 'products.product.no_image' | t }}</span></figure>
+        {%- endfor -%}
+      </div>
+      <p class="pdp__counter" aria-hidden="true"><span data-counter>1</span> / <span data-total>{{ product.media.size }}</span></p>
+    </section>
+
+    <div class="pdp__info">
+      <div class="pdp__sticky">
+        <a class="pdp__back" href="{{ routes.all_products_collection_url }}" data-back>{{ 'products.product.back_to_shop' | t }}</a>
+        {%- if product.type != blank -%}<p class="pdp__cat">{{ product.type | escape }}</p>{%- endif -%}
+        <div class="pdp__title-row">
+          <h1 class="pdp__name display">{{ product.title | escape }}</h1>
+          {%- render 'wish-button', product: product, color: current_color, class: 'pdp__wish' -%}
+        </div>
+        <p class="pdp__price" data-price>
+          {%- render 'price', variant: current_variant, class: 'pdp__price-value' -%}
+          {%- if is_new -%}<span class="tag">{{ 'products.product.new' | t }}</span>{%- endif -%}
+        </p>
+        {%- if lede != blank -%}<p class="pdp__lede">{{ lede | escape }}</p>{%- endif -%}
+
+        {%- form 'product', product, class: 'pdp__form', data-product-form: '', novalidate: 'novalidate' -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}" data-variant-id>
+
+          {%- unless product.has_only_default_variant -%}
+            {%- for option in product.options_with_values -%}
+              {%- assign oname = option.name | downcase -%}
+              {%- if option.position == color_pos_num -%}
+                <div class="pdp__field">
+                  <p class="pdp__label" id="opt-label-{{ option.position }}">{{ option.name | escape }}: <strong data-option-name="{{ option.position }}">{{ option.selected_value | escape }}</strong></p>
+                  <div class="swatches" role="radiogroup" aria-labelledby="opt-label-{{ option.position }}" data-option="{{ option.position }}">
+                    {%- for value in option.values -%}
+                      <button type="button" role="radio" aria-checked="{% if value.name == option.selected_value %}true{% else %}false{% endif %}" class="swatch" data-value="{{ value.name | escape }}" aria-label="{{ value.name | escape }}" style="--sw: {% render 'swatch-style', value: value %}"></button>
+                    {%- endfor -%}
+                  </div>
+                </div>
+              {%- else -%}
+                {%- liquid
+                  assign is_size = false
+                  if oname == 'size' or oname == 'størrelse' or oname == 'storrelse'
+                    assign is_size = true
+                  endif
+                -%}
+                <div class="pdp__field">
+                  <div class="pdp__label-row">
+                    <p class="pdp__label" id="opt-label-{{ option.position }}">{{ option.name | escape }}: <strong data-option-name="{{ option.position }}">{% if is_size and section.settings.require_size %}{{ 'products.product.select_size' | t }}{% else %}{{ option.selected_value | escape }}{% endif %}</strong></p>
+                    {%- if is_size -%}<a class="pdp__guide" href="#fit" data-guide>{{ 'products.product.size_and_fit' | t }}</a>{%- endif -%}
+                  </div>
+                  <div class="sizes" role="radiogroup" aria-labelledby="opt-label-{{ option.position }}"{% if is_size %} aria-describedby="size-error" data-size-option{% endif %} data-option="{{ option.position }}">
+                    {%- for value in option.values -%}
+                      <button type="button" role="radio" aria-checked="{% if value.name == option.selected_value and is_size == false %}true{% elsif value.name == option.selected_value and section.settings.require_size == false %}true{% else %}false{% endif %}" class="size" data-value="{{ value.name | escape }}">{{ value.name | escape }}</button>
+                    {%- endfor -%}
+                  </div>
+                  {%- if is_size -%}<p class="pdp__error" id="size-error" data-size-error></p>{%- endif -%}
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- endunless -%}
+
+          <div class="pdp__buy">
+            <div class="qty" role="group" aria-label="{{ 'products.product.quantity' | t }}">
+              <button type="button" class="qty__btn" data-qty="-1" aria-label="{{ 'cart.decrease' | t }}">−</button>
+              <input class="qty__input" type="number" name="quantity" inputmode="numeric" min="1" max="10" value="1" aria-label="{{ 'products.product.quantity' | t }}" data-qty-input>
+              <button type="button" class="qty__btn" data-qty="1" aria-label="{{ 'cart.increase' | t }}">+</button>
+            </div>
+            <button type="submit" name="add" class="btn btn--solid pdp__add" data-add{% unless current_variant.available %} disabled{% endunless %}>
+              {%- if current_variant.available -%}{{ 'products.product.add_to_cart' | t }}{%- else -%}{{ 'products.product.sold_out' | t }}{%- endif -%}
+            </button>
+          </div>
+          <p class="form__error" data-add-error role="alert"></p>
+        {%- endform -%}
+
+        {%- if section.settings.perks != blank -%}
+          <ul class="pdp__perks">
+            {%- assign perks = section.settings.perks | split: '|' -%}
+            {%- for perk in perks -%}<li>{{ perk | strip | escape }}</li>{%- endfor -%}
+          </ul>
+        {%- endif -%}
+
+        <div class="pdp__accs">
+          <details class="pdp__acc" open><summary>{{ 'products.product.description' | t }}</summary><div class="pdp__acc-body rte">{{ product.description }}</div></details>
+          {%- if features != blank -%}
+            <details class="pdp__acc"><summary>{{ 'products.product.features' | t }}</summary><div class="pdp__acc-body"><ul>{%- for f in features -%}<li>{{ f | escape }}</li>{%- endfor -%}</ul></div></details>
+          {%- endif -%}
+          <div id="fit">
+            <details class="pdp__acc"><summary>{{ 'products.product.size_and_fit' | t }}</summary><div class="pdp__acc-body"><p>{{ fit_text | escape }}</p></div></details>
+          </div>
+          {%- if care_text != blank -%}
+            <details class="pdp__acc"><summary>{{ 'products.product.care' | t }}</summary><div class="pdp__acc-body"><p>{{ care_text | escape }}</p></div></details>
+          {%- endif -%}
+          {%- if section.settings.shipping_text != blank -%}
+            <details class="pdp__acc"><summary>{{ 'products.product.shipping' | t }}</summary><div class="pdp__acc-body"><p>{{ section.settings.shipping_text | escape }}</p></div></details>
+          {%- endif -%}
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="application/json" data-product-json>{{ product | json }}</script>
+</div>
+
+{% schema %}
+{
+  "name": "Product",
+  "tag": "section",
+  "class": "section-main-product",
+  "settings": [
+    {
+      "type": "select", "id": "gallery_fit", "label": "Photo fit",
+      "options": [
+        { "value": "alt", "label": "Auto: flat shots contain, others fill" },
+        { "value": "contain", "label": "Always contain" },
+        { "value": "cover", "label": "Always fill" }
+      ],
+      "default": "alt",
+      "info": "Auto mode shows a photo whole (on the dark stage) when its alt text contains \"flat\". Add the colour name to each photo's alt text (e.g. \"Navy flat front\") so the gallery follows the chosen colour."
+    },
+    { "type": "checkbox", "id": "require_size", "label": "Customer must pick a size", "default": true },
+    { "type": "text", "id": "perks", "label": "Perks (separate with |)", "default": "Free shipping over €80 | 30-day returns" },
+    { "type": "textarea", "id": "fit_default", "label": "Size and fit text (if no product metafield)", "default": "True to size. Our tops are cut boxy; size down for a closer fit." },
+    { "type": "textarea", "id": "care_default", "label": "Care text (if no product metafield)", "default": "Machine wash cold, inside out. Do not tumble dry. Do not iron the print." },
+    { "type": "textarea", "id": "shipping_text", "label": "Shipping and returns text", "default": "Free standard shipping on orders over €80. Orders ship within 2 working days. Unworn items can be returned within 30 days for a full refund." }
+  ]
+}
+{% endschema %}

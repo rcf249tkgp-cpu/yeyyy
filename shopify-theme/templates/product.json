@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "main": {
+      "type": "main-product"
+    },
+    "look": {
+      "type": "complete-the-look"
+    },
+    "related": {
+      "type": "related-products"
+    }
+  },
+  "order": [
+    "main",
+    "look",
+    "related"
+  ]
+}

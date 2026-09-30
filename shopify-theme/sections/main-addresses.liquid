@@ -1,0 +1,44 @@
+{%- paginate customer.addresses by 10 -%}
+<div class="acct" data-addresses>
+  <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}"><ol><li><a href="{{ routes.account_url }}">{{ 'customer.account.title' | t }}</a></li><li aria-current="page">{{ 'customer.account.addresses' | t }}</li></ol></nav>
+  <h1 class="acct__title display">{{ 'customer.account.addresses' | t }}</h1>
+
+  <div class="addr-grid">
+    {%- for address in customer.addresses -%}
+      <article class="addr">
+        {%- if address == customer.default_address -%}<span class="tag">{{ 'customer.addresses.default' | t }}</span>{%- endif -%}
+        <p>{{ address | format_address }}</p>
+        <div class="addr__ctas">
+          <button type="button" class="link-btn" data-addr-edit="{{ address.id }}" aria-expanded="false" aria-controls="edit-{{ address.id }}">{{ 'customer.addresses.edit' | t }}</button>
+          <form method="post" action="{{ routes.account_addresses_url }}/{{ address.id }}" data-addr-delete data-confirm="{{ 'customer.addresses.delete_confirm' | t }}">
+            <input type="hidden" name="_method" value="delete">
+            <button type="submit" class="link-btn">{{ 'customer.addresses.delete' | t }}</button>
+          </form>
+        </div>
+        <div id="edit-{{ address.id }}" hidden>
+          {%- form 'customer_address', address, class: 'acct__form addr-form' -%}
+            {%- render 'address-fields', form: form, id: address.id -%}
+            <div class="addr-form__ctas"><button class="btn btn--solid" type="submit">{{ 'customer.addresses.save' | t }}</button><button class="btn btn--ghost" type="button" data-addr-cancel="{{ address.id }}">{{ 'general.cancel' | t }}</button></div>
+          {%- endform -%}
+        </div>
+      </article>
+    {%- else -%}
+      <p class="acct__meta">{{ 'customer.addresses.none' | t }}</p>
+    {%- endfor -%}
+  </div>
+
+  <button type="button" class="btn btn--ghost" data-addr-add aria-expanded="false" aria-controls="add-address">{{ 'customer.addresses.add' | t }}</button>
+  <div id="add-address" hidden>
+    {%- form 'customer_address', customer.new_address, class: 'acct__form addr-form' -%}
+      <h3 class="acct__h3">{{ 'customer.addresses.add' | t }}</h3>
+      {%- render 'address-fields', form: form, id: 'new' -%}
+      <div class="addr-form__ctas"><button class="btn btn--solid" type="submit">{{ 'customer.addresses.save' | t }}</button><button class="btn btn--ghost" type="button" data-addr-cancel="new">{{ 'general.cancel' | t }}</button></div>
+    {%- endform -%}
+  </div>
+  {%- render 'pagination', paginate: paginate -%}
+</div>
+{%- endpaginate -%}
+
+{% schema %}
+{ "name": "Addresses", "tag": "section", "settings": [] }
+{% endschema %}

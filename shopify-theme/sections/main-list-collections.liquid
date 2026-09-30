@@ -1,0 +1,31 @@
+<div class="shop" data-shop>
+  <nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}"><ol><li><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a></li><li aria-current="page">{{ 'collections.all_title' | t }}</li></ol></nav>
+  <header class="shop__head"><h1 class="shop__title display">{{ section.settings.title | escape }}</h1></header>
+  <ul class="cats">
+    {%- for collection in collections -%}
+      {%- unless collection.handle == 'frontpage' -%}
+        <li class="cat" data-cat>
+          <a class="cat__link" href="{{ collection.url }}">
+            <span class="cat__name display">{{ collection.title | escape }}</span>
+            <span class="cat__desc">{{ collection.description | strip_html | truncate: 140 }}</span>
+            <span class="cat__count">{{ 'collections.count' | t: count: collection.products_count }}</span>
+            <span class="cat__media">
+              {%- assign img = collection.featured_image | default: collection.products.first.featured_image -%}
+              {%- if img -%}{{ img | image_url: width: 360 | image_tag: class: 'cat__photo', alt: '', loading: 'lazy' }}{%- endif -%}
+            </span>
+          </a>
+        </li>
+      {%- endunless -%}
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Collections list",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Shop by category" }
+  ]
+}
+{% endschema %}

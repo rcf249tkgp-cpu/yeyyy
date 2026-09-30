@@ -1,0 +1,65 @@
+<section class="community" id="community">
+  <div class="community__head">
+    <h2 class="display community__title" data-split-rise>{{ section.settings.title | escape }}</h2>
+    {%- if section.settings.lede != blank -%}<p class="community__lede">{{ section.settings.lede | escape }}</p>{%- endif -%}
+  </div>
+  <div class="reviews" data-reviews>
+    {%- for block in section.blocks -%}
+      <article class="review" data-review-col {{ block.shopify_attributes }}>
+        <div class="shot shot--review">
+          {%- render 'vyro-image', image: block.settings.image, fallback: block.settings.fallback, alt: block.settings.name, sizes: '(min-width: 900px) 25vw, 82vw' -%}
+        </div>
+        <blockquote class="review__quote">“{{ block.settings.quote | escape }}”</blockquote>
+        <div class="review__who">
+          <p class="review__name">{{ block.settings.name | escape }}</p>
+          <p class="review__lift">{{ block.settings.lift | escape }}</p>
+        </div>
+        <dl class="fit">
+          <div><dt>{{ 'sections.reviews.wears' | t }}</dt><dd>{{ block.settings.wears | escape }}</dd></div>
+          <div><dt>{{ 'sections.reviews.build' | t }}</dt><dd>{{ block.settings.build | escape }}</dd></div>
+        </dl>
+        <div class="fitbar" role="img" aria-label="{{ 'sections.reviews.fit' | t }}: {{ block.settings.fit_label | escape }}"><span>{{ 'sections.reviews.small' | t }}</span><span class="fitbar__track"><i style="--pos:{{ block.settings.fit }}%"></i></span><span>{{ 'sections.reviews.large' | t }}</span></div>
+      </article>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Reviews",
+  "tag": "div",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Tested under the bar" },
+    { "type": "textarea", "id": "lede", "label": "Intro", "default": "Reviews from lifters who've trained in Drop 01. Fit notes included, so you get the size right the first time." }
+  ],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Review",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "fallback", "label": "Bundled photo" },
+        { "type": "textarea", "id": "quote", "label": "Quote", "default": "Wore it through a 12-week squat block. Still holds its shape." },
+        { "type": "text", "id": "name", "label": "Name", "default": "Marcus D." },
+        { "type": "text", "id": "lift", "label": "Lift", "default": "Squat 230 kg" },
+        { "type": "text", "id": "wears", "label": "Wears", "default": "Club Hoodie, black, L" },
+        { "type": "text", "id": "build", "label": "Build", "default": "183 cm, 96 kg" },
+        { "type": "range", "id": "fit", "label": "Fit (0 = runs small, 100 = runs large)", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "text", "id": "fit_label", "label": "Fit in words", "default": "true to size" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Reviews",
+      "blocks": [
+        { "type": "review", "settings": { "fallback": "life-1.jpg", "quote": "Wore it through a 12-week squat block. Still holds its shape, still looks new. The weight of the fleece is the real deal.", "name": "Marcus D.", "lift": "Squat 230 kg", "wears": "Club Hoodie, black, L", "build": "183 cm, 96 kg", "fit": 50, "fit_label": "true to size" } },
+        { "type": "review", "settings": { "fallback": "life-9.jpg", "quote": "The leg print is the first thing people ask about. Room in the quads, tight at the ankle, doesn't sag by the end of the session.", "name": "Jonah R.", "lift": "Bench 160 kg", "wears": "Club Jogger, gray, M", "build": "178 cm, 88 kg", "fit": 40, "fit_label": "slightly snug" } },
+        { "type": "review", "settings": { "fallback": "life-8.jpg", "quote": "Navy is the best-looking piece I own, gym or not. It's cut big, so size down if you want it less oversized.", "name": "Theo K.", "lift": "Deadlift 280 kg", "wears": "Club Hoodie, navy, XL", "build": "190 cm, 108 kg", "fit": 68, "fit_label": "runs slightly large" } },
+        { "type": "review", "settings": { "fallback": "life-7.jpg", "quote": "Bought the full black set. Warm enough for a cold gym, doesn't pinch at the bottom of a squat. Ordered the gray a week later.", "name": "Andre M.", "lift": "Front squat 170 kg", "wears": "Club Set, black, L", "build": "180 cm, 94 kg", "fit": 50, "fit_label": "true to size" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

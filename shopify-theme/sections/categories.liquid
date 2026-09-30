@@ -1,0 +1,104 @@
+<section class="categories" id="categories">
+  <div class="categories__head">
+    <h2 class="display categories__title" data-split-rise>{{ section.settings.title | escape }}</h2>
+    {%- if section.settings.show_tabs -%}
+      <div class="line-tabs" role="tablist" aria-label="{{ 'sections.categories.line' | t }}">
+        <button type="button" role="tab" aria-selected="true" class="line-tabs__tab">{{ section.settings.tab_1 | escape }}</button>
+        {%- if section.settings.tab_2_link != blank -%}
+          <a role="tab" aria-selected="false" class="line-tabs__tab" href="{{ section.settings.tab_2_link }}">{{ section.settings.tab_2 | escape }}</a>
+        {%- else -%}
+          <button type="button" role="tab" aria-selected="false" aria-disabled="true" class="line-tabs__tab" disabled>{{ section.settings.tab_2 | escape }} <small>{{ 'general.coming_soon' | t }}</small></button>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+  </div>
+  <ul class="cats">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign href = block.settings.link
+        if block.settings.collection != blank
+          assign href = block.settings.collection.url
+        endif
+        if href == blank
+          if block.settings.coming_soon
+            assign href = '#join'
+          else
+            assign href = routes.all_products_collection_url
+          endif
+        endif
+      -%}
+      <li class="cat{% if block.settings.coming_soon %} cat--soon{% endif %}" data-cat {{ block.shopify_attributes }}>
+        <a class="cat__link" href="{{ href }}">
+          <span class="cat__name display">{{ block.settings.title | escape }}</span>
+          <span class="cat__desc">{{ block.settings.text | escape }}</span>
+          <span class="cat__count">{% if block.settings.coming_soon %}{{ 'general.coming_soon' | t }}{% else %}{{ block.settings.count | escape }}{% endif %}</span>
+          <span class="cat__media" data-reveal-clip>
+            {%- if block.settings.image != blank or block.settings.fallback != blank -%}
+              {%- render 'vyro-image', image: block.settings.image, fallback: block.settings.fallback, alt: '', class: 'cat__photo', sizes: '180px', widths: '180, 360, 540' -%}
+            {%- else -%}
+              <span class="garment" data-garment="{{ block.settings.garment }}" data-color="{{ block.settings.garment_color }}"></span>
+            {%- endif -%}
+          </span>
+        </a>
+      </li>
+    {%- endfor -%}
+  </ul>
+</section>
+
+{% schema %}
+{
+  "name": "Categories",
+  "tag": "div",
+  "max_blocks": 12,
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Shop by category" },
+    { "type": "checkbox", "id": "show_tabs", "label": "Show Men / Women tabs", "default": true },
+    { "type": "text", "id": "tab_1", "label": "First tab", "default": "Men" },
+    { "type": "text", "id": "tab_2", "label": "Second tab", "default": "Women" },
+    { "type": "url", "id": "tab_2_link", "label": "Second tab link", "info": "Leave empty to show it as coming soon." }
+  ],
+  "blocks": [
+    {
+      "type": "category",
+      "name": "Category",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Name", "default": "Hoodies" },
+        { "type": "textarea", "id": "text", "label": "Description" },
+        { "type": "text", "id": "count", "label": "Small label", "default": "3 colorways" },
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "url", "id": "link", "label": "Link (if no collection)" },
+        { "type": "image_picker", "id": "image", "label": "Photo" },
+        { "type": "text", "id": "fallback", "label": "Bundled photo" },
+        { "type": "checkbox", "id": "coming_soon", "label": "Coming soon", "default": false },
+        {
+          "type": "select", "id": "garment", "label": "Drawn stand-in (when there is no photo)",
+          "options": [
+            { "value": "tee", "label": "Tee" }, { "value": "pumper", "label": "Pumper" }, { "value": "hoodie", "label": "Hoodie" },
+            { "value": "shorts", "label": "Shorts" }, { "value": "stringer", "label": "Stringer" }
+          ],
+          "default": "tee"
+        },
+        {
+          "type": "select", "id": "garment_color", "label": "Stand-in colour",
+          "options": [ { "value": "black", "label": "Black" }, { "value": "navy", "label": "Navy" }, { "value": "gray", "label": "Gray" } ],
+          "default": "black"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Categories",
+      "blocks": [
+        { "type": "category", "settings": { "title": "Hoodies", "text": "The Athletics Club Hoodie. Heavyweight fleece for cold gyms and the walk in at 5 AM.", "fallback": "life-1.jpg" } },
+        { "type": "category", "settings": { "title": "Tees", "text": "Oversized and boxy, with the full brush-stroke mark across the back.", "fallback": "tee-model-navy-front.jpg" } },
+        { "type": "category", "settings": { "title": "Tanks", "text": "Clean silhouette, regular side fit, premium cotton. For arm day and everything after.", "fallback": "tank-model-gray-front.jpg" } },
+        { "type": "category", "settings": { "title": "Joggers", "text": "Tapered fit, ribbed cuffs and the VYRO mark down the leg.", "fallback": "life-7.jpg" } },
+        { "type": "category", "settings": { "title": "Shorts", "text": "Side splits and the mark down the leg. Built for squats.", "fallback": "shorts-model-black-side.jpg" } },
+        { "type": "category", "settings": { "title": "Oversized pumpers", "text": "Cover up for the warm-up. Take it off for the top set.", "coming_soon": true, "garment": "pumper", "garment_color": "navy" } },
+        { "type": "category", "settings": { "title": "Stringers", "text": "Deep cut, clean lines. For the pump that follows.", "coming_soon": true, "garment": "stringer", "garment_color": "black" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

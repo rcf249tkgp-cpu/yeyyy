@@ -1,0 +1,290 @@
+{
+  "general": {
+    "page": "Page {{ page }}",
+    "close": "Close",
+    "cancel": "Cancel",
+    "coming_soon": "Coming soon",
+    "breadcrumb": "Breadcrumb",
+    "home": "Home",
+    "pagination": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "page_of": "Page {{ current }} of {{ total }}",
+    "shop_all": "Shop all",
+    "404_title": "Page not found",
+    "404_text": "That page doesn't exist or has moved. The gear is still here."
+  },
+  "accessibility": {
+    "skip_to_content": "Skip to content"
+  },
+  "header": {
+    "primary": "Primary",
+    "shop": "Shop",
+    "why": "Why VYRO",
+    "community": "Community",
+    "account": "Account",
+    "account_signed_in": "Account, signed in as {{ name }}",
+    "menu": "Menu",
+    "mobile": "Mobile",
+    "drop_alerts": "Drop alerts"
+  },
+  "footer": {
+    "all_products": "All products",
+    "new_arrivals": "New arrivals",
+    "my_account": "My account"
+  },
+  "cart": {
+    "bag": "Bag",
+    "open": "Open bag",
+    "close": "Close bag",
+    "your_bag": "Your bag",
+    "empty_title": "Your bag is empty",
+    "empty_text": "Drops sell out fast. Find your fit before it's gone.",
+    "shop_all": "Shop all",
+    "login_prompt_html": "Have an account? <a href=\"{{ url }}\">Log in</a> to check out faster.",
+    "items": "Items",
+    "continue": "Continue shopping",
+    "summary": "Summary",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "shipping_at_checkout": "Calculated at checkout",
+    "shipping_note": "Taxes and shipping calculated at checkout.",
+    "total": "Total",
+    "note": "Order note",
+    "checkout": "Checkout",
+    "view_cart": "View bag",
+    "remove": "Remove",
+    "increase": "Increase quantity",
+    "decrease": "Decrease quantity",
+    "quantity_for": "Quantity for {{ title }}",
+    "error": "Couldn't update your bag. Please try again.",
+    "removed": "removed from your bag",
+    "free_shipping_remaining_html": "You're <strong>{{ amount }}</strong> away from free shipping",
+    "free_shipping_unlocked_html": "You've unlocked <strong>free shipping</strong>"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Add to bag",
+      "added": "Added to bag",
+      "sold_out": "Sold out",
+      "unavailable": "Unavailable",
+      "select_size": "Select a size",
+      "select_size_error": "Select a size to add this to your bag.",
+      "size_and_fit": "Size and fit",
+      "quantity": "Quantity",
+      "description": "Description",
+      "features": "Features",
+      "care": "Care",
+      "shipping": "Shipping and returns",
+      "images": "Product images",
+      "back_to_shop": "Back to shop",
+      "new": "New",
+      "from": "From",
+      "no_image": "No image",
+      "colorway": "Colorway",
+      "colorway_for": "Colorway for {{ title }}"
+    },
+    "look": {
+      "lede": "Pieces cut to go with the {{ title }} in {{ color }}.",
+      "total_html": {
+        "one": "Full look, {{ count }} piece: <strong>{{ price }}</strong>",
+        "other": "Full look, {{ count }} pieces: <strong>{{ price }}</strong>"
+      }
+    }
+  },
+  "collections": {
+    "count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    },
+    "filters": "Filters",
+    "remove": "Remove filter",
+    "sort_by": "Sort by",
+    "sort": {
+      "featured": "Featured",
+      "newest": "Newest",
+      "price_asc": "Price: low to high",
+      "price_desc": "Price: high to low"
+    },
+    "clear_all": "Clear all",
+    "price_from": "From",
+    "price_to": "To",
+    "apply": "Apply",
+    "show_count": {
+      "one": "Show {{ count }} product",
+      "other": "Show {{ count }} products"
+    },
+    "products": "Products",
+    "empty_title": "Nothing matches those filters",
+    "empty_text": "Try removing a filter or two.",
+    "all_title": "Shop all"
+  },
+  "search": {
+    "title": "Search",
+    "placeholder": "Search hoodies, joggers, colours…",
+    "close": "Close search",
+    "popular": "Popular",
+    "view_all": "View all results",
+    "chip": "Search for {{ terms }}",
+    "results_for": "Results for “{{ terms }}”",
+    "count": "[count] found",
+    "none": "No products match “[terms]”. Try “hoodie”, “shorts” or a colour like “navy”."
+  },
+  "wishlist": {
+    "save": "Save {{ title }} to wishlist",
+    "saved": "saved to your wishlist",
+    "removed": "removed from your wishlist",
+    "title": "Wishlist",
+    "modal_title": "Save it for later",
+    "modal_lede": "Log in or create an account to save pieces to your wishlist.",
+    "empty_title": "Nothing saved yet",
+    "empty_text": "Tap the heart on any product to keep it here.",
+    "browse": "Browse the drop"
+  },
+  "customer": {
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "password": "Password",
+      "new_password": "New password",
+      "confirm_password": "Confirm password",
+      "first_name": "First name",
+      "last_name": "Last name",
+      "company": "Company",
+      "address1": "Address",
+      "address2": "Apartment, suite, etc.",
+      "city": "City",
+      "zip": "Postal code",
+      "country": "Country",
+      "province": "Region"
+    },
+    "account": {
+      "title": "Your account",
+      "hi": "Hi, {{ name }}",
+      "signed_in_as": "Signed in as {{ email }}",
+      "sections": "Account sections",
+      "profile": "Profile",
+      "profile_note": "To change your name or email, contact us and we'll update it.",
+      "orders": "Orders",
+      "addresses": "Addresses",
+      "settings": "Settings",
+      "logout": "Log out"
+    },
+    "login": {
+      "title": "Log in",
+      "lede": "Track orders, save your wishlist and check out faster.",
+      "submit": "Log in",
+      "forgot": "Forgot your password?",
+      "guest": "Continue as guest"
+    },
+    "recover": {
+      "text": "Enter your email and we'll send you a link to reset your password.",
+      "submit": "Send reset link",
+      "success": "If an account exists for that email, a reset link is on its way. Check your inbox.",
+      "back": "Back to log in"
+    },
+    "register": {
+      "title": "Create account",
+      "lede": "Track orders, save your wishlist and check out faster.",
+      "password_hint": "At least 5 characters.",
+      "marketing": "Email me about new drops and early access",
+      "submit": "Create account"
+    },
+    "orders": {
+      "none_title": "No orders yet",
+      "none_text": "When you place an order it shows up here.",
+      "view": "View order details"
+    },
+    "order": {
+      "title": "Order {{ name }}",
+      "placed": "Placed {{ date }}",
+      "status": "Status",
+      "payment": "Payment",
+      "cancelled": "Cancelled on {{ date }}",
+      "shipping": "Shipping address",
+      "billing": "Billing address",
+      "back": "Back to orders"
+    },
+    "addresses": {
+      "default": "Default",
+      "none": "No saved addresses yet.",
+      "manage": {
+        "one": "Manage address",
+        "other": "Manage addresses ({{ count }})"
+      },
+      "add": "Add address",
+      "edit": "Edit",
+      "delete": "Delete",
+      "delete_confirm": "Delete this address?",
+      "save": "Save address",
+      "set_default": "Set as default address"
+    },
+    "settings": {
+      "marketing": "Drop alerts",
+      "subscribed": "You're subscribed to drop alerts.",
+      "not_subscribed": "You're not subscribed to drop alerts. Sign up on the home page or at checkout.",
+      "password": "Password",
+      "password_text": "To change your password, log out and choose “Forgot your password?” on the log in page."
+    },
+    "reset": {
+      "title": "Reset password",
+      "text": "Choose a new password for your account.",
+      "submit": "Reset password"
+    },
+    "activate": {
+      "title": "Activate account",
+      "text": "Create a password to activate your account.",
+      "submit": "Activate account",
+      "decline": "Decline invitation"
+    }
+  },
+  "contact": {
+    "message": "Message",
+    "send": "Send",
+    "success": "Thanks. We'll get back to you within one working day."
+  },
+  "newsletter": {
+    "success": "You're on the list. We'll email you when the next drop goes live.",
+    "label": "Email address",
+    "placeholder": "Your email address",
+    "notify": "Notify me"
+  },
+  "password": {
+    "enter": "Enter using password",
+    "submit": "Enter"
+  },
+  "blog": {
+    "back": "Back to journal"
+  },
+  "gift_card": {
+    "title": "Gift card",
+    "balance": "{{ amount }} gift card",
+    "code": "Use this code at checkout",
+    "disabled": "This gift card is no longer active.",
+    "expires": "Expires {{ date }}",
+    "shop": "Start shopping",
+    "print": "Print"
+  },
+  "sections": {
+    "drop": {
+      "count_html": {
+        "one": "<span data-drop-index>1</span> of {{ count }} colorway",
+        "other": "<span data-drop-index>1</span> of {{ count }} colorways"
+      }
+    },
+    "rail": {
+      "empty": "Add products to this collection to fill the rail."
+    },
+    "categories": {
+      "line": "Line"
+    },
+    "reviews": {
+      "wears": "Wears",
+      "build": "Build",
+      "fit": "Fit",
+      "small": "Small",
+      "large": "Large"
+    }
+  }
+}

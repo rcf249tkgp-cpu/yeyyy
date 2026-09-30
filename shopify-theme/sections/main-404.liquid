@@ -1,0 +1,9 @@
+<div class="empty empty--page page-main">
+  <h1 class="empty__title display">{{ 'general.404_title' | t }}</h1>
+  <p>{{ 'general.404_text' | t }}</p>
+  <a class="btn btn--solid" href="{{ routes.all_products_collection_url }}">{{ 'general.shop_all' | t }}</a>
+</div>
+
+{% schema %}
+{ "name": "404", "tag": "section", "settings": [] }
+{% endschema %}

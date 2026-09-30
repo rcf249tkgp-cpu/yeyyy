@@ -1,0 +1,22 @@
+{%- paginate collection.products by section.settings.per_page -%}
+  <div class="shop" data-shop data-section="{{ section.id }}">
+    {%- liquid
+      assign sort_by = collection.sort_by | default: collection.default_sort_by
+      render 'facets-layout', results: collection.products, filters: collection.filters, sort_options: collection.sort_options, sort_by: sort_by, title: collection.title, count: collection.products_count, url: collection.url, section_id: section.id
+    -%}
+    {%- if collection.description != blank and section.settings.show_description -%}<div class="shop__desc rte">{{ collection.description }}</div>{%- endif -%}
+    {%- render 'pagination', paginate: paginate -%}
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Collection",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Products per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "checkbox", "id": "show_description", "label": "Show collection description", "default": false },
+    { "type": "paragraph", "content": "Filters come from the Shopify Search & Discovery app. Add Product type, Price, Size and Color (variant options) and a Product tag filter for Men/Women and New." }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,40 @@
+{
+  "type": "footer",
+  "name": "Footer",
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "shop": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "fallback": "shop"
+          }
+        },
+        "account": {
+          "type": "menu",
+          "settings": {
+            "heading": "Account",
+            "fallback": "account"
+          }
+        },
+        "social": {
+          "type": "menu",
+          "settings": {
+            "heading": "Follow",
+            "fallback": "social"
+          }
+        }
+      },
+      "block_order": [
+        "shop",
+        "account",
+        "social"
+      ]
+    }
+  },
+  "order": [
+    "footer"
+  ]
+}

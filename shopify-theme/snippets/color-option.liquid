@@ -1,0 +1,5 @@
+{%- comment -%} Outputs the position (1-3) of the product's colour option, or nothing {%- endcomment -%}
+{%- for option in product.options_with_values -%}
+  {%- assign oname = option.name | downcase -%}
+  {%- if oname == 'color' or oname == 'colour' or oname == 'farge' or oname == 'colorway' -%}{{ option.position }}{%- break -%}{%- endif -%}
+{%- endfor -%}

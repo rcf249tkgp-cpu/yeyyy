@@ -1,0 +1,31 @@
+{%- comment -%}
+  Outputs the image URL for a product in a colour: first media whose alt text
+  contains the colour name, else the featured image of a variant in that
+  colour, else the product's featured image.
+  Params: product, value (colour name), width
+{%- endcomment -%}
+{%- liquid
+  assign width = width | default: 900
+  assign vname = value.name | default: value
+  assign needle = vname | downcase
+  assign found = nil
+  for media in product.media
+    assign malt = media.alt | downcase
+    if media.media_type == 'image' and malt contains needle
+      assign found = media.preview_image
+      break
+    endif
+  endfor
+  if found == nil
+    for v in product.variants
+      if v.options contains vname and v.featured_media
+        assign found = v.featured_media.preview_image
+        break
+      endif
+    endfor
+  endif
+  if found == nil
+    assign found = product.featured_media.preview_image
+  endif
+-%}
+{%- if found -%}{{ found | image_url: width: width }}|{{ found.width }}|{{ found.height }}{%- endif -%}

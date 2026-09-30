@@ -1,0 +1,89 @@
+{%- liquid
+  assign look = product.metafields.custom.complete_the_look.value
+  if look == blank
+    assign look = section.settings.products
+  endif
+  assign color_pos = ''
+  capture color_pos
+    render 'color-option', product: product
+  endcapture
+  assign color_pos = color_pos | strip
+  assign current_color = ''
+  if color_pos != ''
+    assign ci = color_pos | plus: 0 | minus: 1
+    assign current_color = product.selected_or_first_available_variant.options[ci]
+  endif
+  assign total = product.price
+  assign look_count = 0
+  for p in look
+    if p.id != product.id
+      assign total = total | plus: p.price
+      assign look_count = look_count | plus: 1
+    endif
+  endfor
+  assign photo = nil
+  assign needle = current_color | downcase
+  for media in product.media
+    assign malt = media.alt | downcase
+    if media.media_type == 'image' and malt contains needle
+      unless malt contains 'flat'
+        assign photo = media
+        break
+      endunless
+    endif
+  endfor
+  if photo == nil
+    assign photo = product.media[1] | default: product.featured_media
+  endif
+  assign look_pieces = look_count | plus: 1
+  assign total_money = total | money_without_trailing_zeros
+-%}
+{%- if look_count > 0 -%}
+<section class="lookset" aria-labelledby="look-title-{{ section.id }}" data-look data-section="{{ section.id }}">
+  <figure class="lookset__media">
+    {%- if photo -%}
+      <img src="{{ photo | image_url: width: 1400 }}" alt="{{ photo.alt | escape }}" width="{{ photo.width }}" height="{{ photo.height }}" loading="lazy" data-look-photo>
+    {%- endif -%}
+  </figure>
+  <div class="lookset__body">
+    <h2 class="lookset__title display" id="look-title-{{ section.id }}">{{ section.settings.title | escape }}</h2>
+    <p class="lookset__lede" data-look-lede>{%- assign color_lower = current_color | downcase -%}{{ 'products.look.lede' | t: title: product.title, color: color_lower }}</p>
+    <div class="lookset__items">
+      {%- for p in look -%}
+        {%- if p.id != product.id -%}
+          {%- liquid
+            assign p_color = ''
+            for v in p.variants
+              if current_color != '' and v.options contains current_color
+                assign p_color = current_color
+                break
+              endif
+            endfor
+            assign meta = p.type
+            if p_color != ''
+              assign meta = p.type | append: ', ' | append: p_color
+            endif
+          -%}
+          <div class="lookset__item" data-look-item data-handle="{{ p.handle }}">
+            {%- render 'product-mini', product: p, color: p_color, meta: meta -%}
+            {%- render 'wish-button', product: p, color: p_color, class: 'lookset__wish' -%}
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+    <p class="lookset__total">{{ 'products.look.total_html' | t: count: look_pieces, price: total_money }}</p>
+  </div>
+</section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Complete the look",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "Complete the look" },
+    { "type": "product_list", "id": "products", "label": "Products", "limit": 4, "info": "Used when the product has no custom.complete_the_look metafield." }
+  ],
+  "presets": [ { "name": "Complete the look" } ]
+}
+{% endschema %}

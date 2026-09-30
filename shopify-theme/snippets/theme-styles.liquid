@@ -1,0 +1,16 @@
+{%- comment -%} Theme editor colours override the design tokens in vyro.css {%- endcomment -%}
+{% style %}
+  :root {
+    --bg: {{ settings.color_background }};
+    --bg-2: {{ settings.color_background_alt }};
+    --surface: {{ settings.color_surface }};
+    --graphite: {{ settings.color_graphite }};
+    --text: {{ settings.color_text }};
+    --muted: {{ settings.color_muted }};
+    --accent: {{ settings.color_accent }};
+    --accent-ink: {{ settings.color_background }};
+    --c-black: {{ settings.swatch_black }};
+    --c-navy: {{ settings.swatch_navy }};
+    --c-gray: {{ settings.swatch_gray }};
+  }
+{% endstyle %}

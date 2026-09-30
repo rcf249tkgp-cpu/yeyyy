@@ -1,0 +1,33 @@
+{%- comment -%} Compact product row. Params: product, color (optional), meta (optional) {%- endcomment -%}
+{%- liquid
+  assign img_data = ''
+  capture img_data
+    if color != blank
+      render 'color-media', product: product, value: color, width: 240
+    endif
+  endcapture
+  assign img_parts = img_data | strip | split: '|'
+  assign href = product.url
+  if color != blank
+    for v in product.variants
+      if v.options contains color
+        assign href = v.url
+        break
+      endif
+    endfor
+  endif
+-%}
+<a class="mini" href="{{ href }}">
+  <span class="mini__img">
+    {%- if img_parts[0] != blank -%}
+      <img src="{{ img_parts[0] }}" alt="" width="{{ img_parts[1] }}" height="{{ img_parts[2] }}" loading="lazy">
+    {%- elsif product.featured_image -%}
+      {{ product.featured_image | image_url: width: 240 | image_tag: alt: '', loading: 'lazy' }}
+    {%- endif -%}
+  </span>
+  <span class="mini__text">
+    <span class="mini__name">{{ product.title | escape }}</span>
+    <span class="mini__meta">{% if meta != blank %}{{ meta | escape }}{% else %}{{ product.type | escape }}{% if color != blank %}, {{ color | escape }}{% endif %}{% endif %}</span>
+  </span>
+  <span class="mini__price">{{ product.price | money_without_trailing_zeros }}</span>
+</a>

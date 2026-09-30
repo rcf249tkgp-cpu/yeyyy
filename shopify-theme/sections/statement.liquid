@@ -1,0 +1,14 @@
+<section class="statement" aria-label="{{ section.settings.text | escape }}" {{ section.shopify_attributes }}>
+  <p class="statement__text display" data-scale-words>{{ section.settings.text | escape }}</p>
+</section>
+
+{% schema %}
+{
+  "name": "Statement",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "text", "label": "Statement", "default": "Gear that looks as serious as your program." }
+  ],
+  "presets": [ { "name": "Statement" } ]
+}
+{% endschema %}

@@ -1,0 +1,12 @@
+{%- comment -%}
+  Renders one product card for the account wishlist. Loaded by
+  vyro-account.js through the Section Rendering API:
+  /products/<handle>?section_id=wishlist-card
+{%- endcomment -%}
+{%- if product -%}
+  {%- render 'product-card', product: product -%}
+{%- endif -%}
+
+{% schema %}
+{ "name": "Wishlist card", "settings": [] }
+{% endschema %}

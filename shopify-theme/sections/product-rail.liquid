@@ -1,0 +1,44 @@
+{%- comment -%} Horizontal product rail (pinned on desktop, swipe on phones) {%- endcomment -%}
+{%- liquid
+  assign rail_collection = section.settings.collection
+  if rail_collection == blank
+    assign rail_collection = collections.all
+  endif
+-%}
+<section class="collection" id="collection" data-collection>
+  <div class="collection__head">
+    <h2 class="display collection__title" data-split-rise>{{ section.settings.title | escape }}</h2>
+    {%- if section.settings.lede != blank -%}<p class="collection__lede">{{ section.settings.lede | escape }}</p>{%- endif -%}
+  </div>
+  <div class="rail" data-rail>
+    <div class="rail__track" data-rail-track>
+      {%- for product in rail_collection.products limit: section.settings.limit -%}
+        {%- render 'product-card', product: product -%}
+      {%- else -%}
+        <p class="empty">{{ 'sections.rail.empty' | t }}</p>
+      {%- endfor -%}
+      <a class="pcard pcard--end" href="{{ section.settings.end_link | default: routes.collections_url }}">
+        <span class="display">{{ section.settings.end_title | escape | newline_to_br }}</span>
+        <span class="pcard__meta">{{ section.settings.end_text | escape }}</span>
+      </a>
+    </div>
+  </div>
+  <div class="rail__progress" aria-hidden="true"><i data-rail-progress></i></div>
+</section>
+
+{% schema %}
+{
+  "name": "Product rail",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": "The first drop" },
+    { "type": "textarea", "id": "lede", "label": "Intro", "default": "Five pieces. Three colorways. One limited run, then it's gone." },
+    { "type": "collection", "id": "collection", "label": "Collection", "info": "Defaults to all products." },
+    { "type": "range", "id": "limit", "label": "Products to show", "min": 2, "max": 16, "step": 1, "default": 8 },
+    { "type": "textarea", "id": "end_title", "label": "Last card title", "default": "Shop all\ncategories" },
+    { "type": "text", "id": "end_text", "label": "Last card text", "default": "Hoodies, tees, tanks, joggers and shorts. Pumpers and stringers next." },
+    { "type": "url", "id": "end_link", "label": "Last card link" }
+  ],
+  "presets": [ { "name": "Product rail" } ]
+}
+{% endschema %}

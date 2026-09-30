@@ -1,0 +1,130 @@
+{%- comment -%}
+  Shared shop layout for collection + search pages.
+  Params: results (products), filters, sort_options, sort_by, title, count,
+          url (base url for clear all), terms (search terms, optional), section_id
+{%- endcomment -%}
+{%- liquid
+  assign active_count = 0
+  for filter in filters
+    if filter.type == 'price_range'
+      if filter.min_value.value or filter.max_value.value
+        assign active_count = active_count | plus: 1
+      endif
+    else
+      assign active_count = active_count | plus: filter.active_values.size
+    endif
+  endfor
+  assign wanted_sorts = 'manual,best-selling,created-descending,price-ascending,price-descending,relevance' | split: ','
+-%}
+<nav class="crumbs" aria-label="{{ 'general.breadcrumb' | t }}">
+  <ol><li><a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a></li><li aria-current="page">{{ title | escape }}</li></ol>
+</nav>
+<header class="shop__head">
+  <h1 class="shop__title display" data-title>{{ title | escape }}</h1>
+  <p class="shop__count" data-count-total role="status" aria-live="polite">{{ 'collections.count' | t: count: count }}</p>
+</header>
+
+<div class="shop__bar">
+  {%- if filters.size > 0 -%}
+    <button type="button" class="btn btn--ghost shop__filter-btn" data-filters-open aria-controls="filters-{{ section_id }}" aria-expanded="false">{{ 'collections.filters' | t }} <span data-active-count>{% if active_count > 0 %}({{ active_count }}){% endif %}</span></button>
+  {%- endif -%}
+  <div class="shop__chips" data-chips>
+    {%- if terms != blank -%}
+      <a class="chip chip--on" href="{{ routes.all_products_collection_url }}">{{ 'search.chip' | t: terms: terms }} <span aria-hidden="true">×</span><span class="sr-only">{{ 'collections.remove' | t }}</span></a>
+    {%- endif -%}
+    {%- for filter in filters -%}
+      {%- if filter.type == 'price_range' -%}
+        {%- if filter.min_value.value or filter.max_value.value -%}
+          <a class="chip chip--on" href="{{ filter.url_to_remove }}" data-chip>{{ filter.min_value.value | default: 0 | money_without_trailing_zeros }}–{{ filter.max_value.value | default: filter.range_max | money_without_trailing_zeros }} <span aria-hidden="true">×</span><span class="sr-only">{{ 'collections.remove' | t }}</span></a>
+        {%- endif -%}
+      {%- else -%}
+        {%- for value in filter.active_values -%}
+          <a class="chip chip--on" href="{{ value.url_to_remove }}" data-chip>{{ value.label | escape }} <span aria-hidden="true">×</span><span class="sr-only">{{ 'collections.remove' | t }}</span></a>
+        {%- endfor -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  {%- if sort_options.size > 0 -%}
+    <label class="shop__sort"><span>{{ 'collections.sort_by' | t }}</span>
+      <select name="sort_by" form="facets-{{ section_id }}" data-sort>
+        {%- for option in sort_options -%}
+          {%- if wanted_sorts contains option.value -%}
+            <option value="{{ option.value }}"{% if option.value == sort_by %} selected{% endif %}>
+              {%- case option.value -%}
+                {%- when 'manual' -%}{{ 'collections.sort.featured' | t }}
+                {%- when 'created-descending' -%}{{ 'collections.sort.newest' | t }}
+                {%- when 'price-ascending' -%}{{ 'collections.sort.price_asc' | t }}
+                {%- when 'price-descending' -%}{{ 'collections.sort.price_desc' | t }}
+                {%- else -%}{{ option.name | escape }}
+              {%- endcase -%}
+            </option>
+          {%- endif -%}
+        {%- endfor -%}
+      </select>
+    </label>
+  {%- endif -%}
+</div>
+
+<div class="shop__layout{% if filters.size == 0 %} shop__layout--nofilters{% endif %}">
+  {%- if filters.size > 0 -%}
+    <div class="filters" id="filters-{{ section_id }}" data-filters>
+      <div class="filters__scrim" data-filters-close></div>
+      <aside class="filters__panel" aria-label="{{ 'collections.filters' | t }}" data-lenis-prevent>
+        <div class="filters__head"><h2 class="display">{{ 'collections.filters' | t }}</h2><a class="link-btn" href="{{ url }}{% if terms != blank %}?q={{ terms | url_encode }}&type=product{% endif %}" data-clear>{{ 'collections.clear_all' | t }}</a></div>
+        <form class="filters__groups" id="facets-{{ section_id }}" data-facets-form action="{{ url }}" method="get">
+          {%- if terms != blank -%}<input type="hidden" name="q" value="{{ terms | escape }}"><input type="hidden" name="type" value="product">{%- endif -%}
+          {%- for filter in filters -%}
+            {%- assign flabel = filter.label | downcase -%}
+            {%- assign style = '' -%}
+            {%- if flabel contains 'size' or flabel contains 'størrelse' -%}{%- assign style = 'sizes' -%}{%- endif -%}
+            {%- if flabel contains 'color' or flabel contains 'colour' or flabel contains 'farge' -%}{%- assign style = 'colors' -%}{%- endif -%}
+            <fieldset class="fgroup">
+              <legend>{{ filter.label | escape }}</legend>
+              {%- case filter.type -%}
+                {%- when 'price_range' -%}
+                  <div class="fprice">
+                    <label class="field"><span>{{ 'collections.price_from' | t }}</span><input type="number" inputmode="decimal" name="{{ filter.min_value.param_name }}" value="{% if filter.min_value.value %}{{ filter.min_value.value | money_without_currency | replace: ',', '' }}{% endif %}" placeholder="0" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"></label>
+                    <label class="field"><span>{{ 'collections.price_to' | t }}</span><input type="number" inputmode="decimal" name="{{ filter.max_value.param_name }}" value="{% if filter.max_value.value %}{{ filter.max_value.value | money_without_currency | replace: ',', '' }}{% endif %}" placeholder="{{ filter.range_max | money_without_currency | replace: ',', '' }}" min="0" max="{{ filter.range_max | money_without_currency | replace: ',', '' }}"></label>
+                  </div>
+                {%- else -%}
+                  <div class="fgroup__opts{% if style != '' %} fgroup__opts--{{ style }}{% endif %}">
+                    {%- for value in filter.values -%}
+                      {%- assign fid = 'f-' | append: section_id | append: '-' | append: filter.param_name | append: '-' | append: forloop.index | handle -%}
+                      {%- assign is_empty = false -%}
+                      {%- if value.count == 0 and value.active == false -%}{%- assign is_empty = true -%}{%- endif -%}
+                      {%- if style == 'sizes' -%}
+                        <label class="fopt fopt--size{% if is_empty %} is-empty{% endif %}" for="{{ fid }}"><input type="checkbox" id="{{ fid }}" name="{{ value.param_name }}" value="{{ value.value | escape }}"{% if value.active %} checked{% endif %}{% if is_empty %} disabled{% endif %}><span>{{ value.label | escape }}</span></label>
+                      {%- elsif style == 'colors' -%}
+                        <label class="fopt fopt--color{% if is_empty %} is-empty{% endif %}" for="{{ fid }}"><input type="checkbox" id="{{ fid }}" name="{{ value.param_name }}" value="{{ value.value | escape }}"{% if value.active %} checked{% endif %}{% if is_empty %} disabled{% endif %}><span class="fopt__dot" style="--sw: {% if value.swatch.color %}{{ value.swatch.color }}{% else %}{% render 'swatch-style', value: value.label %}{% endif %}"></span><span>{{ value.label | escape }}</span><span class="fopt__count">({{ value.count }})</span></label>
+                      {%- else -%}
+                        <label class="fopt{% if is_empty %} is-empty{% endif %}" for="{{ fid }}"><input type="checkbox" id="{{ fid }}" name="{{ value.param_name }}" value="{{ value.value | escape }}"{% if value.active %} checked{% endif %}{% if is_empty %} disabled{% endif %}><span class="fopt__box" aria-hidden="true"></span><span>{{ value.label | escape }}</span><span class="fopt__count">({{ value.count }})</span></label>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </div>
+              {%- endcase -%}
+            </fieldset>
+          {%- endfor -%}
+          <noscript><button type="submit" class="btn btn--solid">{{ 'collections.apply' | t }}</button></noscript>
+        </form>
+        <div class="filters__foot"><button type="button" class="btn btn--solid" data-filters-close data-show-count>{{ 'collections.show_count' | t: count: count }}</button></div>
+      </aside>
+    </div>
+  {%- endif -%}
+  <section class="shop__results" aria-label="{{ 'collections.products' | t }}">
+    <div class="shop__grid" data-grid>
+      {%- for product in results -%}
+        {%- if product.object_type == 'product' or product.object_type == nil -%}
+          {%- render 'product-card', product: product -%}
+        {%- else -%}
+          <a class="mini" href="{{ product.url }}"><span class="mini__text"><span class="mini__name">{{ product.title | escape }}</span></span></a>
+        {%- endif -%}
+      {%- else -%}
+        <div class="empty empty--wide">
+          <p class="empty__title display">{{ 'collections.empty_title' | t }}</p>
+          <p>{{ 'collections.empty_text' | t }}</p>
+          <a class="btn btn--solid" href="{{ url }}">{{ 'collections.clear_all' | t }}</a>
+        </div>
+      {%- endfor -%}
+    </div>
+  </section>
+</div>

@@ -1,0 +1,25 @@
+{
+  "current": "Default",
+  "presets": {
+    "Default": {
+      "color_background": "#0A0A0A",
+      "color_background_alt": "#0F1011",
+      "color_surface": "#141517",
+      "color_graphite": "#1E2023",
+      "color_text": "#ECECE8",
+      "color_muted": "#8E9194",
+      "color_accent": "#C5D0D8",
+      "swatch_black": "#141517",
+      "swatch_navy": "#1E2C4B",
+      "swatch_gray": "#8A8B8D",
+      "enable_intro": true,
+      "enable_webgl": true,
+      "cart_type": "drawer",
+      "free_shipping_threshold": 80,
+      "search_popular": "Hoodie, Joggers, Oversized tee, Shorts, Navy, Tank",
+      "social_handle": "@vyroathletics",
+      "social_instagram": "https://instagram.com/",
+      "social_tiktok": "https://tiktok.com/"
+    }
+  }
+}

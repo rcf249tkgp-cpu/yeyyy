@@ -1,0 +1,23 @@
+{%- paginate search.results by section.settings.per_page -%}
+  <div class="shop" data-shop data-section="{{ section.id }}">
+    {%- liquid
+      if search.performed
+        assign title = 'search.results_for' | t: terms: search.terms
+      else
+        assign title = 'search.title' | t
+      endif
+      render 'facets-layout', results: search.results, filters: search.filters, sort_options: search.sort_options, sort_by: search.sort_by, title: title, count: search.results_count, url: routes.search_url, terms: search.terms, section_id: section.id
+    -%}
+    {%- render 'pagination', paginate: paginate -%}
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Search results",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Results per page", "min": 8, "max": 48, "step": 4, "default": 24 }
+  ]
+}
+{% endschema %}

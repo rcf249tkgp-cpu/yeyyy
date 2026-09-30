@@ -1,0 +1,69 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "VYRO Athletics",
+    "theme_version": "1.0.0",
+    "theme_author": "VYRO Athletics",
+    "theme_documentation_url": "https://help.shopify.com/manual/online-store/themes",
+    "theme_support_url": "https://help.shopify.com"
+  },
+  {
+    "name": "Logo and favicon",
+    "settings": [
+      { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Leave empty to use the bundled VYRO brush logo." },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon", "info": "Square, 64 × 64 px or larger." }
+    ]
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      { "type": "color", "id": "color_background", "label": "Background", "default": "#0A0A0A" },
+      { "type": "color", "id": "color_background_alt", "label": "Alternate background", "default": "#0F1011" },
+      { "type": "color", "id": "color_surface", "label": "Surface (cards, drawers)", "default": "#141517" },
+      { "type": "color", "id": "color_graphite", "label": "Graphite (fields, hover)", "default": "#1E2023" },
+      { "type": "color", "id": "color_text", "label": "Text", "default": "#ECECE8" },
+      { "type": "color", "id": "color_muted", "label": "Muted text", "default": "#8E9194" },
+      { "type": "color", "id": "color_accent", "label": "Accent (buttons, hover)", "default": "#C5D0D8" },
+      { "type": "header", "content": "Colorway swatches" },
+      { "type": "paragraph", "content": "Used for the Black, Navy and Gray values of your Color option. Other colours use the swatch set on the option value in Shopify admin." },
+      { "type": "color", "id": "swatch_black", "label": "Black", "default": "#141517" },
+      { "type": "color", "id": "swatch_navy", "label": "Navy", "default": "#1E2C4B" },
+      { "type": "color", "id": "swatch_gray", "label": "Gray", "default": "#8A8B8D" }
+    ]
+  },
+  {
+    "name": "Animation",
+    "settings": [
+      { "type": "checkbox", "id": "enable_intro", "label": "Show logo intro on the home page", "default": true },
+      { "type": "checkbox", "id": "enable_webgl", "label": "Enable WebGL hero and hover effects", "default": true, "info": "Turns off automatically for visitors who prefer reduced motion." }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "select", "id": "cart_type", "label": "Add to cart opens",
+        "options": [
+          { "value": "drawer", "label": "Cart drawer" },
+          { "value": "page", "label": "Cart page" }
+        ],
+        "default": "drawer"
+      },
+      { "type": "range", "id": "free_shipping_threshold", "label": "Free shipping from", "min": 0, "max": 300, "step": 5, "unit": "€", "default": 80, "info": "Shows a progress bar in the cart. Set to 0 to hide it. Match this to your shipping rates." }
+    ]
+  },
+  {
+    "name": "Search",
+    "settings": [
+      { "type": "text", "id": "search_popular", "label": "Popular searches", "default": "Hoodie, Joggers, Oversized tee, Shorts, Navy, Tank", "info": "Comma-separated." }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      { "type": "url", "id": "social_instagram", "label": "Instagram" },
+      { "type": "url", "id": "social_tiktok", "label": "TikTok" },
+      { "type": "text", "id": "social_handle", "label": "Handle", "default": "@vyroathletics" }
+    ]
+  }
+]

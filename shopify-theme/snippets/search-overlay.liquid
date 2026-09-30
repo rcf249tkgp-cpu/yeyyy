@@ -1,0 +1,29 @@
+{%- liquid
+  assign terms = settings.search_popular | default: 'Hoodie, Joggers, Oversized tee, Shorts, Navy, Tank' | split: ','
+-%}
+<div class="search" data-search hidden>
+  <div class="search__scrim" data-search-close></div>
+  <section class="search__panel" role="dialog" aria-modal="true" aria-label="{{ 'search.title' | t }}" data-lenis-prevent>
+    <form class="search__bar" role="search" action="{{ routes.search_url }}" method="get" data-search-form>
+      {%- render 'icon', icon: 'search' -%}
+      <input type="hidden" name="type" value="product">
+      <label class="sr-only" for="site-search">{{ 'search.title' | t }}</label>
+      <input id="site-search" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="{{ 'search.placeholder' | t }}" data-search-input aria-controls="search-results" aria-describedby="search-status">
+      <button class="icon-btn" type="button" data-search-close aria-label="{{ 'search.close' | t }}">{%- render 'icon', icon: 'close' -%}</button>
+    </form>
+    <div class="search__body">
+      <div class="search__suggest" data-search-suggest>
+        <p class="search__label">{{ 'search.popular' | t }}</p>
+        <div class="chips">
+          {%- for term in terms -%}
+            {%- assign t = term | strip -%}
+            {%- if t != blank -%}<button type="button" class="chip" data-search-term="{{ t | escape }}">{{ t | escape }}</button>{%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+      <p class="search__status" id="search-status" role="status" aria-live="polite" data-search-status></p>
+      <div class="search__results" id="search-results" data-search-results></div>
+      <a class="btn btn--ghost search__all" href="{{ routes.search_url }}" data-search-all hidden>{{ 'search.view_all' | t }}</a>
+    </div>
+  </section>
+</div>

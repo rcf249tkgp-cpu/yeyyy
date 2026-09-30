@@ -1,0 +1,17 @@
+<div class="acct">
+  <section class="acct__gate">
+    <h1 class="acct__title display">{{ 'customer.activate.title' | t }}</h1>
+    <p class="acct__lede">{{ 'customer.activate.text' | t }}</p>
+    {%- form 'activate_customer_password', class: 'auth__form acct__reset', novalidate: 'novalidate' -%}
+      {%- if form.errors -%}<p class="form__error" role="alert">{{ form.errors | default_errors }}</p>{%- endif -%}
+      <div class="field"><label for="act-pw">{{ 'customer.fields.password' | t }}</label><input id="act-pw" type="password" name="customer[password]" autocomplete="new-password" required></div>
+      <div class="field"><label for="act-pw2">{{ 'customer.fields.confirm_password' | t }}</label><input id="act-pw2" type="password" name="customer[password_confirmation]" autocomplete="new-password" required></div>
+      <button class="btn btn--solid" type="submit" name="activate">{{ 'customer.activate.submit' | t }}</button>
+      <button class="btn btn--ghost" type="submit" name="decline">{{ 'customer.activate.decline' | t }}</button>
+    {%- endform -%}
+  </section>
+</div>
+
+{% schema %}
+{ "name": "Activate account", "tag": "section", "settings": [] }
+{% endschema %}

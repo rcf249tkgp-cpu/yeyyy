@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="{{ settings.color_background }}">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 64, height: 64 }}">
+    {%- else -%}
+      <link rel="icon" type="image/png" href="{{ 'vyro-logo.png' | asset_url }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; {{ current_tags | join: ', ' }}{% endif -%}
+      {%- if current_page != 1 %} &ndash; {{ 'general.page' | t: page: current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+    {%- if page_description -%}
+      <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+
+    {% render 'meta-tags' %}
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+
+    {{ 'vyro.css' | asset_url | stylesheet_tag }}
+    {{ 'vyro-shopify.css' | asset_url | stylesheet_tag }}
+    {% render 'theme-styles' %}
+
+    <script>
+      document.documentElement.classList.remove('no-js');
+      window.VyroTheme = {
+        moneyFormat: {{ shop.money_format | json }},
+        routes: {
+          root: {{ routes.root_url | json }},
+          cart: {{ routes.cart_url | json }},
+          cartAdd: {{ routes.cart_add_url | json }},
+          cartChange: {{ routes.cart_change_url | json }},
+          cartUpdate: {{ routes.cart_update_url | json }},
+          search: {{ routes.search_url | json }},
+          predictiveSearch: {{ routes.predictive_search_url | json }},
+          account: {{ routes.account_url | json }},
+          login: {{ routes.account_login_url | json }},
+          register: {{ routes.account_register_url | json }},
+          recommendations: {{ routes.product_recommendations_url | json }}
+        },
+        customer: {% if customer %}{ id: {{ customer.id | json }}, firstName: {{ customer.first_name | json }} }{% else %}null{% endif %},
+        freeShipping: {{ settings.free_shipping_threshold | default: 0 | times: 100 | json }},
+        cartType: {{ settings.cart_type | json }},
+        webgl: {{ settings.enable_webgl | json }},
+        designMode: {{ request.design_mode | json }},
+        template: {{ template.name | json }},
+        strings: {
+          addToCart: {{ 'products.product.add_to_cart' | t | json }},
+          added: {{ 'products.product.added' | t | json }},
+          soldOut: {{ 'products.product.sold_out' | t | json }},
+          unavailable: {{ 'products.product.unavailable' | t | json }},
+          selectSize: {{ 'products.product.select_size_error' | t | json }},
+          cartError: {{ 'cart.error' | t | json }},
+          removed: {{ 'cart.removed' | t | json }},
+          wishSaved: {{ 'wishlist.saved' | t | json }},
+          wishRemoved: {{ 'wishlist.removed' | t | json }},
+          searchCount: {{ 'search.count' | t | json }},
+          searchNone: {{ 'search.none' | t | json }}
+        }
+      };
+    </script>
+
+    {{ content_for_header }}
+  </head>
+
+  <body class="template-{{ template.name | handle }}{% if template.name == 'index' and settings.enable_intro and request.design_mode == false %} is-loading{% endif %}" data-page="{% if template.name == 'index' %}home{% else %}{{ template.name }}{% endif %}">
+    <a class="skip-link" href="#main">{{ 'accessibility.skip_to_content' | t }}</a>
+
+    {%- if template.name == 'index' and settings.enable_intro and request.design_mode == false -%}
+      <div class="intro" aria-hidden="true">
+        <div class="intro__logo">
+          {%- if settings.logo != blank -%}
+            {{ settings.logo | image_url: width: 1300 | image_tag: alt: '', width: 1300, height: 662 }}
+          {%- else -%}
+            <img src="{{ 'vyro-logo.png' | asset_url }}" alt="" width="1300" height="662">
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {% sections 'header-group' %}
+
+    <main id="main" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    {% sections 'footer-group' %}
+
+    {% section 'cart-drawer' %}
+    {% render 'search-overlay' %}
+    {% render 'wishlist-modal' %}
+
+    <div class="toast" role="status" aria-live="polite" data-toast></div>
+
+    <script src="{{ 'gsap.min.js' | asset_url }}" defer></script>
+    <script src="{{ 'ScrollTrigger.min.js' | asset_url }}" defer></script>
+    <script src="{{ 'lenis.min.js' | asset_url }}" defer></script>
+    {%- if template.name == 'index' -%}
+      {%- if settings.enable_webgl -%}
+        <script src="{{ 'three.min.js' | asset_url }}" defer></script>
+      {%- endif -%}
+      <script src="{{ 'vyro-garments.js' | asset_url }}" defer></script>
+    {%- endif -%}
+    <script src="{{ 'vyro-theme.js' | asset_url }}" defer></script>
+    {%- if template.name == 'index' -%}
+      {%- if settings.enable_webgl -%}
+        <script src="{{ 'vyro-gl.js' | asset_url }}" defer></script>
+      {%- endif -%}
+      <script src="{{ 'vyro-home.js' | asset_url }}" defer></script>
+    {%- endif -%}
+    {%- if template.name == 'product' -%}
+      <script src="{{ 'vyro-product.js' | asset_url }}" defer></script>
+    {%- endif -%}
+    {%- if template.name == 'collection' or template.name == 'search' -%}
+      <script src="{{ 'vyro-collection.js' | asset_url }}" defer></script>
+    {%- endif -%}
+    {%- if template.directory == 'customers' -%}
+      <script src="{{ 'vyro-account.js' | asset_url }}" defer></script>
+    {%- endif -%}
+  </body>
+</html>

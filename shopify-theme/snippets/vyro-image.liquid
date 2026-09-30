@@ -1,0 +1,18 @@
+{%- comment -%}
+  Responsive image with a bundled fallback.
+  Params: image (Shopify image, optional), fallback (asset filename), alt, class,
+  widths (default '360, 540, 720, 960, 1200, 1600'), sizes, loading ('lazy'), attrs (extra attributes)
+{%- endcomment -%}
+{%- liquid
+  assign widths = widths | default: '360, 540, 720, 960, 1200, 1600'
+  assign sizes = sizes | default: '100vw'
+  assign loading = loading | default: 'lazy'
+-%}
+{%- if image != blank -%}
+  {%- assign img_alt = alt | default: image.alt | escape -%}
+  {{ image | image_url: width: 1600 | image_tag: widths: widths, sizes: sizes, alt: img_alt, class: class, loading: loading }}
+{%- elsif fallback != blank -%}
+  {%- capture fb_size -%}{%- render 'asset-size', file: fallback -%}{%- endcapture -%}
+  {%- assign fb_size = fb_size | strip | split: ' ' -%}
+  <img src="{{ fallback | asset_url }}" alt="{{ alt | escape }}" width="{{ fb_size[0] }}" height="{{ fb_size[1] }}"{% if class %} class="{{ class }}"{% endif %} loading="{{ loading }}" {{ attrs }}>
+{%- endif -%}

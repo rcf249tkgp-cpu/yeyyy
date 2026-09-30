@@ -1,0 +1,61 @@
+<section class="story" id="story" data-story>
+  <div class="story__media" data-parallax-wrap>
+    <div class="ambient" data-parallax aria-hidden="true">
+      {%- render 'vyro-image', image: section.settings.ambient, fallback: 'life-5.jpg', alt: '', sizes: '50vw', widths: '360, 720' -%}
+    </div>
+  </div>
+  <div class="story__inner">
+    <figure class="story__portrait">
+      <div class="story__portrait-media">{%- render 'vyro-image', image: section.settings.portrait, fallback: 'life-3.jpg', alt: section.settings.portrait_alt, sizes: '(min-width: 900px) 440px, 72vw' -%}</div>
+    </figure>
+    <h2 class="story__kicker">{{ section.settings.kicker | escape }}</h2>
+    <p class="story__big display" data-reveal-words>{{ section.settings.heading | escape }}</p>
+    <div class="story__body">{{ section.settings.body }}</div>
+    {%- if section.blocks.size > 0 -%}
+      <dl class="pillars">
+        {%- for block in section.blocks -%}
+          <div class="pillar" data-pillar {{ block.shopify_attributes }}>
+            <dt class="display">{{ block.settings.title | escape }}</dt>
+            <dd>{{ block.settings.text | escape }}</dd>
+          </div>
+        {%- endfor -%}
+      </dl>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Brand story",
+  "tag": "div",
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "kicker", "label": "Kicker", "default": "Why VYRO" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Nobody claps at 5:40 AM. You train anyway." },
+    { "type": "richtext", "id": "body", "label": "Text", "default": "<p>VYRO started in a garage gym with a squat rack, a bad heater and a rule: you don't miss Mondays. We couldn't find training gear that looked as serious as the people wearing it, so we made our own.</p><p>Every piece is heavyweight, cut for a lifter's frame and tested under a bar before it ships. One brush-stroke mark, no loud slogans, no shortcuts in the fabric. You earn the pump. The gear just has to keep up.</p>" },
+    { "type": "image_picker", "id": "portrait", "label": "Portrait" },
+    { "type": "text", "id": "portrait_alt", "label": "Portrait description", "default": "Lifter in the navy hoodie, headphones on, resting between sets" },
+    { "type": "image_picker", "id": "ambient", "label": "Blurred background photo" }
+  ],
+  "blocks": [
+    {
+      "type": "pillar",
+      "name": "Pillar",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Title", "default": "Discipline" },
+        { "type": "text", "id": "text", "label": "Text", "default": "Show up when it's cold, dark and nobody's checking." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Brand story",
+      "blocks": [
+        { "type": "pillar", "settings": { "title": "Discipline", "text": "Show up when it's cold, dark and nobody's checking." } },
+        { "type": "pillar", "settings": { "title": "Consistency", "text": "Progress is a thousand ordinary sessions stacked on top of each other." } },
+        { "type": "pillar", "settings": { "title": "Earned", "text": "Nothing in here is given. Not the PRs, not the physique, not the logo." } }
+      ]
+    }
+  ]
+}
+{% endschema %}

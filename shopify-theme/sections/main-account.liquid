@@ -1,0 +1,84 @@
+{%- paginate customer.orders by 20 -%}
+<div class="acct" data-account>
+  <header class="acct__head">
+    <p class="acct__hello">{{ 'customer.account.signed_in_as' | t: email: customer.email }}</p>
+    <h1 class="acct__title display">{%- assign hi_name = customer.first_name | default: customer.name | escape -%}{{ 'customer.account.hi' | t: name: hi_name }}</h1>
+  </header>
+  <div class="acct__layout">
+    <nav class="acct__tabs" role="tablist" aria-label="{{ 'customer.account.sections' | t }}">
+      <a href="#profile" role="tab" id="tab-profile" aria-controls="panel-profile" aria-selected="true" class="acct__tab" data-tab="profile">{{ 'customer.account.profile' | t }}</a>
+      <a href="#orders" role="tab" id="tab-orders" aria-controls="panel-orders" aria-selected="false" class="acct__tab" data-tab="orders">{{ 'customer.account.orders' | t }}</a>
+      <a href="#wishlist" role="tab" id="tab-wishlist" aria-controls="panel-wishlist" aria-selected="false" class="acct__tab" data-tab="wishlist">{{ 'wishlist.title' | t }}</a>
+      <a href="#addresses" role="tab" id="tab-addresses" aria-controls="panel-addresses" aria-selected="false" class="acct__tab" data-tab="addresses">{{ 'customer.account.addresses' | t }}</a>
+      <a href="#settings" role="tab" id="tab-settings" aria-controls="panel-settings" aria-selected="false" class="acct__tab" data-tab="settings">{{ 'customer.account.settings' | t }}</a>
+      <a class="acct__tab acct__logout" href="{{ routes.account_logout_url }}">{{ 'customer.account.logout' | t }}</a>
+    </nav>
+
+    <section class="acct__panel" id="panel-profile" role="tabpanel" aria-labelledby="tab-profile" tabindex="-1" data-panel="profile">
+      <h2 class="acct__h2 display">{{ 'customer.account.profile' | t }}</h2>
+      <dl class="acct__dl">
+        <div><dt>{{ 'customer.fields.name' | t }}</dt><dd>{{ customer.name | escape }}</dd></div>
+        <div><dt>{{ 'customer.fields.email' | t }}</dt><dd>{{ customer.email | escape }}</dd></div>
+        {%- if customer.phone -%}<div><dt>{{ 'customer.fields.phone' | t }}</dt><dd>{{ customer.phone | escape }}</dd></div>{%- endif -%}
+        <div><dt>{{ 'customer.account.orders' | t }}</dt><dd>{{ customer.orders_count }}</dd></div>
+      </dl>
+      <p class="acct__meta">{{ 'customer.account.profile_note' | t }}</p>
+    </section>
+
+    <section class="acct__panel" id="panel-orders" role="tabpanel" aria-labelledby="tab-orders" tabindex="-1" data-panel="orders" hidden>
+      <h2 class="acct__h2 display">{{ 'customer.account.orders' | t }}</h2>
+      {%- for order in customer.orders -%}
+        <details class="order">
+          <summary><span class="order__no">{{ order.name }}</span><span class="order__date">{{ order.created_at | date: format: 'date' }}</span><span class="order__status">{{ order.fulfillment_status_label }}</span><span class="order__total">{{ order.total_price | money_without_trailing_zeros }}</span></summary>
+          <div class="order__body">
+            {%- for item in order.line_items -%}
+              <a class="mini" href="{{ item.product.url | default: '#' }}">
+                <span class="mini__img">{%- if item.image -%}{{ item.image | image_url: width: 160 | image_tag: alt: '', loading: 'lazy' }}{%- endif -%}</span>
+                <span class="mini__text"><span class="mini__name">{{ item.title | escape }}</span><span class="mini__meta">× {{ item.quantity }}</span></span>
+                <span class="mini__price">{{ item.final_line_price | money_without_trailing_zeros }}</span>
+              </a>
+            {%- endfor -%}
+            <p class="order__addr"><a class="link-btn" href="{{ order.customer_url }}">{{ 'customer.orders.view' | t }}</a></p>
+          </div>
+        </details>
+      {%- else -%}
+        <div class="empty"><p class="empty__title display">{{ 'customer.orders.none_title' | t }}</p><p>{{ 'customer.orders.none_text' | t }}</p><a class="btn btn--solid" href="{{ routes.all_products_collection_url }}">{{ 'general.shop_all' | t }}</a></div>
+      {%- endfor -%}
+      {%- render 'pagination', paginate: paginate -%}
+    </section>
+
+    <section class="acct__panel" id="panel-wishlist" role="tabpanel" aria-labelledby="tab-wishlist" tabindex="-1" data-panel="wishlist" hidden>
+      <h2 class="acct__h2 display">{{ 'wishlist.title' | t }} <span data-wish-count></span></h2>
+      <div class="acct__grid" data-wish-grid></div>
+      <div class="empty" data-wish-empty hidden><p class="empty__title display">{{ 'wishlist.empty_title' | t }}</p><p>{{ 'wishlist.empty_text' | t }}</p><a class="btn btn--solid" href="{{ routes.all_products_collection_url }}">{{ 'wishlist.browse' | t }}</a></div>
+    </section>
+
+    <section class="acct__panel" id="panel-addresses" role="tabpanel" aria-labelledby="tab-addresses" tabindex="-1" data-panel="addresses" hidden>
+      <h2 class="acct__h2 display">{{ 'customer.account.addresses' | t }}</h2>
+      {%- if customer.default_address -%}
+        <div class="addr-grid">
+          <article class="addr"><span class="tag">{{ 'customer.addresses.default' | t }}</span><p>{{ customer.default_address | format_address }}</p></article>
+        </div>
+      {%- else -%}
+        <p class="acct__meta">{{ 'customer.addresses.none' | t }}</p>
+      {%- endif -%}
+      <a class="btn btn--ghost" href="{{ routes.account_addresses_url }}">{{ 'customer.addresses.manage' | t: count: customer.addresses_count }}</a>
+    </section>
+
+    <section class="acct__panel" id="panel-settings" role="tabpanel" aria-labelledby="tab-settings" tabindex="-1" data-panel="settings" hidden>
+      <h2 class="acct__h2 display">{{ 'customer.account.settings' | t }}</h2>
+      <div class="acct__form">
+        <h3 class="acct__h3">{{ 'customer.settings.marketing' | t }}</h3>
+        <p class="acct__meta">{% if customer.accepts_marketing %}{{ 'customer.settings.subscribed' | t }}{% else %}{{ 'customer.settings.not_subscribed' | t }}{% endif %}</p>
+        <h3 class="acct__h3">{{ 'customer.settings.password' | t }}</h3>
+        <p class="acct__meta">{{ 'customer.settings.password_text' | t }}</p>
+        <a class="btn btn--ghost" href="{{ routes.account_logout_url }}">{{ 'customer.account.logout' | t }}</a>
+      </div>
+    </section>
+  </div>
+</div>
+{%- endpaginate -%}
+
+{% schema %}
+{ "name": "Account", "tag": "section", "settings": [] }
+{% endschema %}

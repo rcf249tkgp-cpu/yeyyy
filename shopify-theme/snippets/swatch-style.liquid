@@ -1,0 +1,17 @@
+{%- comment -%} Outputs a CSS colour for a swatch value {%- endcomment -%}
+{%- liquid
+  assign h = value | handle
+  if value.swatch.color
+    echo value.swatch.color
+  elsif h == 'black' or h == 'svart'
+    echo settings.swatch_black
+  elsif h == 'navy' or h == 'navy-blue' or h == 'marine' or h == 'marineblaa'
+    echo settings.swatch_navy
+  elsif h == 'gray' or h == 'grey' or h == 'gra' or h contains 'gray'
+    echo settings.swatch_gray
+  elsif h == 'white' or h == 'hvit'
+    echo '#E7E7E1'
+  else
+    echo h
+  endif
+-%}
