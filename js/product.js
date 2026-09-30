@@ -12,6 +12,26 @@
   const $ = function (s, r) { return (r || document).querySelector(s); };
   const $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
 
+  /* ------------------------------------------------------------------ *
+   * Always open a product at the top. Browsers restore the old scroll
+   * position on reload, back/forward and (on some mobile browsers) when a
+   * product URL was visited earlier, so take over scroll restoration here.
+   * Once the visitor scrolls themselves we stop forcing it.
+   * ------------------------------------------------------------------ */
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  let userScrolled = false;
+  ['wheel', 'touchmove', 'keydown'].forEach(function (ev) {
+    window.addEventListener(ev, function () { userScrolled = true; }, { passive: true, once: true });
+  });
+  function toTop(force) {
+    if (userScrolled && !force) return;
+    if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
+    window.scrollTo(0, 0);
+  }
+  toTop(true);
+  window.addEventListener('load', function () { toTop(); });
+  window.addEventListener('pageshow', function (e) { if (e.persisted) { userScrolled = false; toTop(true); } });
+
   const root = $('[data-pdp]');
   const params = new URLSearchParams(location.search);
   const product = Shop.get(params.get('id'));
@@ -152,6 +172,9 @@
     }
   }
   setupGallery();
+  // Content is in: settle at the top once layout has its final height
+  toTop();
+  requestAnimationFrame(function () { toTop(); });
 
   /* ------------------------------------------------------------------ *
    * Color
