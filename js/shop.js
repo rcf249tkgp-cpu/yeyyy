@@ -35,6 +35,9 @@
   const PRODUCTS = [
     {
       slug: 'athletics-club-hoodie',
+      gender: 'men', added: '2026-09-01', featured: 1, isNew: false,
+      tags: ['hoodie', 'hoodies', 'fleece', 'pullover', 'athletics club', 'heavyweight', 'oversized', 'warm-up', 'tops'],
+      look: ['club-jogger', 'oversized-tee', 'training-short'],
       name: 'Athletics Club Hoodie',
       category: 'Hoodies',
       price: 85,
@@ -60,6 +63,9 @@
     },
     {
       slug: 'oversized-tee',
+      gender: 'men', added: '2026-09-22', featured: 3, isNew: true,
+      tags: ['tee', 'tees', 't-shirt', 'tshirt', 'shirt', 'oversized', 'boxy', 'back print', 'cotton', 'tops'],
+      look: ['training-short', 'athletics-club-hoodie', 'club-jogger'],
       name: 'Oversized Tee',
       category: 'Tees',
       price: 40,
@@ -85,6 +91,9 @@
     },
     {
       slug: 'premium-tank',
+      gender: 'men', added: '2026-09-22', featured: 4, isNew: true,
+      tags: ['tank', 'tanks', 'tank top', 'vest', 'sleeveless', 'singlet', 'arm day', 'cotton', 'tops'],
+      look: ['training-short', 'athletics-club-hoodie', 'club-jogger'],
       name: 'Premium Tank',
       category: 'Tanks',
       price: 32,
@@ -111,6 +120,9 @@
     },
     {
       slug: 'club-jogger',
+      gender: 'men', added: '2026-09-01', featured: 2, isNew: false,
+      tags: ['jogger', 'joggers', 'sweatpants', 'pants', 'trackpants', 'fleece', 'leg print', 'bottoms'],
+      look: ['athletics-club-hoodie', 'oversized-tee', 'premium-tank'],
       name: 'Club Jogger',
       category: 'Joggers',
       price: 70,
@@ -137,6 +149,9 @@
     },
     {
       slug: 'training-short',
+      gender: 'men', added: '2026-09-22', featured: 5, isNew: true,
+      tags: ['short', 'shorts', 'gym shorts', 'training', 'leg day', 'squat', 'poly', 'bottoms'],
+      look: ['premium-tank', 'oversized-tee', 'athletics-club-hoodie'],
       name: 'Training Short',
       category: 'Shorts',
       price: 45,
@@ -162,6 +177,9 @@
     },
     {
       slug: 'club-set',
+      gender: 'men', added: '2026-09-01', featured: 6, isNew: false,
+      tags: ['set', 'tracksuit', 'matching set', 'co-ord', 'hoodie', 'jogger', 'fleece', 'bundle'],
+      look: ['oversized-tee', 'premium-tank', 'training-short'],
       name: 'Club Set',
       category: 'Sets',
       price: 145,
@@ -259,6 +277,13 @@
       }).join('') + '</div>';
   }
 
+  // Wishlist heart. State and clicks are handled by js/chrome.js
+  function wishHTML(slug, color, cls) {
+    return '<button type="button" class="wish ' + (cls || '') + '" data-wish data-slug="' + slug + '" data-color="' + color + '" aria-pressed="false" aria-label="Save ' + esc(get(slug).name) + ' to wishlist">' +
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9a4.6 4.6 0 0 1 6.5 6.5z"/></svg>' +
+    '</button>';
+  }
+
   function cardHTML(p, color) {
     color = color || p.defaultColor;
     const href = url(p.slug, color);
@@ -268,6 +293,7 @@
     }).join('');
     return '' +
       '<article class="pcard" data-pcard data-slug="' + p.slug + '" data-color="' + color + '">' +
+        wishHTML(p.slug, color, 'pcard__wish') +
         '<a class="pcard__link" href="' + href + '" data-card-link tabindex="-1" aria-hidden="true">' +
           '<div class="pcard__media' + (p.card.length > 1 ? ' pcard__media--set' : '') + '" data-hover-gl>' + imgs + '</div>' +
         '</a>' +
@@ -316,6 +342,7 @@
     card.dataset.color = color;
     $$('.swatch', card).forEach(function (s) { s.setAttribute('aria-checked', String(s.dataset.color === color)); });
     $$('[data-card-link]', card).forEach(function (a) { a.href = url(p.slug, color); });
+    $$('[data-wish]', card).forEach(function (w) { w.dataset.color = color; });
     const media = card.querySelector('.pcard__media');
     const olds = $$('.pimg:not(.is-out)', media);
     const gsap = window.gsap;
@@ -364,21 +391,89 @@
         });
       });
     });
+    if (window.VyroChrome) window.VyroChrome.syncWish(container);
     return cards;
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Compact product row (search results, cart drawer, Complete the Look)
+   * ------------------------------------------------------------------ */
+  function thumb(p, color) {
+    return p.card[0].src.replace('{c}', color);
+  }
+  function miniHTML(p, color, opts) {
+    opts = opts || {};
+    color = color || p.defaultColor;
+    return '' +
+      '<a class="mini" href="' + url(p.slug, color) + '">' +
+        '<span class="mini__img"><img src="' + thumb(p, color) + '" alt="" loading="lazy"></span>' +
+        '<span class="mini__text">' +
+          '<span class="mini__name">' + esc(p.name) + '</span>' +
+          '<span class="mini__meta">' + (opts.meta ? esc(opts.meta) : esc(p.category) + ', ' + colorName(color)) + '</span>' +
+        '</span>' +
+        '<span class="mini__price">' + price(p.price) + '</span>' +
+      '</a>';
+  }
+
+  /* ------------------------------------------------------------------ *
+   * Search: name, category, tags and colour words
+   * ------------------------------------------------------------------ */
+  function norm(s) { return String(s).toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function search(q) {
+    const terms = norm(q).split(' ').filter(Boolean);
+    if (!terms.length) return [];
+    const color = COLOR_ORDER.filter(function (c) { return terms.indexOf(c) > -1 || (c === 'gray' && terms.indexOf('grey') > -1); })[0] || null;
+    const words = terms.filter(function (t) { return COLOR_ORDER.indexOf(t) < 0 && t !== 'grey'; });
+    return PRODUCTS.map(function (p) {
+      const name = norm(p.name), cat = norm(p.category), tags = p.tags.map(norm).join(' | ');
+      let score = 0;
+      for (let k = 0; k < words.length; k++) {
+        const w = words[k];
+        let hit = 0;
+        if (name.split(' ').some(function (x) { return x.indexOf(w) === 0; })) hit = 3;
+        else if (cat.indexOf(w) === 0 || cat.indexOf(' ' + w) > -1) hit = 2;
+        else if (tags.indexOf(w) > -1) hit = 1;
+        if (!hit) return null; // every word must match something
+        score += hit;
+      }
+      if (!words.length) score = 1; // colour-only search matches everything
+      return { product: p, color: color || p.defaultColor, score: score };
+    }).filter(Boolean).sort(function (a, b) { return b.score - a.score || a.product.featured - b.product.featured; });
   }
 
   /* ------------------------------------------------------------------ *
    * Bag (localStorage, so it persists across pages)
    * ------------------------------------------------------------------ */
   const BAG_KEY = 'vyro-bag';
+  const FREE_SHIPPING = 80;
+  const SHIPPING_FEE = 5.95;
   function readBag() {
-    try { return JSON.parse(localStorage.getItem(BAG_KEY) || '[]') || []; } catch (e) { return []; }
+    try {
+      return (JSON.parse(localStorage.getItem(BAG_KEY) || '[]') || []).filter(function (i) { return get(i.slug); });
+    } catch (e) { return []; }
   }
   function writeBag(items) {
     try { localStorage.setItem(BAG_KEY, JSON.stringify(items)); } catch (e) { /* storage off: bag lasts this page only */ }
   }
   let memoryBag = readBag();
+  function changed(bump) {
+    writeBag(memoryBag);
+    renderBagCount(bump);
+    window.dispatchEvent(new CustomEvent('vyro:bag'));
+  }
+  function bagItems() {
+    return memoryBag.map(function (i, index) {
+      const p = get(i.slug);
+      return { index: index, slug: i.slug, color: i.color, size: i.size, qty: i.qty, product: p, unit: p.price, line: p.price * i.qty };
+    });
+  }
   function bagCount() { return memoryBag.reduce(function (n, i) { return n + i.qty; }, 0); }
+  function totals() {
+    const subtotal = bagItems().reduce(function (n, i) { return n + i.line; }, 0);
+    const shipping = subtotal === 0 || subtotal >= FREE_SHIPPING ? 0 : SHIPPING_FEE;
+    return { subtotal: subtotal, shipping: shipping, total: subtotal + shipping, toFree: Math.max(0, FREE_SHIPPING - subtotal) };
+  }
+  function money(n) { return '€' + (Math.round(n * 100) / 100).toFixed(n % 1 ? 2 : 0); }
   function renderBagCount(bump) {
     $$('[data-bag-count]').forEach(function (el) { el.textContent = String(bagCount()); });
     if (bump) $$('[data-bag]').forEach(function (b) {
@@ -388,13 +483,23 @@
   }
   function addToBag(item) {
     const same = memoryBag.filter(function (i) { return i.slug === item.slug && i.color === item.color && i.size === item.size; })[0];
-    if (same) same.qty = Math.min(same.qty + item.qty, 99);
-    else memoryBag.push({ slug: item.slug, color: item.color, size: item.size, qty: item.qty });
-    writeBag(memoryBag);
-    renderBagCount(true);
+    if (same) same.qty = Math.min(same.qty + item.qty, 10);
+    else memoryBag.push({ slug: item.slug, color: item.color, size: item.size, qty: Math.min(item.qty, 10) });
+    changed(true);
+    window.dispatchEvent(new CustomEvent('vyro:added', { detail: item }));
   }
+  function setQty(index, qty) {
+    if (!memoryBag[index]) return;
+    memoryBag[index].qty = Math.max(1, Math.min(10, qty));
+    changed(false);
+  }
+  function removeItem(index) {
+    memoryBag.splice(index, 1);
+    changed(false);
+  }
+  function clearBag() { memoryBag = []; changed(false); }
   window.addEventListener('storage', function (e) {
-    if (e.key === BAG_KEY) { memoryBag = readBag(); renderBagCount(false); }
+    if (e.key === BAG_KEY) { memoryBag = readBag(); renderBagCount(false); window.dispatchEvent(new CustomEvent('vyro:bag')); }
   });
 
   let toastT = null;
@@ -413,7 +518,9 @@
     COLORS: COLORS, COLOR_ORDER: COLOR_ORDER, PRODUCTS: PRODUCTS,
     get: get, url: url, colorName: colorName, price: price, esc: esc,
     fitPimg: fitPimg, wrapPimgs: wrapPimgs, whenLoaded: whenLoaded,
-    cardHTML: cardHTML, swatchesHTML: swatchesHTML, mountCards: mountCards, switchCard: switchCard, radioKeys: radioKeys,
-    addToBag: addToBag, bagCount: bagCount, renderBagCount: renderBagCount, toast: toast
+    cardHTML: cardHTML, wishHTML: wishHTML, swatchesHTML: swatchesHTML, mountCards: mountCards, switchCard: switchCard, radioKeys: radioKeys,
+    miniHTML: miniHTML, thumb: thumb, search: search,
+    addToBag: addToBag, bagItems: bagItems, bagCount: bagCount, setQty: setQty, removeItem: removeItem, clearBag: clearBag,
+    totals: totals, money: money, FREE_SHIPPING: FREE_SHIPPING, renderBagCount: renderBagCount, toast: toast
   };
 })();

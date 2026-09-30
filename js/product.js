@@ -4,13 +4,10 @@
   looks the product up in the shared catalogue (js/shop.js) and renders it.
 */
 (function () {
-  const doc = document.documentElement;
-  doc.classList.remove('no-js');
-  document.body.classList.remove('is-loading');
-
   const Shop = window.VyroShop;
   const gsap = window.gsap;
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduced = window.VyroPage.reduced;
+  const lenis = window.VyroPage.lenis;
   const esc = Shop.esc;
   const $ = function (s, r) { return (r || document).querySelector(s); };
   const $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
@@ -18,37 +15,6 @@
   const root = $('[data-pdp]');
   const params = new URLSearchParams(location.search);
   const product = Shop.get(params.get('id'));
-
-  /* ------------------------------------------------------------------ *
-   * Nav + mobile menu (same behaviour as the home page)
-   * ------------------------------------------------------------------ */
-  const nav = $('[data-nav]');
-  const menuBtn = $('[data-menu-toggle]');
-  const menu = $('[data-menu]');
-  let lenis = null;
-  if (!reduced && window.Lenis && gsap) {
-    lenis = new window.Lenis({ lerp: 0.1, smoothWheel: true });
-    gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
-    gsap.ticker.lagSmoothing(0);
-  }
-  let lastY = 0;
-  function onScroll() {
-    const y = window.scrollY;
-    nav.classList.add('is-scrolled');
-    nav.classList.toggle('is-hidden', menu.hidden && y > lastY && y > 300);
-    lastY = y;
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  nav.classList.add('is-scrolled');
-  menuBtn.addEventListener('click', function () {
-    const open = menu.hidden;
-    menu.hidden = !open;
-    menuBtn.setAttribute('aria-expanded', String(open));
-    if (lenis) open ? lenis.stop() : lenis.start();
-  });
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !menu.hidden) menuBtn.click();
-  });
 
   /* ------------------------------------------------------------------ *
    * Not found
@@ -59,7 +25,7 @@
       '<section class="pdp-missing">' +
         '<h1 class="display">Product not found</h1>' +
         '<p>This product doesn\'t exist or is no longer available. The rest of Drop 01 is still in the shop.</p>' +
-        '<a class="btn btn--solid" href="index.html#collection">Back to shop</a>' +
+        '<a class="btn btn--solid" href="shop.html">Back to shop</a>' +
       '</section>';
     return;
   }
@@ -94,8 +60,8 @@
   root.innerHTML =
     '<nav class="crumbs" aria-label="Breadcrumb">' +
       '<ol>' +
-        '<li><a href="index.html#collection" data-back>Shop</a></li>' +
-        '<li><a href="index.html#categories">' + esc(product.category) + '</a></li>' +
+        '<li><a href="shop.html" data-back>Shop</a></li>' +
+        '<li><a href="shop.html?type=' + encodeURIComponent(product.category) + '">' + esc(product.category) + '</a></li>' +
         '<li aria-current="page">' + esc(product.name) + '</li>' +
       '</ol>' +
     '</nav>' +
@@ -108,10 +74,13 @@
 
       '<div class="pdp__info">' +
         '<div class="pdp__sticky">' +
-          '<a class="pdp__back" href="index.html#collection" data-back>Back to shop</a>' +
+          '<a class="pdp__back" href="shop.html" data-back>Back to shop</a>' +
           '<p class="pdp__cat">' + esc(product.category) + '</p>' +
-          '<h1 class="pdp__name display">' + esc(product.name) + '</h1>' +
-          '<p class="pdp__price">' + Shop.price(product.price) + '</p>' +
+          '<div class="pdp__title-row">' +
+            '<h1 class="pdp__name display">' + esc(product.name) + '</h1>' +
+            Shop.wishHTML(product.slug, color, 'pdp__wish') +
+          '</div>' +
+          '<p class="pdp__price">' + Shop.price(product.price) + (product.isNew ? '<span class="tag">New</span>' : '') + '</p>' +
           '<p class="pdp__lede">' + esc(product.lede) + '</p>' +
 
           '<div class="pdp__field">' +
@@ -151,10 +120,12 @@
       '</div>' +
     '</div>' +
 
+    '<section class="lookset" aria-labelledby="look-title" data-look></section>' +
+
     '<section class="pdp__related" aria-labelledby="related-title">' +
       '<div class="pdp__related-head">' +
         '<h2 class="display" id="related-title">You might also like</h2>' +
-        '<a class="btn btn--ghost" href="index.html#collection" data-back>Shop all</a>' +
+        '<a class="btn btn--ghost" href="shop.html">Shop all</a>' +
       '</div>' +
       '<div class="rail"><div class="rail__track" data-related></div></div>' +
     '</section>';
@@ -195,6 +166,8 @@
       $$('.swatch', colorGroup).forEach(function (o) { o.setAttribute('aria-checked', String(o === sw)); });
       $('[data-color-name]').textContent = Shop.colorName(c);
       history.replaceState(null, '', Shop.url(product.slug, c));
+      $$('.pdp__wish').forEach(function (w) { w.dataset.color = c; });
+      renderLook();
       if (gsap && !reduced) {
         gsap.to(track, {
           opacity: 0, duration: 0.25, onComplete: function () {
@@ -261,11 +234,35 @@
       return;
     }
     Shop.addToBag({ slug: product.slug, color: color, size: size, qty: qty });
-    Shop.toast('Added to bag: ' + product.name + ', ' + Shop.colorName(color) + ', ' + size + (qty > 1 ? ' × ' + qty : ''));
     addBtn.textContent = 'Added';
     addBtn.classList.add('is-done');
     setTimeout(function () { addBtn.textContent = 'Add to bag'; addBtn.classList.remove('is-done'); }, 1800);
   });
+
+  /* ------------------------------------------------------------------ *
+   * Complete the look: matching pieces in the colorway being viewed
+   * ------------------------------------------------------------------ */
+  function renderLook() {
+    const pieces = (product.look || []).map(Shop.get).filter(Boolean);
+    const el = $('[data-look]');
+    if (!pieces.length) { el.hidden = true; return; }
+    const photo = product.gallery(color).filter(function (g) { return g.fit === 'cover'; })[0] || product.gallery(color)[0];
+    const total = product.price + pieces.reduce(function (n, p) { return n + p.price; }, 0);
+    el.innerHTML =
+      '<figure class="lookset__media"><img src="' + photo.src + '" alt="' + esc(product.name + ' in ' + Shop.colorName(color).toLowerCase() + ', ' + photo.alt) + '" loading="lazy"></figure>' +
+      '<div class="lookset__body">' +
+        '<h2 class="lookset__title display" id="look-title">Complete the look</h2>' +
+        '<p class="lookset__lede">Pieces cut to go with the ' + esc(product.name) + ' in ' + Shop.colorName(color).toLowerCase() + '.</p>' +
+        '<div class="lookset__items">' +
+          pieces.map(function (p) {
+            return '<div class="lookset__item">' + Shop.miniHTML(p, color, { meta: p.category + ', ' + Shop.colorName(color) }) + Shop.wishHTML(p.slug, color, 'lookset__wish') + '</div>';
+          }).join('') +
+        '</div>' +
+        '<p class="lookset__total">Full look, ' + (pieces.length + 1) + ' pieces: <strong>' + Shop.price(total) + '</strong></p>' +
+      '</div>';
+    if (window.VyroChrome) window.VyroChrome.syncWish(el);
+  }
+  renderLook();
 
   /* ------------------------------------------------------------------ *
    * Related products (same card component as the home page)
@@ -281,7 +278,7 @@
       try { ret = JSON.parse(sessionStorage.getItem('vyro-return') || 'null'); } catch (err) { /* ignore */ }
       // Came straight here from the shop: step back so the shop restores its scroll position
       const fromShop = ret && document.referrer && new URL(document.referrer).pathname === ret.path && ret.path !== location.pathname;
-      if (fromShop && history.length > 1 && a.getAttribute('href') === 'index.html#collection') {
+      if (fromShop && history.length > 1) {
         e.preventDefault();
         history.back();
       }

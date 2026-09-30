@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="is-loading">
+<body class="is-loading" data-page="home">
   <a class="skip-link" href="#main">Skip to content</a>
 
   <!-- Load intro: brush-wipe reveal of the logo -->
@@ -24,33 +24,7 @@
     </div>
   </div>
 
-  <header class="nav" data-nav>
-    <a class="nav__logo" href="#top" aria-label="VYRO Athletics home">
-      <img src="assets/logo/vyro-logo.png" alt="VYRO" width="1300" height="662">
-    </a>
-    <nav class="nav__links" aria-label="Primary">
-      <a href="#drop">Drop 01</a>
-      <a href="#collection">Shop</a>
-      <a href="#story">Why VYRO</a>
-      <a href="#community">Community</a>
-    </nav>
-    <div class="nav__actions">
-      <button class="nav__bag" type="button" data-bag aria-live="polite">Bag <span data-bag-count>0</span></button>
-      <button class="nav__menu" type="button" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
-        <span class="sr-only">Menu</span><span class="nav__menu-bar"></span><span class="nav__menu-bar"></span>
-      </button>
-    </div>
-  </header>
-
-  <div class="mobile-menu" id="mobile-menu" hidden data-menu>
-    <nav aria-label="Mobile">
-      <a href="#drop">Drop 01</a>
-      <a href="#collection">Shop</a>
-      <a href="#story">Why VYRO</a>
-      <a href="#community">Community</a>
-      <a href="#join">Get drop alerts</a>
-    </nav>
-  </div>
+  <div data-chrome-header></div>
 
   <main id="main">
 
@@ -441,28 +415,7 @@
     </section>
   </main>
 
-  <footer class="footer">
-    <div class="footer__logo" aria-hidden="true">
-      <img src="assets/logo/vyro-logo.png" alt="" width="1300" height="662" loading="lazy">
-    </div>
-    <div class="footer__cols">
-      <div>
-        <h3>Shop</h3>
-        <ul><li><a href="#drop">Drop 01</a></li><li><a href="#categories">All categories</a></li><li><a href="#join">Next drop</a></li></ul>
-      </div>
-      <div>
-        <h3>Help</h3>
-        <ul><li><a href="#">Size guide</a></li><li><a href="#">Shipping and returns</a></li><li><a href="#">Contact</a></li></ul>
-      </div>
-      <div>
-        <h3>Follow</h3>
-        <ul><li><a href="https://instagram.com/" rel="noopener" target="_blank">Instagram</a></li><li><a href="https://tiktok.com/" rel="noopener" target="_blank">TikTok</a></li></ul>
-      </div>
-    </div>
-    <p class="footer__legal">© 2026 VYRO Athletics. Earned, not given.</p>
-  </footer>
-
-  <div class="toast" role="status" aria-live="polite" data-toast></div>
+  <div data-chrome-footer></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
@@ -470,6 +423,8 @@
   <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.min.js" defer></script>
   <script src="js/garments.js" defer></script>
   <script src="js/shop.js" defer></script>
+  <script src="js/api.js" defer></script>
+  <script src="js/chrome.js" defer></script>
   <script src="js/gl.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>

@@ -4,12 +4,21 @@ Static site: `index.html`, `css/styles.css`, `js/` and `assets/`. There is no bu
 
 ## Run it
 
-The WebGL layer loads images as textures, which browsers block on `file://`.
-Serve the folder over HTTP instead:
-
 ```bash
-npx serve .          # or: python3 -m http.server
+node server.js            # http://localhost:3000
 ```
+
+`server.js` serves the site and the account API, and stores accounts,
+wishlists, addresses and orders in SQLite (`data/vyro.db`, created on first
+run). It uses Node 22's built-in `node:sqlite`, so there is nothing to
+install. Options: `PORT=8080`, `DB_PATH=/path/to/vyro.db`,
+`NODE_ENV=production` (secure cookies, hides test reset links).
+
+Clean URLs work on the server: `/shop`, `/cart`, `/account`.
+
+The site also works as plain static files (`npx serve .`). In that case
+accounts, wishlists and orders fall back to the visitor's browser storage and
+the account screens say so ("Preview mode").
 
 ## Swap in the real brand assets
 
@@ -55,11 +64,40 @@ features, fit, care), sizes, default colorway, the card image(s) and a
 
 Unknown product IDs show a "Product not found" page with a link back to the shop.
 
-## Hooks to wire up
+## Shop features
 
-- **Email signup:** `js/main.js`, search for `Hook your email provider here`.
-- **Add to bag:** saves to the browser and updates the bag count. Connect `addToBag()` in `js/shop.js` to your cart (Shopify and so on).
-- **Women's line:** enable the second tab in the categories section and add a second `.cats` list.
+| Feature | Where |
+|---|---|
+| Shared header, footer, cart drawer, search, log in window, wishlist hearts | `js/chrome.js` |
+| Product catalogue, card and row components, search, bag | `js/shop.js` |
+| Account client (server database, or browser fallback) | `js/api.js` |
+| Shop page with filters and sorting | `shop.html`, `js/shop-page.js` |
+| Cart page and test checkout | `cart.html`, `js/cart-page.js` |
+| My Account (profile, orders, wishlist, addresses, settings) | `account.html`, `js/account.js` |
+| Product page with Complete the Look | `product.html`, `js/product.js` |
+| API and database | `server.js` |
+
+- **Filters** combine: any option within a group can match, and every group
+  must match. They live in the URL, so a filtered view can be shared, for
+  example `shop.html?type=Hoodies,Tees&color=navy&sort=price-asc`.
+- **Search** matches product names, categories and each product's `tags`
+  in `js/shop.js`. Colour words ("navy hoodie") open results in that colour.
+  Press `/` or Ctrl/Cmd+K to search from any page.
+- **Complete the Look** uses each product's `look` list in `js/shop.js`.
+- **New arrivals** use each product's `isNew` flag; "Newest" sorts by `added`.
+
+## Before going live
+
+- **Payments:** checkout is a test. It records the order but takes no
+  payment. Connect a payment provider (Stripe, Shopify checkout, and so on)
+  in `js/cart-page.js` and the `POST /api/orders` route in `server.js`.
+- **Password reset emails:** there's no email service yet. Reset links are
+  printed in the server log (and shown on screen outside production). Add
+  your provider in `sendResetEmail()` in `server.js`.
+- **Drop alert signup** on the home page isn't connected: `js/main.js`,
+  search for `Hook your email provider here`.
+- **Women's line:** add products with `gender: 'women'` in `js/shop.js`. The
+  shop's Men/Women filter picks them up automatically.
 
 ## Stack
 

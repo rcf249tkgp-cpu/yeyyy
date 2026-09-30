@@ -109,35 +109,17 @@
    * Nav + mobile menu
    * ------------------------------------------------------------------ */
   const nav = $('[data-nav]');
-  const menuBtn = $('[data-menu-toggle]');
   const menu = $('[data-menu]');
-  let menuOpen = false;
-
-  function closeMenu() {
-    if (!menuOpen) return;
-    menuOpen = false;
-    menuBtn.setAttribute('aria-expanded', 'false');
-    menu.hidden = true;
-    if (lenis) lenis.start();
-  }
-  menuBtn.addEventListener('click', function () {
-    menuOpen = !menuOpen;
-    menuBtn.setAttribute('aria-expanded', String(menuOpen));
-    menu.hidden = !menuOpen;
-    if (menuOpen) {
-      if (lenis) lenis.stop();
-      nav.classList.remove('is-hidden');
-      if (!reduced) gsap.from($$('a', menu), { yPercent: 60, opacity: 0, duration: 0.7, stagger: 0.05, ease: 'power3.out' });
-    } else if (lenis) lenis.start();
-  });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeMenu(); });
+  function closeMenu() { if (window.VyroChrome) window.VyroChrome.closeMenu(); }
+  // Drawers, search and the menu pause momentum scrolling while open
+  if (window.VyroChrome) window.VyroChrome.onLock(function (on) { if (lenis) { on ? lenis.stop() : lenis.start(); } });
 
   ScrollTrigger.create({
     start: 0, end: 'max',
     onUpdate: function (self) {
       const y = self.scroll();
       nav.classList.toggle('is-scrolled', y > 40);
-      nav.classList.toggle('is-hidden', !menuOpen && self.direction === 1 && y > window.innerHeight * 0.6);
+      nav.classList.toggle('is-hidden', menu.hidden && self.direction === 1 && y > window.innerHeight * 0.6);
     }
   });
 
