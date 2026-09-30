@@ -1,0 +1,7 @@
+# Not part of the static site on Vercel
+server.js
+data/
+node_modules/
+.claude/
+.mcp.json
+assets/products/lineup-sheet-*.webp

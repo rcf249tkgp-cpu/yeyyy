@@ -1,6 +1,33 @@
-# VYRO Athletics: home page
+# VYRO Athletics
 
-Static site: `index.html`, `css/styles.css`, `js/` and `assets/`. There is no build step.
+The VYRO Athletics website: home page, shop with filters and search, product
+pages, cart drawer and cart page, and customer accounts with wishlist.
+Plain HTML, CSS and JavaScript. There is no build step and nothing to install.
+
+## Deploy to Vercel
+
+1. Upload this folder to a GitHub repository (or run `npx vercel` inside it).
+2. In Vercel, choose **Add New > Project**, import the repository and keep
+   the defaults: Framework Preset **Other**, no build command, output
+   directory left empty (the project root).
+3. Deploy. `vercel.json` adds the clean URLs `/shop`, `/cart`, `/account`
+   and `/product`, image caching and security headers. `.vercelignore` keeps
+   the server-only files out of the deployment.
+
+**Accounts on Vercel:** Vercel serves the site as static files, and
+`server.js` (which stores accounts, wishlists and orders in a SQLite file)
+can't run there because Vercel has no permanent disk. The site detects this
+automatically and switches to preview mode: sign-up, log in, wishlist,
+addresses and test orders still work, but they're saved in each visitor's own
+browser, and the account screens say so. Everything else (shop, filters,
+search, product pages, cart) works exactly the same.
+
+To keep real accounts in a database, either:
+- host the whole folder on a service that runs Node 22+ (Render, Railway,
+  Fly.io, a VPS) with `npm start` and a persistent disk for `data/`, or
+- move the API in `server.js` to Vercel Functions with a hosted database
+  (Vercel Postgres/Neon, Turso or Supabase). The front end already talks to
+  `/api/*` and switches over automatically once it answers.
 
 ## Run it
 
