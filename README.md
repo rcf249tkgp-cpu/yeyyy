@@ -10,13 +10,18 @@ Plain HTML, CSS and JavaScript. There is no build step and nothing to install.
 2. In Vercel, choose **Add New > Project**, import the repository and keep
    the defaults: Framework Preset **Other**, no build command, output
    directory left empty (the project root).
-3. Deploy. `vercel.json` adds the clean URLs `/shop`, `/cart`, `/account`
-   and `/product`, image caching and security headers. `.vercelignore` keeps
-   the server-only files out of the deployment.
+3. Deploy. `vercel.json` marks the project as a static site (no framework,
+   no install or build step) and adds the clean URLs `/shop`, `/cart`,
+   `/account` and `/product`, image caching and security headers.
+   `.vercelignore` keeps the optional Node server (`server/`) out of the
+   deployment, so Vercel never tries to run it.
 
-**Accounts on Vercel:** Vercel serves the site as static files, and
-`server.js` (which stores accounts, wishlists and orders in a SQLite file)
-can't run there because Vercel has no permanent disk. The site detects this
+**Accounts on Vercel:** Vercel serves the site as static files, and the
+optional Node server (`server/vyro-server.js`, which stores accounts,
+wishlists and orders in a SQLite file) can't keep data there because Vercel
+has no permanent disk. If it is ever run on Vercel anyway, it writes nothing
+to disk and turns its account API off (set `DB_PATH` to a path under `/tmp`
+for throwaway test storage only). The site detects this
 automatically and switches to preview mode: sign-up, log in, wishlist,
 addresses and test orders still work, but they're saved in each visitor's own
 browser, and the account screens say so. Everything else (shop, filters,
@@ -25,21 +30,23 @@ search, product pages, cart) works exactly the same.
 To keep real accounts in a database, either:
 - host the whole folder on a service that runs Node 22+ (Render, Railway,
   Fly.io, a VPS) with `npm start` and a persistent disk for `data/`, or
-- move the API in `server.js` to Vercel Functions with a hosted database
+- move the API in `server/vyro-server.js` to Vercel Functions with a hosted database
   (Vercel Postgres/Neon, Turso or Supabase). The front end already talks to
   `/api/*` and switches over automatically once it answers.
 
 ## Run it
 
 ```bash
-node server.js            # http://localhost:3000
+npm start                 # same as: node server/vyro-server.js
+                          # http://localhost:3000
 ```
 
-`server.js` serves the site and the account API, and stores accounts,
-wishlists, addresses and orders in SQLite (`data/vyro.db`, created on first
-run). It uses Node 22's built-in `node:sqlite`, so there is nothing to
+`server/vyro-server.js` serves the site and the account API, and stores
+accounts, wishlists, addresses and orders in SQLite (`data/vyro.db` inside
+the project, created on the first account request, never at startup). It uses Node 22's built-in `node:sqlite`, so there is nothing to
 install. Options: `PORT=8080`, `DB_PATH=/path/to/vyro.db`,
-`NODE_ENV=production` (secure cookies, hides test reset links).
+`NODE_ENV=production` (secure cookies, hides test reset links). A relative
+`DB_PATH` is resolved from the project folder.
 
 Clean URLs work on the server: `/shop`, `/cart`, `/account`.
 
@@ -102,7 +109,7 @@ Unknown product IDs show a "Product not found" page with a link back to the shop
 | Cart page and test checkout | `cart.html`, `js/cart-page.js` |
 | My Account (profile, orders, wishlist, addresses, settings) | `account.html`, `js/account.js` |
 | Product page with Complete the Look | `product.html`, `js/product.js` |
-| API and database | `server.js` |
+| API and database (Node hosts) | `server/vyro-server.js` |
 
 - **Filters** combine: any option within a group can match, and every group
   must match. They live in the URL, so a filtered view can be shared, for
@@ -117,10 +124,11 @@ Unknown product IDs show a "Product not found" page with a link back to the shop
 
 - **Payments:** checkout is a test. It records the order but takes no
   payment. Connect a payment provider (Stripe, Shopify checkout, and so on)
-  in `js/cart-page.js` and the `POST /api/orders` route in `server.js`.
+  in `js/cart-page.js` and the `POST /api/orders` route in
+  `server/vyro-server.js`.
 - **Password reset emails:** there's no email service yet. Reset links are
   printed in the server log (and shown on screen outside production). Add
-  your provider in `sendResetEmail()` in `server.js`.
+  your provider in `sendResetEmail()` in `server/vyro-server.js`.
 - **Drop alert signup** on the home page isn't connected: `js/main.js`,
   search for `Hook your email provider here`.
 - **Women's line:** add products with `gender: 'women'` in `js/shop.js`. The

@@ -1,5 +1,6 @@
-# Not part of the static site on Vercel
-server.js
+# Vercel serves this project as a static site. The optional Node server
+# (accounts database) is for Node hosts only and must not be deployed here.
+server/
 data/
 node_modules/
 .claude/

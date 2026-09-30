@@ -1,7 +1,7 @@
 /*
   VYRO account client.
   Every page talks to accounts, wishlist, addresses and orders through
-  window.VyroAccount. It uses the VYRO server's database (server.js, /api/*)
+  window.VyroAccount. It uses the VYRO server's database (server/vyro-server.js, /api/*)
   when that is running. On a plain static host (or the design preview) it
   falls back to a browser-only store with the same interface, and
   VyroAccount.mode reports 'local' so the UI can say so.

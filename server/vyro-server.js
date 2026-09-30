@@ -5,8 +5,18 @@
   orders and settings, stored in SQLite (Node's built-in node:sqlite, no npm
   packages needed).
 
-    node server.js                      # http://localhost:3000
-    PORT=8080 DB_PATH=./data/vyro.db node server.js
+    npm start                           # http://localhost:3000
+    PORT=8080 DB_PATH=data/vyro.db node server/vyro-server.js
+
+  Storage: the database file lives in the project's data/ folder (or
+  DB_PATH, resolved relative to the project). Nothing is written to disk
+  until the first API request that needs the database.
+
+  Vercel: Vercel serves this site as static files and has no writable,
+  persistent disk, so the account API is switched off there (the front end
+  then keeps accounts in each visitor's browser). To try the API on Vercel
+  with throwaway storage, set DB_PATH to a path under /tmp; it is wiped
+  whenever the function restarts.
 
   Password reset emails: there is no email provider wired up yet. Reset links
   are printed to the server log, and outside production (NODE_ENV !==
@@ -19,12 +29,15 @@ const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
-const { DatabaseSync } = require('node:sqlite');
+const os = require('node:os');
 
 const PORT = Number(process.env.PORT) || 3000;
-const ROOT = __dirname;
-const DB_PATH = process.env.DB_PATH || path.join(ROOT, 'data', 'vyro.db');
-const PROD = process.env.NODE_ENV === 'production';
+const ROOT = path.join(__dirname, '..');
+const ON_VERCEL = !!process.env.VERCEL;
+const DB_PATH = process.env.DB_PATH ? path.resolve(ROOT, process.env.DB_PATH) : path.join(ROOT, 'data', 'vyro.db');
+const PROD = process.env.NODE_ENV === 'production' || ON_VERCEL;
+// On Vercel the deployment folder is read-only; only a DB under the temp dir is allowed
+const API_ENABLED = !ON_VERCEL || (!!process.env.DB_PATH && DB_PATH.startsWith(os.tmpdir() + path.sep));
 const SESSION_DAYS = 30;
 const RESET_MINUTES = 60;
 
@@ -32,7 +45,8 @@ const RESET_MINUTES = 60;
  * Catalogue: prices are read from js/shop.js so orders can't be priced
  * by the browser
  * ------------------------------------------------------------------ */
-const CATALOGUE = (function loadCatalogue() {
+let CATALOGUE = null;
+function loadCatalogue() {
   const src = fs.readFileSync(path.join(ROOT, 'js', 'shop.js'), 'utf8');
   const out = {};
   const re = /slug: '([a-z0-9-]+)',[\s\S]*?name: '([^']+)',[\s\S]*?price: (\d+(?:\.\d+)?),[\s\S]*?sizes: (TOPS|BOTTOMS)/g;
@@ -41,7 +55,7 @@ const CATALOGUE = (function loadCatalogue() {
     out[m[1]] = { name: m[2], price: Number(m[3]), sizes: m[4] === 'TOPS' ? ['XS', 'S', 'M', 'L', 'XL', 'XXL'] : ['S', 'M', 'L', 'XL', 'XXL'] };
   }
   return out;
-})();
+}
 const COLORS = ['black', 'navy', 'gray'];
 const FREE_SHIPPING = 80;
 const SHIPPING_FEE = 5.95;
@@ -49,9 +63,15 @@ const SHIPPING_FEE = 5.95;
 /* ------------------------------------------------------------------ *
  * Database
  * ------------------------------------------------------------------ */
-fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
-const db = new DatabaseSync(DB_PATH);
-db.exec(`
+let db = null;
+// Opened on first use, never at load time, so importing this file has no side effects
+function openDb() {
+  if (db) return db;
+  const { DatabaseSync } = require('node:sqlite');
+  CATALOGUE = CATALOGUE || loadCatalogue();
+  fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+  const conn = new DatabaseSync(DB_PATH);
+  conn.exec(`
   PRAGMA journal_mode = WAL;
   PRAGMA foreign_keys = ON;
   CREATE TABLE IF NOT EXISTS users (
@@ -101,7 +121,10 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
   );
 `);
-db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
+  conn.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
+  db = conn;
+  return db;
+}
 
 /* ------------------------------------------------------------------ *
  * Helpers
@@ -447,15 +470,17 @@ function readBody(req) {
   });
 }
 
-const server = http.createServer(async (req, res) => {
+async function handle(req, res) {
   const { pathname } = new URL(req.url, 'http://localhost');
   if (!pathname.startsWith('/api/')) {
     if (req.method !== 'GET' && req.method !== 'HEAD') return notFound(res);
     return serveStatic(req, res, pathname);
   }
+  if (!API_ENABLED) return sendJSON(res, 404, { error: 'The account API is not available on this host.' });
   const handler = routes[req.method + ' ' + pathname];
   if (!handler) return sendJSON(res, 404, { error: 'Not found.' });
   try {
+    openDb();
     let body = {};
     if (req.method !== 'GET') {
       // CSRF guard: state-changing calls must be JSON from our own pages
@@ -470,9 +495,13 @@ const server = http.createServer(async (req, res) => {
     console.error(e);
     sendJSON(res, 500, { error: 'Something went wrong on our side. Try again.' });
   }
-});
+}
+const server = http.createServer(handle);
 
 if (require.main === module) {
-  server.listen(PORT, () => console.log(`VYRO running at http://localhost:${PORT} (database: ${path.relative(ROOT, DB_PATH)})`));
+  server.listen(PORT, () => console.log(`VYRO running at http://localhost:${PORT}` + (API_ENABLED ? ` (database: ${path.relative(ROOT, DB_PATH) || DB_PATH})` : ' (account API off)')));
 }
-module.exports = { server, db };
+// Request handler, usable by any Node host or serverless adapter
+module.exports = handle;
+module.exports.handle = handle;
+module.exports.server = server;
