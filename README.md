@@ -62,17 +62,26 @@ stand-in, so you can add photos one at a time.
 | File | Where it shows | Notes |
 |---|---|---|
 | `assets/logo/vyro-logo.png` | Intro wipe, nav, hero, footer | Extracted from the tank-top sheet and upscaled. Swap in a vector export of the real logo when you have one. |
-| `assets/photos/life-1.jpg` … `life-9.jpg` | Hero sequence, story, reviews, signup backdrop | Gym shots of the hoodie and jogger. On desktop the hero shows three per slide. |
-| `assets/photos/{tee,tank,shorts}-model-*.jpg` | Lookbook, category rows | On-model shots. |
-| `assets/products/*.jpg` | Drop 01, collection, details | Flat product shots and close-ups. |
+| `assets/photos/life-1.webp` … `life-9.webp` | Hero sequence, story, reviews, signup backdrop | Gym shots of the hoodie and jogger. On desktop the hero shows three per slide. |
+| `assets/photos/{tee,tank,shorts}-model-*.webp` | Lookbook, category rows | On-model shots. |
+| `assets/products/*.webp` | Drop 01, collection, details | Flat product shots and close-ups. |
 | `assets/products/lineup-sheet-*.webp` | Not shown | The original sheets everything above was cropped from. |
 
-All photos were cropped from those sheets, so each one is only a few hundred
-pixels wide. Replace them with high-res originals at the same filenames and the
-page picks them up with no code changes.
+All product photos are cropped from the five `lineup-sheet-*.webp` sheets
+(1536 × 1024 each), so the originals are only 140–520 px wide. They are
+served as WebP, rebuilt from those sheets with a 2× AI upscale (Real-ESRGAN)
+and sized to what each image needs on a retina screen, at most 4× the
+original and 2000 px on the long edge (about 2.7 MB for all 78). Colours,
+prints and proportions match the originals.
+
+The on-model shots (tee, tank, shorts), the detail close-ups and the gym
+photos are still smaller than the largest spots they fill, such as the product
+gallery on big screens. For truly sharp images, replace them with high-res
+originals (at least 2000 px on the long edge) at the same filenames. The page
+picks them up with no code changes.
 
 Colorway switching swaps photos by filename: each product image has a
-`data-pimg` pattern such as `assets/products/hoodie-{c}-front.jpg`, where `{c}`
+`data-pimg` pattern such as `assets/products/hoodie-{c}-front.webp`, where `{c}`
 is `black`, `navy` or `gray`. Categories that haven't launched yet (tees,
 pumpers, shorts, stringers) use SVG garment stand-ins from `js/garments.js`.
 

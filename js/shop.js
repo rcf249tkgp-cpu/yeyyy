@@ -30,7 +30,7 @@
 
   function flat(src, alt) { return { src: P + src, fit: 'contain', alt: alt }; }
   function photo(src, alt) { return { src: src.indexOf('/') > -1 ? src : PH + src, fit: 'cover', alt: alt }; }
-  function life(n, alt) { return photo('life-' + n + '.jpg', alt || 'worn in the gym'); }
+  function life(n, alt) { return photo('life-' + n + '.webp', alt || 'worn in the gym'); }
 
   const SHIPPING = 'Free standard shipping on orders over €80. Orders ship within 2 working days. Unworn items can be returned within 30 days for a full refund.';
 
@@ -51,15 +51,15 @@
       features: ['Heavyweight brushed-back fleece', 'Dropped shoulder, boxy fit', 'Lined hood with flat drawcords', 'Engraved metal aglets', 'Kangaroo pocket', 'Ribbed cuffs and hem', 'Chest and back print'],
       fit: 'Oversized fit. Take your usual size for the intended look, or size down for a closer fit.',
       care: 'Machine wash cold, inside out. Do not tumble dry. Do not iron the print.',
-      card: [{ src: P + 'hoodie-{c}-front.jpg', w: 284, h: 334 }],
+      card: [{ src: P + 'hoodie-{c}-front.webp', w: 284, h: 334 }],
       gallery: function (c) {
         const L = { black: [1, 2], navy: [3, 4], gray: [5, 6] }[c];
         return [
-          flat('hoodie-' + c + '.jpg', 'front and back'),
-          flat('hoodie-' + c + '-front.jpg', 'front'),
+          flat('hoodie-' + c + '.webp', 'front and back'),
+          flat('hoodie-' + c + '-front.webp', 'front'),
           life(L[0]), life(L[1], 'back print, worn in the gym'),
-          photo(P + 'detail-' + c + '-chest.jpg', 'chest print close-up'),
-          photo(P + 'detail-' + c + '-aglet.jpg', 'engraved aglets close-up')
+          photo(P + 'detail-' + c + '-chest.webp', 'chest print close-up'),
+          photo(P + 'detail-' + c + '-aglet.webp', 'engraved aglets close-up')
         ];
       }
     },
@@ -79,15 +79,15 @@
       features: ['Heavyweight cotton jersey', 'Dropped shoulder', 'Boxy, slightly cropped body', 'Large distressed back print', 'Small chest print', 'Woven neck label'],
       fit: 'Oversized fit. Size down for a standard fit.',
       care: 'Machine wash cold, inside out. Hang to dry. Do not iron the print.',
-      card: [{ src: P + 'tee-{c}-front.jpg', w: 244, h: 285 }],
+      card: [{ src: P + 'tee-{c}-front.webp', w: 244, h: 285 }],
       gallery: function (c) {
         const g = [
-          flat('tee-' + c + '-front.jpg', 'front'),
-          flat('tee-' + c + '.jpg', 'front and back'),
-          photo('tee-model-' + c + '-front.jpg', 'worn, front'),
-          photo('tee-model-' + c + '-back.jpg', 'worn, back print')
+          flat('tee-' + c + '-front.webp', 'front'),
+          flat('tee-' + c + '.webp', 'front and back'),
+          photo('tee-model-' + c + '-front.webp', 'worn, front'),
+          photo('tee-model-' + c + '-back.webp', 'worn, back print')
         ];
-        if (c === 'black') g.push(photo(P + 'detail-tee-back.jpg', 'back print close-up'), photo(P + 'detail-tee-neck.jpg', 'neck label close-up'), photo(P + 'detail-tee-sleeve.jpg', 'sleeve close-up'));
+        if (c === 'black') g.push(photo(P + 'detail-tee-back.webp', 'back print close-up'), photo(P + 'detail-tee-neck.webp', 'neck label close-up'), photo(P + 'detail-tee-sleeve.webp', 'sleeve close-up'));
         return g;
       }
     },
@@ -107,16 +107,16 @@
       features: ['Premium cotton', 'Regular side fit, no side drop-offs', 'Clean silhouette', 'Athletic fit', 'Small chest print', 'Woven neck label'],
       fit: 'Athletic fit. True to size.',
       care: 'Machine wash cold. Hang to dry.',
-      card: [{ src: P + 'tank-{c}-front.jpg', w: 160, h: 248 }],
+      card: [{ src: P + 'tank-{c}-front.webp', w: 160, h: 248 }],
       gallery: function (c) {
         const g = [
-          flat('tank-' + c + '-front.jpg', 'front'),
-          flat('tank-' + c + '.jpg', 'front and back'),
-          photo('tank-model-' + c + '-front.jpg', 'worn, front'),
-          photo('tank-model-' + c + '-back.jpg', 'worn, back'),
-          photo('tank-model-' + c + '-side.jpg', 'worn, side')
+          flat('tank-' + c + '-front.webp', 'front'),
+          flat('tank-' + c + '.webp', 'front and back'),
+          photo('tank-model-' + c + '-front.webp', 'worn, front'),
+          photo('tank-model-' + c + '-back.webp', 'worn, back'),
+          photo('tank-model-' + c + '-side.webp', 'worn, side')
         ];
-        if (c === 'black') g.push(photo(P + 'detail-tank-label.jpg', 'neck label close-up'));
+        if (c === 'black') g.push(photo(P + 'detail-tank-label.webp', 'neck label close-up'));
         return g;
       }
     },
@@ -136,16 +136,16 @@
       features: ['Heavyweight fleece', 'Tapered leg, ribbed cuffs', 'Elastic waist with flat drawcord', 'Engraved metal aglets', 'Side pockets', 'Full-length leg print'],
       fit: 'Regular fit through the seat and thigh, tapered to the ankle. True to size.',
       care: 'Machine wash cold, inside out. Do not tumble dry. Do not iron the print.',
-      card: [{ src: P + 'jogger-{c}-front.jpg', w: 172, h: 345 }],
+      card: [{ src: P + 'jogger-{c}-front.webp', w: 172, h: 345 }],
       gallery: function (c) {
         const L = { black: 7, navy: 8, gray: 9 }[c];
         return [
-          flat('jogger-' + c + '-front.jpg', 'front'),
-          flat('jogger-' + c + '.jpg', 'front, back and side'),
+          flat('jogger-' + c + '-front.webp', 'front'),
+          flat('jogger-' + c + '.webp', 'front, back and side'),
           life(L),
-          flat('jogger-' + c + '-side.jpg', 'side print'),
-          photo(P + 'detail-' + c + '-leg.jpg', 'leg print close-up'),
-          photo(P + 'detail-' + c + '-aglet.jpg', 'engraved aglets close-up')
+          flat('jogger-' + c + '-side.webp', 'side print'),
+          photo(P + 'detail-' + c + '-leg.webp', 'leg print close-up'),
+          photo(P + 'detail-' + c + '-aglet.webp', 'engraved aglets close-up')
         ];
       }
     },
@@ -165,15 +165,15 @@
       features: ['Premium poly blend', 'Elastic waistband with drawcord', 'Side pockets', 'Side-split hem', 'Leg print'],
       fit: 'Regular fit, above the knee. True to size.',
       care: 'Machine wash cold. Hang to dry.',
-      card: [{ src: P + 'shorts-{c}-front.jpg', w: 245, h: 245 }],
+      card: [{ src: P + 'shorts-{c}-front.webp', w: 245, h: 245 }],
       gallery: function (c) {
         const g = [
-          flat('shorts-' + c + '-front.jpg', 'front'),
-          flat('shorts-' + c + '.jpg', 'front and back'),
-          photo('shorts-model-' + c + '-front.jpg', 'worn, front'),
-          photo('shorts-model-' + c + '-side.jpg', 'worn, side')
+          flat('shorts-' + c + '-front.webp', 'front'),
+          flat('shorts-' + c + '.webp', 'front and back'),
+          photo('shorts-model-' + c + '-front.webp', 'worn, front'),
+          photo('shorts-model-' + c + '-side.webp', 'worn, side')
         ];
-        if (c === 'black') g.push(photo(P + 'detail-shorts-split.jpg', 'side split close-up'), photo(P + 'detail-shorts-logo.jpg', 'leg print close-up'));
+        if (c === 'black') g.push(photo(P + 'detail-shorts-split.webp', 'side split close-up'), photo(P + 'detail-shorts-logo.webp', 'leg print close-up'));
         return g;
       }
     },
@@ -194,15 +194,15 @@
       fit: 'One size for both pieces. The hoodie is cut oversized; size down if you want a closer fit up top.',
       care: 'Machine wash cold, inside out. Do not tumble dry. Do not iron the prints.',
       card: [
-        { src: P + 'hoodie-{c}-front.jpg', w: 250, h: 334, cls: 'pimg--l' },
-        { src: P + 'jogger-{c}-side.jpg', w: 122, h: 345, cls: 'pimg--r' }
+        { src: P + 'hoodie-{c}-front.webp', w: 250, h: 334, cls: 'pimg--l' },
+        { src: P + 'jogger-{c}-side.webp', w: 122, h: 345, cls: 'pimg--r' }
       ],
       gallery: function (c) {
         const L = { black: [7, 1], navy: [8, 3], gray: [5, 9] }[c];
         return [
           life(L[0], 'full set, worn in the gym'),
-          flat('hoodie-' + c + '.jpg', 'hoodie, front and back'),
-          flat('jogger-' + c + '.jpg', 'jogger, front, back and side'),
+          flat('hoodie-' + c + '.webp', 'hoodie, front and back'),
+          flat('jogger-' + c + '.webp', 'jogger, front, back and side'),
           life(L[1])
         ];
       }
