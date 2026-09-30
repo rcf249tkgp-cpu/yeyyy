@@ -6,3 +6,6 @@ node_modules/
 .claude/
 .mcp.json
 assets/products/lineup-sheet-*.webp
+
+# Shopify setup files (import CSV and its generator) are not part of the website
+shopify/
